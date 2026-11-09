@@ -138,8 +138,7 @@ async function replyTo(text){
   if(conversation.length>20)conversation=conversation.slice(-20);
   speak(answer);
  }catch(err){
-  wait.textContent='حصلت مشكلة في الاتصال بعقل لينا: '+err.message+'
-لسه بنجهّز السيرفر، جرّب تاني بعد شوية ❤️';
+  wait.textContent='حصلت مشكلة في الاتصال بعقل لينا: '+err.message+'\\nلسه بنجهّز السيرفر، جرّب تاني بعد شوية ❤️';
  }
  scrollDown();
 }
