@@ -33,18 +33,41 @@ input[type=text]{flex:1;min-width:0;background:transparent;border:0;outline:0;co
 .note{text-align:center;color:#8d7880;font-size:11px;margin:9px}
 #fileInput{display:none}
 @media(max-width:420px){.app{padding:9px}.owner{font-size:10px;padding:7px}.avatar{width:51px;height:51px}.tool{font-size:12px;padding:9px 10px}}
+
+.auth-screen{max-width:430px;margin:7vh auto;padding:26px 22px;background:linear-gradient(160deg,#24121a,#100b0e);border:1px solid #713044;border-radius:25px;box-shadow:0 18px 55px #0009;text-align:center}
+.auth-avatar{width:88px;height:88px;margin:0 auto 14px;border-radius:50%;display:grid;place-items:center;font-size:48px;background:radial-gradient(circle at 35% 25%,#ffb2c1,#d52d57 48%,#4b1023);border:2px solid #ff8ba3;box-shadow:0 0 24px #f229554d}
+.auth-screen h1{font-size:27px;margin:8px 0}.auth-screen p{color:#c9aeb7;line-height:1.7;font-size:14px}
+.auth-screen input{width:100%;background:#100b0e;border:1px solid #713044;border-radius:13px;color:#fff;padding:14px;font-size:16px;margin:12px 0;outline:none;text-align:right}
+.auth-primary,.google-btn{width:100%;border:0;border-radius:14px;padding:14px;font-size:16px;font-weight:bold;cursor:pointer;margin-top:8px}
+.auth-primary{background:linear-gradient(135deg,#ff526e,#bd1238);color:white}.google-btn{background:#fff;color:#292929;opacity:.8;cursor:not-allowed}
+.auth-hint{font-size:11px!important;color:#a98d97!important;margin-top:14px}
+#profileBar{display:flex;align-items:center;gap:8px;justify-content:center;color:#d9c1ca;font-size:12px;padding:5px}
+#profileBar button{background:transparent;border:1px solid #713044;color:#ffb0c0;border-radius:9px;padding:5px 8px}
+[hidden]{display:none!important}
 </style>
 </head>
 <body>
-<div class="app">
+<section class="auth-screen" id="authScreen">
+ <div class="auth-avatar">👩🏻‍🦰</div>
+ <h1>أهلًا بيك في لينا ❤️</h1>
+ <p>سجّل اسمك عشان لينا تعرفك وتحتفظ بملفك على الجهاز ده.</p>
+ <form id="profileForm">
+  <input id="profileName" type="text" maxlength="30" placeholder="اكتب اسمك هنا" autocomplete="name" required>
+  <button class="auth-primary" type="submit">دخول إلى لينا ❤️</button>
+ </form>
+ <button class="google-btn" type="button" disabled>🌐 تسجيل الدخول بحساب Google — قريبًا</button>
+ <p class="auth-hint">نسخة معاينة: الاسم والـ ID محفوظان على هذا الجهاز فقط حاليًا. تسجيل Google والمزامنة بين الأجهزة يحتاجان ربط Firebase.</p>
+</section>
+<div class="app" id="chatApp" hidden>
 <header>
 <div class="avatar" aria-label="صورة لينا">👩🏻‍🦰</div>
 <div><h2>لينا ❤️</h2><div class="status">● موجودة معاك · بتتكلم بالمصري</div></div>
 <div class="owner">👑 المالك: يوسف</div>
 </header>
+<div id="profileBar"><span id="profileLabel"></span><button type="button" id="switchProfile">تبديل المستخدم</button></div>
 <main id="chat" aria-live="polite">
 <div class="welcome"><strong>أهلًا بيك، أنا لينا ❤️</strong>ابعتلي رسالة أو صورة أو ملف، وممكن كمان نتكلم بالصوت.</div>
-<div class="msg bot">أهلًا يا يوسف! عامِل إيه؟ 😊 أنا هنا أسمعك.</div>
+<div class="msg bot" id="firstGreeting">أهلًا بيك! عامِل إيه؟ 😊 أنا هنا أسمعك.</div>
 </main>
 <footer>
 <div class="tools">
@@ -58,6 +81,16 @@ input[type=text]{flex:1;min-width:0;background:transparent;border:0;outline:0;co
 </footer>
 </div>
 <script>
+
+const authScreen=document.getElementById('authScreen'),chatApp=document.getElementById('chatApp');
+const profileForm=document.getElementById('profileForm'),profileNameInput=document.getElementById('profileName');
+const PROFILE_KEY='lina_profile_v1';
+function makeLocalId(){const a=new Uint32Array(2);crypto.getRandomValues(a);return (String(a[0]).padStart(10,'0')+String(a[1]).padStart(10,'0')).slice(0,10)}
+function showProfile(p){authScreen.hidden=true;chatApp.hidden=false;document.getElementById('profileLabel').textContent=p.name+' · ID: '+p.id;document.getElementById('firstGreeting').textContent='أهلًا يا '+p.name+'! عامِل إيه؟ 😊 أنا هنا أسمعك.'}
+function loadProfile(){try{const p=JSON.parse(localStorage.getItem(PROFILE_KEY)||'null');if(p&&p.name&&/^\d{10}$/.test(p.id)){showProfile(p);return}}catch{}authScreen.hidden=false;chatApp.hidden=true}
+profileForm.addEventListener('submit',e=>{e.preventDefault();const name=profileNameInput.value.trim();if(!name)return;let p;try{p=JSON.parse(localStorage.getItem(PROFILE_KEY)||'null')}catch{}if(!p||!p.id)p={id:makeLocalId()};p.name=name;localStorage.setItem(PROFILE_KEY,JSON.stringify(p));showProfile(p)});
+document.getElementById('switchProfile').addEventListener('click',()=>{localStorage.removeItem(PROFILE_KEY);profileNameInput.value='';loadProfile()});
+loadProfile();
 const chat=document.getElementById('chat'),input=document.getElementById('message'),fileInput=document.getElementById('fileInput');
 let voiceEnabled=false,recorder=null,chunks=[],conversation=[];
 const LINA_API='https://lina-ai-server.youssef-mm11io.workers.dev/';
