@@ -34,14 +34,14 @@ input[type=text]{flex:1;min-width:0;background:transparent;border:0;outline:0;co
 #fileInput{display:none}
 @media(max-width:420px){.app{padding:9px}.owner{font-size:10px;padding:7px}.avatar{width:51px;height:51px}.tool{font-size:12px;padding:9px 10px}}
 
-.auth-screen{max-width:430px;margin:7vh auto;padding:26px 22px;background:linear-gradient(160deg,#24121a,#100b0e);border:1px solid #713044;border-radius:25px;box-shadow:0 18px 55px #0009;text-align:center}
-.auth-avatar{width:88px;height:88px;margin:0 auto 14px;border-radius:50%;display:grid;place-items:center;font-size:48px;background:radial-gradient(circle at 35% 25%,#ffb2c1,#d52d57 48%,#4b1023);border:2px solid #ff8ba3;box-shadow:0 0 24px #f229554d}
-.auth-screen h1{font-size:27px;margin:8px 0}.auth-screen p{color:#c9aeb7;line-height:1.7;font-size:14px}
+.auth-screen{max-width:430px;margin:7vh auto;padding:30px 23px;background:linear-gradient(155deg,#29121c 0%,#160d12 55%,#0e090c 100%);border:1px solid #8d304b;border-radius:30px;box-shadow:0 24px 70px #000b,0 0 35px #ed294d18;text-align:center;position:relative;overflow:hidden}.auth-screen:before{content:'';position:absolute;width:190px;height:190px;border-radius:50%;background:#ed294d18;filter:blur(45px);top:-90px;right:-60px;pointer-events:none}
+.auth-avatar{width:100px;height:100px;margin:0 auto 17px;border-radius:50%;display:grid;place-items:center;font-size:55px;background:radial-gradient(circle at 35% 25%,#ffd0d9,#f04469 43%,#5b1028 78%);border:3px solid #ff9caf;box-shadow:0 0 0 8px #ed294d12,0 0 34px #f2295570;position:relative}
+.auth-screen h1{font-size:29px;margin:8px 0 10px;letter-spacing:.2px}.auth-screen p{color:#d2b8c2;line-height:1.8;font-size:14px}
 .auth-screen form{display:block;background:none;border:0;padding:0}.auth-screen input{width:100%;background:#100b0e;border:1px solid #713044;border-radius:13px;color:#fff;padding:14px;font-size:16px;margin:12px 0;outline:none;text-align:right}
 .auth-primary,.google-btn{width:100%;border:0;border-radius:14px;padding:14px;font-size:16px;font-weight:bold;cursor:pointer;margin-top:8px}
-.auth-primary{background:linear-gradient(135deg,#ff526e,#bd1238);color:white}.google-btn{background:#fff;color:#292929;opacity:.8;cursor:not-allowed}
+.auth-primary{background:linear-gradient(135deg,#ff607b,#d51c46 60%,#a90f32);color:white;box-shadow:0 9px 24px #d51c4640}.google-btn{background:#fff;color:#292929;opacity:.8;cursor:not-allowed}
 .auth-hint{font-size:11px!important;color:#a98d97!important;margin-top:14px}
-#profileBar{display:flex;align-items:center;gap:8px;justify-content:center;color:#d9c1ca;font-size:12px;padding:5px}
+#profileBar{display:flex;align-items:center;gap:8px;justify-content:center;color:#f0d5de;font-size:12px;padding:7px 10px;margin:7px 0 0;background:#1b1116b8;border:1px solid #542636;border-radius:14px}
 #profileBar button{background:transparent;border:1px solid #713044;color:#ffb0c0;border-radius:9px;padding:5px 8px}
 [hidden]{display:none!important}
 </style>
@@ -55,8 +55,8 @@ input[type=text]{flex:1;min-width:0;background:transparent;border:0;outline:0;co
   <input id="profileName" type="text" maxlength="30" placeholder="اكتب اسمك هنا" autocomplete="name" required>
   <button class="auth-primary" type="submit">دخول إلى لينا ❤️</button>
  </form>
- <button class="google-btn" type="button" disabled>🌐 تسجيل الدخول بحساب Google — قريبًا</button>
- <p class="auth-hint">نسخة معاينة: الاسم والـ ID محفوظان على هذا الجهاز فقط حاليًا. تسجيل Google والمزامنة بين الأجهزة يحتاجان ربط Firebase.</p>
+  <div class="file-chip" style="justify-content:center;margin-top:13px">🔐 دخول محلي · ID ثابت للجهاز</div>
+ <p class="auth-hint">الـ ID بيتعمل تلقائيًا وبيفضل ثابت على نفس الجهاز. كل جهاز له ID مختلف، ومش محتاج حساب Google.</p>
 </section>
 <div class="app" id="chatApp" hidden>
 <header>
@@ -77,18 +77,20 @@ input[type=text]{flex:1;min-width:0;background:transparent;border:0;outline:0;co
 </div>
 <input id="fileInput" type="file" accept="image/*,audio/*,video/*,.pdf,.doc,.docx,.txt">
 <form id="form"><input id="message" type="text" placeholder="اكتب رسالتك هنا..." autocomplete="off"><button class="send" type="submit" aria-label="إرسال">➤</button></form>
-<div class="note">لينا AI · المالك: يوسف ❤️</div>
+<div class="note">لينا AI · المالك: يوسف ❤️ · حساب الجهاز</div>
 </footer>
 </div>
 <script>
 
 const authScreen=document.getElementById('authScreen'),chatApp=document.getElementById('chatApp');
 const profileForm=document.getElementById('profileForm'),profileNameInput=document.getElementById('profileName');
-const PROFILE_KEY='lina_profile_v1';
-function makeLocalId(){const a=new Uint32Array(2);crypto.getRandomValues(a);return (String(a[0]).padStart(10,'0')+String(a[1]).padStart(10,'0')).slice(0,10)}
-function showProfile(p){authScreen.hidden=true;chatApp.hidden=false;document.getElementById('profileLabel').textContent=p.name+' · ID: '+p.id;document.getElementById('firstGreeting').textContent='أهلًا يا '+p.name+'! عامِل إيه؟ 😊 أنا هنا أسمعك.'}
-function loadProfile(){try{const p=JSON.parse(localStorage.getItem(PROFILE_KEY)||'null');if(p&&p.name&&/^\d{10}$/.test(p.id)){showProfile(p);return}}catch{}authScreen.hidden=false;chatApp.hidden=true}
-profileForm.addEventListener('submit',e=>{e.preventDefault();const name=profileNameInput.value.trim();if(!name)return;let p;try{p=JSON.parse(localStorage.getItem(PROFILE_KEY)||'null')}catch{}if(!p||!p.id)p={id:makeLocalId()};p.name=name;localStorage.setItem(PROFILE_KEY,JSON.stringify(p));showProfile(p)});
+const PROFILE_KEY='lina_profile_v1',DEVICE_ID_KEY='lina_device_id_v1';
+// هوية ثابتة لهذا المتصفح/الجهاز؛ لا تتغير عند تبديل الاسم.
+function makeLocalId(){const a=new Uint32Array(2);crypto.getRandomValues(a);return (String(a[0]).padStart(10,'0')+String(a[1]).padStart(10,'0')).slice(0,12)}
+function getDeviceId(){let id=localStorage.getItem(DEVICE_ID_KEY);if(!/^\d{12}$/.test(id||'')){id=makeLocalId();localStorage.setItem(DEVICE_ID_KEY,id)}return id}
+function showProfile(p){authScreen.hidden=true;chatApp.hidden=false;document.getElementById('profileLabel').textContent=p.name+' · ID الجهاز: '+p.id;document.getElementById('firstGreeting').textContent='أهلًا يا '+p.name+'! عامِل إيه؟ 😊 أنا هنا أسمعك.'}
+function loadProfile(){try{const p=JSON.parse(localStorage.getItem(PROFILE_KEY)||'null');if(p&&p.name){p.id=getDeviceId();localStorage.setItem(PROFILE_KEY,JSON.stringify(p));showProfile(p);return}}catch{}authScreen.hidden=false;chatApp.hidden=true}
+profileForm.addEventListener('submit',e=>{e.preventDefault();const name=profileNameInput.value.trim();if(!name)return;const p={name,id:getDeviceId()};localStorage.setItem(PROFILE_KEY,JSON.stringify(p));showProfile(p)});
 document.getElementById('switchProfile').addEventListener('click',()=>{localStorage.removeItem(PROFILE_KEY);profileNameInput.value='';loadProfile()});
 loadProfile();
 const chat=document.getElementById('chat'),input=document.getElementById('message'),fileInput=document.getElementById('fileInput');
