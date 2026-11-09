@@ -51,13 +51,13 @@ input[type=text]{flex:1;min-width:0;background:transparent;border:0;outline:0;co
 <section class="auth-screen" id="authScreen">
  <div class="auth-avatar">👩🏻‍🦰</div>
  <h1>أهلًا بيك في لينا ❤️</h1>
- <p>سجّل اسمك عشان لينا تعرفك وتحتفظ بملفك على الجهاز ده.</p>
+ <p>ادخل باسمك أو بالـ ID الخاص بملفك. لو أول مرة، اكتب اسم جديد.</p>
  <form id="profileForm">
-  <input id="profileName" type="text" maxlength="30" placeholder="اكتب اسمك هنا" autocomplete="name" required>
+  <input id="profileName" type="text" maxlength="40" placeholder="اكتب اسمك أو الـ ID" autocomplete="username" required>
   <button class="auth-primary" type="submit">دخول إلى لينا ❤️</button>
  </form>
-  <div class="file-chip" style="justify-content:center;margin-top:13px">🔐 دخول محلي · ID ثابت للجهاز</div>
- <p class="auth-hint">الـ ID بيتعمل تلقائيًا وبيفضل ثابت على نفس الجهاز. كل جهاز له ID مختلف، ومش محتاج حساب Google.</p>
+  <div class="file-chip" style="justify-content:center;margin-top:13px">🔐 دخول بالاسم أو الـ ID</div>
+ <p class="auth-hint">هنفتكر آخر ملف دخلت بيه على نفس المتصفح. تقدر ترجع لأي ملف بالاسم أو الـ ID، من غير Google.</p>
 </section>
 <div class="app" id="chatApp" hidden>
 <header>
@@ -86,22 +86,23 @@ input[type=text]{flex:1;min-width:0;background:transparent;border:0;outline:0;co
 
 const authScreen=document.getElementById('authScreen'),chatApp=document.getElementById('chatApp');
 const profileForm=document.getElementById('profileForm'),profileNameInput=document.getElementById('profileName');
-const PROFILE_KEY='lina_profile_v1',DEVICE_ID_KEY='lina_device_id_v1';
-// هوية ثابتة لهذا المتصفح/الجهاز؛ لا تتغير عند تبديل الاسم.
+const PROFILES_KEY='lina_profiles_v2',ACTIVE_PROFILE_KEY='lina_active_profile_v2',PROFILE_KEY='lina_profile_v1';
 function makeLocalId(){const a=new Uint32Array(2);crypto.getRandomValues(a);return (String(a[0]).padStart(10,'0')+String(a[1]).padStart(10,'0')).slice(0,12)}
-function getDeviceId(){let id=localStorage.getItem(DEVICE_ID_KEY);if(!/^\d{12}$/.test(id||'')){id=makeLocalId();localStorage.setItem(DEVICE_ID_KEY,id)}return id}
-function showProfile(p){authScreen.hidden=true;chatApp.hidden=false;document.getElementById('profileLabel').textContent=p.name+' · ID: '+p.id;document.getElementById('firstGreeting').textContent='أهلًا يا '+p.name+'! عامِل إيه؟ 😊 أنا هنا أسمعك.';document.getElementById('profilePhotoPreview').src=p.photo||'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22%3E%3Crect width=%22100%22 height=%22100%22 rx=%2250%22 fill=%22%235b1028%22/%3E%3Ctext x=%2250%22 y=%2266%22 font-size=%2255%22 text-anchor=%22middle%22%3E🙂%3C/text%3E%3C/svg%3E';document.getElementById('profileIdValue').textContent=p.id;document.getElementById('editProfileName').value=p.name;document.querySelector('.avatar').textContent='👩🏻‍🦰'}
-function loadProfile(){try{const p=JSON.parse(localStorage.getItem(PROFILE_KEY)||'null');if(p&&p.name){p.id=getDeviceId();localStorage.setItem(PROFILE_KEY,JSON.stringify(p));showProfile(p);return}}catch{}authScreen.hidden=false;chatApp.hidden=true}
-profileForm.addEventListener('submit',e=>{e.preventDefault();const name=profileNameInput.value.trim();if(!name)return;const p={name,id:getDeviceId()};localStorage.setItem(PROFILE_KEY,JSON.stringify(p));showProfile(p)});
-document.getElementById('switchProfile').addEventListener('click',()=>{localStorage.removeItem(PROFILE_KEY);profileNameInput.value='';loadProfile()});
+function getProfiles(){try{const list=JSON.parse(localStorage.getItem(PROFILES_KEY)||'[]');return Array.isArray(list)?list:[]}catch{return []}}
+function saveProfiles(list){localStorage.setItem(PROFILES_KEY,JSON.stringify(list))}
+function showProfile(p){localStorage.setItem(ACTIVE_PROFILE_KEY,p.id);localStorage.setItem(PROFILE_KEY,JSON.stringify(p));authScreen.hidden=true;chatApp.hidden=false;document.getElementById('profileLabel').textContent=p.name+' · ID: '+p.id;document.getElementById('firstGreeting').textContent='أهلًا يا '+p.name+'! عامِل إيه؟ 😊 أنا هنا أسمعك.';document.getElementById('profilePhotoPreview').src=p.photo||'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22%3E%3Crect width=%22100%22 height=%22100%22 rx=%2250%22 fill=%22%235b1028%22/%3E%3Ctext x=%2250%22 y=%2266%22 font-size=%2255%22 text-anchor=%22middle%22%3E🙂%3C/text%3E%3C/svg%3E';document.getElementById('profileIdValue').textContent=p.id;document.getElementById('editProfileName').value=p.name;document.querySelector('.avatar').textContent='👩🏻‍🦰'}
+function loadProfile(){const list=getProfiles();const active=localStorage.getItem(ACTIVE_PROFILE_KEY);let p=list.find(x=>x.id===active);if(!p){try{const legacy=JSON.parse(localStorage.getItem(PROFILE_KEY)||'null');if(legacy&&legacy.name){p={...legacy,id:legacy.id||makeLocalId()};if(!list.some(x=>x.id===p.id))list.push(p);saveProfiles(list)}}catch{}}
+if(p){showProfile(p);return}authScreen.hidden=false;chatApp.hidden=true}
+profileForm.addEventListener('submit',e=>{e.preventDefault();const value=profileNameInput.value.trim();if(!value)return;const list=getProfiles();let p=list.find(x=>String(x.id)===value)||list.find(x=>String(x.name||'').toLocaleLowerCase('ar')===value.toLocaleLowerCase());if(!p){p={name:value.slice(0,30),id:makeLocalId()};list.push(p);saveProfiles(list)}showProfile(p);profileNameInput.value=''});
+document.getElementById('switchProfile').addEventListener('click',()=>{localStorage.removeItem(ACTIVE_PROFILE_KEY);localStorage.removeItem(PROFILE_KEY);profileNameInput.value='';authScreen.hidden=false;chatApp.hidden=true;profileNameInput.focus()});
 const profileModal=document.getElementById('profileModal'),profilePhotoInput=document.getElementById('profilePhotoInput');
-function currentProfile(){return JSON.parse(localStorage.getItem(PROFILE_KEY)||'{}')}
-document.getElementById('openProfile').addEventListener('click',()=>{const p=currentProfile();document.getElementById('editProfileName').value=p.name||'';document.getElementById('profileIdValue').textContent=p.id||getDeviceId();document.getElementById('profilePhotoPreview').src=p.photo||'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22%3E%3Crect width=%22100%22 height=%22100%22 rx=%2250%22 fill=%22%235b1028%22/%3E%3Ctext x=%2250%22 y=%2266%22 font-size=%2255%22 text-anchor=%22middle%22%3E🙂%3C/text%3E%3C/svg%3E';profileModal.hidden=false});
+function currentProfile(){const id=localStorage.getItem(ACTIVE_PROFILE_KEY);return getProfiles().find(x=>x.id===id)||JSON.parse(localStorage.getItem(PROFILE_KEY)||'{}')}
+document.getElementById('openProfile').addEventListener('click',()=>{const p=currentProfile();document.getElementById('editProfileName').value=p.name||'';document.getElementById('profileIdValue').textContent=p.id||'';document.getElementById('profilePhotoPreview').src=p.photo||'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22%3E%3Crect width=%22100%22 height=%22100%22 rx=%2250%22 fill=%22%235b1028%22/%3E%3Ctext x=%2250%22 y=%2266%22 font-size=%2255%22 text-anchor=%22middle%22%3E🙂%3C/text%3E%3C/svg%3E';profileModal.hidden=false});
 document.getElementById('closeProfile').addEventListener('click',()=>profileModal.hidden=true);
 document.getElementById('chooseProfilePhoto').addEventListener('click',()=>profilePhotoInput.click());
 profilePhotoInput.addEventListener('change',()=>{const file=profilePhotoInput.files&&profilePhotoInput.files[0];if(!file)return;if(!file.type.startsWith('image/')){alert('اختار صورة من فضلك');return}const reader=new FileReader();reader.onload=()=>{const img=new Image();img.onload=()=>{const canvas=document.createElement('canvas'),size=320;canvas.width=size;canvas.height=size;const ctx=canvas.getContext('2d'),scale=Math.max(size/img.width,size/img.height),w=img.width*scale,h=img.height*scale;ctx.drawImage(img,(size-w)/2,(size-h)/2,w,h);document.getElementById('profilePhotoPreview').src=canvas.toDataURL('image/jpeg',.78)};img.src=reader.result};reader.readAsDataURL(file);profilePhotoInput.value=''});
 document.getElementById('removeProfilePhoto').addEventListener('click',()=>{document.getElementById('profilePhotoPreview').src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22%3E%3Crect width=%22100%22 height=%22100%22 rx=%2250%22 fill=%22%235b1028%22/%3E%3Ctext x=%2250%22 y=%2266%22 font-size=%2255%22 text-anchor=%22middle%22%3E🙂%3C/text%3E%3C/svg%3E'});
-document.getElementById('saveProfile').addEventListener('click',()=>{const p=currentProfile(),name=document.getElementById('editProfileName').value.trim();if(!name){alert('اكتب اسمك الأول');return}const src=document.getElementById('profilePhotoPreview').src;p.name=name;p.id=getDeviceId();if(src.startsWith('data:image/')&&!src.includes('svg'))p.photo=src;else if(src.includes('svg'))delete p.photo;try{localStorage.setItem(PROFILE_KEY,JSON.stringify(p));showProfile(p);profileModal.hidden=true}catch(e){alert('الصورة كبيرة على مساحة الحفظ. اختار صورة أصغر.')}});
+document.getElementById('saveProfile').addEventListener('click',()=>{const p=currentProfile(),name=document.getElementById('editProfileName').value.trim();if(!name){alert('اكتب اسمك الأول');return}const src=document.getElementById('profilePhotoPreview').src;p.name=name;if(src.startsWith('data:image/')&&!src.includes('svg'))p.photo=src;else if(src.includes('svg'))delete p.photo;try{const list=getProfiles(),i=list.findIndex(x=>x.id===p.id);if(i>=0)list[i]=p;else list.push(p);saveProfiles(list);showProfile(p);profileModal.hidden=true}catch(e){alert('الصورة كبيرة على مساحة الحفظ. اختار صورة أصغر.')}});
 document.getElementById('copyProfileId').addEventListener('click',async()=>{const id=document.getElementById('profileIdValue').textContent;try{await navigator.clipboard.writeText(id)}catch{const t=document.createElement('textarea');t.value=id;document.body.append(t);t.select();document.execCommand('copy');t.remove()}document.getElementById('copyProfileId').textContent='✓ اتنسخ';setTimeout(()=>document.getElementById('copyProfileId').textContent='📋 نسخ',1600)});
 loadProfile();
 const chat=document.getElementById('chat'),input=document.getElementById('message'),fileInput=document.getElementById('fileInput');
