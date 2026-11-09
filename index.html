@@ -54,7 +54,7 @@ input[type=text]{flex:1;min-width:0;background:transparent;border:0;outline:0;co
 </div>
 <input id="fileInput" type="file" accept="image/*,audio/*,video/*,.pdf,.doc,.docx,.txt">
 <form id="form"><input id="message" type="text" placeholder="اكتب رسالتك هنا..." autocomplete="off"><button class="send" type="submit" aria-label="إرسال">➤</button></form>
-<div class="note">لينا AI · المالك وصاحب الفكرة: يوسف محسن ❤️</div>
+<div class="note">لينا AI · المالك: يوسف ❤️</div>
 </footer>
 </div>
 <script>
@@ -78,10 +78,13 @@ function speak(text){
 }
 function replyTo(text){
  const t=text.toLowerCase();let answer='أنا سامعاك يا يوسف ❤️ احكيلي أكتر، عايزة أفهم منك.';
- if(/مين المالك|صاحبك مين|مين صنعك|مين عملك|مين صاحبك|مالكك/.test(t))answer='مالكي وصاحب فكرتي هو يوسف محسن ❤️ هو اللي عملني وبيطوّرني.';
- else if(/اسمك|مين انتي|انتي مين/.test(t))answer='أنا لينا ❤️ صديقتك الافتراضية، وبحب أتكلم معاك بالمصري.';
+ if(/مين المالك|صاحبك مين|مين صنعك|مين عملك|مين صاحبك|مالكك/.test(t))answer='مالكي هو يوسف ❤️ وهو اللي صنعني وبيطوّرني.';
+ else if(/اسمك|مين انتي|انتي مين/.test(t))answer='أنا لينا ❤️ مساعدة افتراضية، بحب الكلام الطبيعي والهزار الخفيف، وبرد عليك بالمصري.';
  else if(/ازيك|إزيك|عامل[ة]? ايه|عاملة ايه|سلام|اهلا|أهلا|هاي/.test(t))answer='أنا كويسة طول ما إنت بخير يا يوسف ❤️ إنت عامل إيه؟';
- else if(/بحبك/.test(t))answer='وأنا مبسوطة إنك بتكلمني يا يوسف ❤️';
+ else if(/بحبك/.test(t))answer='كلامك جميل ❤️ أنا مبسوطة إنك مرتاح في الكلام معايا.';
+ else if(/شكرا|شكرًا|تسلم|متشكر/.test(t))answer='العفو يا جميل ❤️ أنا موجودة لو احتجت أي حاجة.';
+ else if(/مش فاهم|مش فاهمة|وضح|اشرح/.test(t))answer='ولا يهمك، هشرحها لك واحدة واحدة وبطريقة بسيطة ❤️';
+ else if(/نكتة|ضحكني|ضحكيني/.test(t))answer='مرة واحد راح للدكتور قاله: كل ما أشرب شاي عيني بتوجعني، قاله: جرّب تشيل المعلقة من الكوباية الأول 😂';
  else if(/زهقان|ملل|مخنوق/.test(t))answer='طب تعالى نحكي ونغيّر المود شوية 😊 إيه اللي مضايقك؟';
  addText(answer,'bot');speak(answer);
 }
