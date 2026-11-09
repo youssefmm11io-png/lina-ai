@@ -1,0 +1,76 @@
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>لينا ❤️</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#0b090a;color:#fff;font-family:Arial,sans-serif;min-height:100vh}
+.app{max-width:700px;margin:auto;height:100vh;display:flex;flex-direction:column;padding:16px}
+header{background:#191114;border:1px solid #51232e;border-radius:20px;padding:17px;display:flex;align-items:center;gap:13px}
+.avatar{background:linear-gradient(135deg,#ff5266,#8d1028);width:48px;height:48px;border-radius:50%;display:grid;place-items:center;font-size:25px}
+h2{margin:0 0 5px}.status{color:#aaa;font-size:12px}
+main{flex:1;overflow:auto;padding:20px 5px;display:flex;flex-direction:column;gap:13px}
+.welcome{text-align:center;color:#c5b6ba;margin:25px 0;line-height:1.8}
+.welcome strong{display:block;color:white;font-size:23px}
+.msg{padding:14px 16px;border-radius:18px;max-width:82%;line-height:1.7;white-space:pre-wrap;overflow-wrap:anywhere}
+.bot{background:#21171a;border:1px solid #482832;align-self:flex-start;border-top-right-radius:4px}
+.user{background:linear-gradient(135deg,#a90f2b,#ed304b);align-self:flex-end;border-top-left-radius:4px}
+footer{padding:10px 0}
+form{display:flex;gap:9px;background:#191114;border:1px solid #642b38;padding:9px;border-radius:18px}
+input{flex:1;min-width:0;background:transparent;border:0;outline:0;color:white;padding:12px;font-size:16px}
+button{background:#e32645;color:white;border:0;border-radius:13px;padding:0 19px;font-size:21px;cursor:pointer}
+.note{text-align:center;color:#777;font-size:11px;margin:10px}
+</style>
+</head>
+<body>
+<div class="app">
+<header>
+<div class="avatar">♥</div>
+<div>
+<h2>لينا</h2>
+<div class="status">● صديقتك الافتراضية · بتتكلم بالمصري</div>
+</div>
+</header>
+<main id="chat">
+<div class="welcome">
+<strong>أهلًا بيك، أنا لينا ❤️</strong>
+احكيلي يومك عامل إيه؟ أنا سامعاك.
+</div>
+<div class="msg bot">أهلًا! مبسوطة إنك هنا 😊 تحب نتكلم عن إيه؟</div>
+</main>
+<footer>
+<form id="form">
+<input id="message" placeholder="اكتب رسالتك هنا..." autocomplete="off">
+<button type="submit">➤</button>
+</form>
+<div class="note">لينا AI · نسخة تجريبية</div>
+</footer>
+</div>
+<script>
+const chat=document.getElementById('chat');
+const input=document.getElementById('message');
+document.getElementById('form').addEventListener('submit',function(e){
+e.preventDefault();
+let value=input.value.trim();
+if(!value)return;
+let user=document.createElement('div');
+user.className='msg user';
+user.textContent=value;
+chat.appendChild(user);
+input.value='';
+let answer='وصلتني رسالتك ❤️ دي نسخة تجريبية، ولسه محتاجين نربط لينا بخدمة ذكاء اصطناعي عشان تقدر ترد بحرية.';
+if(/ازيك|إزيك|سلام|اهلا|أهلا|هاي/.test(value))answer='أهلًا بيك يا جميل ❤️ عامل إيه؟';
+else if(/زهقان|ملل/.test(value))answer='طب تعالى نغيّر الجو شوية 😊 تحب نلعب لعبة أسئلة؟';
+else if(/اسمك|مين انتي/.test(value))answer='أنا لينا، شخصية افتراضية وبحب أتكلم معاك بالمصري ❤️';
+let bot=document.createElement('div');
+bot.className='msg bot';
+bot.textContent=answer;
+setTimeout(()=>{chat.appendChild(bot);chat.scrollTop=chat.scrollHeight;},400);
+chat.scrollTop=chat.scrollHeight;
+});
+</script>
+</body>
+</html>
