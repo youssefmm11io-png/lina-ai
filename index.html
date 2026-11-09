@@ -59,7 +59,8 @@ input[type=text]{flex:1;min-width:0;background:transparent;border:0;outline:0;co
 </div>
 <script>
 const chat=document.getElementById('chat'),input=document.getElementById('message'),fileInput=document.getElementById('fileInput');
-let voiceEnabled=false,recorder=null,chunks=[];
+let voiceEnabled=false,recorder=null,chunks=[],conversation=[];
+const LINA_API='https://lina-ai-server.youssef-mm11io.workers.dev/';
 function scrollDown(){chat.scrollTop=chat.scrollHeight}
 function addText(text,kind='bot'){const el=document.createElement('div');el.className='msg '+kind;el.textContent=text;chat.appendChild(el);scrollDown();return el}
 function addFile(file,kind='user'){
@@ -76,19 +77,32 @@ function speak(text){
  const voices=speechSynthesis.getVoices();const v=voices.find(x=>x.lang.toLowerCase().startsWith('ar-eg'))||voices.find(x=>x.lang.toLowerCase().startsWith('ar'));if(v)u.voice=v;
  speechSynthesis.speak(u);
 }
-function replyTo(text){
- const t=text.toLowerCase();let answer='أنا سامعاك يا يوسف ❤️ احكيلي أكتر، عايزة أفهم منك.';
- if(/مين المالك|صاحبك مين|مين صنعك|مين عملك|مين صاحبك|مالكك/.test(t))answer='مالكي هو يوسف ❤️ وهو اللي صنعني وبيطوّرني.';
- else if(/اسمك|مين انتي|انتي مين/.test(t))answer='أنا لينا ❤️ مساعدة افتراضية، بحب الكلام الطبيعي والهزار الخفيف، وبرد عليك بالمصري.';
- else if(/ازيك|إزيك|عامل[ة]? ايه|عاملة ايه|سلام|اهلا|أهلا|هاي/.test(t))answer='أنا كويسة طول ما إنت بخير يا يوسف ❤️ إنت عامل إيه؟';
- else if(/بحبك/.test(t))answer='كلامك جميل ❤️ أنا مبسوطة إنك مرتاح في الكلام معايا.';
- else if(/شكرا|شكرًا|تسلم|متشكر/.test(t))answer='العفو يا جميل ❤️ أنا موجودة لو احتجت أي حاجة.';
- else if(/مش فاهم|مش فاهمة|وضح|اشرح/.test(t))answer='ولا يهمك، هشرحها لك واحدة واحدة وبطريقة بسيطة ❤️';
- else if(/نكتة|ضحكني|ضحكيني/.test(t))answer='مرة واحد راح للدكتور قاله: كل ما أشرب شاي عيني بتوجعني، قاله: جرّب تشيل المعلقة من الكوباية الأول 😂';
- else if(/زهقان|ملل|مخنوق/.test(t))answer='طب تعالى نحكي ونغيّر المود شوية 😊 إيه اللي مضايقك؟';
- addText(answer,'bot');speak(answer);
+async function replyTo(text){
+ const wait=addText('لينا بتفكر... ❤️','bot');
+ try{
+  const res=await fetch(LINA_API,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({message:text,history:conversation})});
+  const raw=await res.text();
+  let data={};try{data=JSON.parse(raw)}catch{}
+  if(!res.ok) throw new Error(data.error||('خطأ من السيرفر ('+res.status+')'));
+  const answer=data.reply||data.output_text||data.message;
+  if(!answer) throw new Error('السيرفر لسه مش متوصل بعقل لينا. محتاجين ننشر كود Worker الأول.');
+  wait.textContent=answer;
+  conversation.push({role:'user',content:text},{role:'assistant',content:answer});
+  if(conversation.length>20)conversation=conversation.slice(-20);
+  speak(answer);
+ }catch(err){
+  wait.textContent='حصلت مشكلة في الاتصال بعقل لينا: '+err.message+'\nلسه بنجهّز السيرفر، جرّب تاني بعد شوية ❤️';
+ }
+ scrollDown();
 }
-document.getElementById('form').addEventListener('submit',e=>{e.preventDefault();const value=input.value.trim();if(!value)return;addText(value,'user');input.value='';setTimeout(()=>replyTo(value),350)});
+document.getElementById('form').addEventListener('submit',e=>{
+ e.preventDefault();
+ const value=input.value.trim();
+ if(!value)return;
+ addText(value,'user');
+ input.value='';
+ replyTo(value);
+});
 document.getElementById('attachBtn').addEventListener('click',()=>fileInput.click());
 fileInput.addEventListener('change',()=>{for(const f of fileInput.files)addFile(f);if(fileInput.files.length)addText('وصلني الملف يا يوسف ❤️ أقدر أعرض الصور وأشغّل التسجيلات هنا. عشان أفهم محتوى الملفات وأرد عليها بذكاء، لازم نربط خدمة ذكاء اصطناعي آمنة بالسيرفر.');fileInput.value=''});
 document.getElementById('speakBtn').addEventListener('click',()=>{voiceEnabled=!voiceEnabled;document.getElementById('speakBtn').textContent=voiceEnabled?'🔊 الرد الصوتي مفعّل':'🔊 تفعيل الرد الصوتي';if(voiceEnabled){const msg='أهلًا يا يوسف، أنا لينا. دلوقتي أقدر أرد عليك بالصوت لو متاح صوت عربي على جهازك.';speak(msg);}});
