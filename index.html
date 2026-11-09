@@ -1,75 +1,99 @@
-
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#10090c">
 <title>لينا ❤️</title>
 <style>
+:root{--red:#ed294d;--pink:#ff7894;--bg:#0b080a;--panel:#1b1116;--line:#652638}
 *{box-sizing:border-box}
-body{margin:0;background:#0b090a;color:#fff;font-family:Arial,sans-serif;min-height:100vh}
-.app{max-width:700px;margin:auto;height:100vh;display:flex;flex-direction:column;padding:16px}
-header{background:#191114;border:1px solid #51232e;border-radius:20px;padding:17px;display:flex;align-items:center;gap:13px}
-.avatar{background:linear-gradient(135deg,#ff5266,#8d1028);width:48px;height:48px;border-radius:50%;display:grid;place-items:center;font-size:25px}
-h2{margin:0 0 5px}.status{color:#aaa;font-size:12px}
-main{flex:1;overflow:auto;padding:20px 5px;display:flex;flex-direction:column;gap:13px}
-.welcome{text-align:center;color:#c5b6ba;margin:25px 0;line-height:1.8}
-.welcome strong{display:block;color:white;font-size:23px}
-.msg{padding:14px 16px;border-radius:18px;max-width:82%;line-height:1.7;white-space:pre-wrap;overflow-wrap:anywhere}
-.bot{background:#21171a;border:1px solid #482832;align-self:flex-start;border-top-right-radius:4px}
-.user{background:linear-gradient(135deg,#a90f2b,#ed304b);align-self:flex-end;border-top-left-radius:4px}
-footer{padding:10px 0}
-form{display:flex;gap:9px;background:#191114;border:1px solid #642b38;padding:9px;border-radius:18px}
-input{flex:1;min-width:0;background:transparent;border:0;outline:0;color:white;padding:12px;font-size:16px}
-button{background:#e32645;color:white;border:0;border-radius:13px;padding:0 19px;font-size:21px;cursor:pointer}
-.note{text-align:center;color:#777;font-size:11px;margin:10px}
+body{margin:0;background:radial-gradient(ellipse at 50% -10%,#451222 0,#160b10 42%,#090709 100%);color:#fff;font-family:Arial,sans-serif;min-height:100vh}
+.app{max-width:760px;margin:auto;height:100dvh;min-height:540px;display:flex;flex-direction:column;padding:13px}
+header{background:#1b1116;border:1px solid #713044;border-radius:22px;padding:12px 15px;display:flex;align-items:center;gap:12px;box-shadow:0 8px 28px #0008}
+.avatar{width:58px;height:58px;flex:none;border-radius:50%;display:grid;place-items:center;background:radial-gradient(circle at 35% 25%,#ffb2c1,#d52d57 48%,#4b1023);border:2px solid #ff8ba3;box-shadow:0 0 18px #f229554d;font-size:32px}
+h2{margin:0 0 5px;font-size:20px}.status{color:#c9aeb7;font-size:12px}
+.owner{margin-right:auto;color:#ff9caf;font-size:12px;background:#32131f;border:1px solid #713044;padding:8px 10px;border-radius:20px;white-space:nowrap}
+main{flex:1;overflow:auto;padding:17px 5px;display:flex;flex-direction:column;gap:13px;scroll-behavior:smooth}
+.welcome{text-align:center;color:#d1b9c1;line-height:1.8;padding:14px 8px}
+.welcome strong{display:block;color:#fff;font-size:23px}
+.msg{padding:12px 15px;border-radius:18px;max-width:86%;line-height:1.65;white-space:pre-wrap;overflow-wrap:anywhere}
+.bot{background:#21171c;border:1px solid #542636;align-self:flex-start;border-top-right-radius:4px}
+.user{background:linear-gradient(135deg,#a90f32,#e93255);align-self:flex-end;border-top-left-radius:4px}
+.msg img{display:block;max-width:220px;max-height:220px;border-radius:12px;margin-top:8px}
+.file-chip{display:inline-flex;gap:7px;align-items:center;margin-top:7px;padding:8px 10px;border-radius:12px;background:#120d10;border:1px solid #6b3042;color:#ffdce4;font-size:13px}
+.voice-player{display:block;max-width:230px;margin-top:8px}
+footer{padding:10px 0 3px}
+.tools{display:flex;gap:8px;margin-bottom:9px}
+.tool{background:#21131a;border:1px solid #713044;color:#ffdce4;border-radius:13px;padding:10px 12px;font-size:14px;cursor:pointer}
+.tool:active,button:active{transform:scale(.97)}
+form{display:flex;gap:8px;background:#191114;border:1px solid #713044;padding:8px;border-radius:18px}
+input[type=text]{flex:1;min-width:0;background:transparent;border:0;outline:0;color:white;padding:11px;font-size:16px}
+.send{background:linear-gradient(135deg,#ff526e,#bd1238);color:white;border:0;border-radius:13px;padding:0 18px;font-size:20px;cursor:pointer}
+.note{text-align:center;color:#8d7880;font-size:11px;margin:9px}
+#fileInput{display:none}
+@media(max-width:420px){.app{padding:9px}.owner{font-size:10px;padding:7px}.avatar{width:51px;height:51px}.tool{font-size:12px;padding:9px 10px}}
 </style>
 </head>
 <body>
 <div class="app">
 <header>
-<div class="avatar">♥</div>
-<div>
-<h2>لينا</h2>
-<div class="status">● صديقتك الافتراضية · بتتكلم بالمصري</div>
-</div>
+<div class="avatar" aria-label="صورة لينا">👩🏻‍🦰</div>
+<div><h2>لينا ❤️</h2><div class="status">● موجودة معاك · بتتكلم بالمصري</div></div>
+<div class="owner">👑 المالك: يوسف</div>
 </header>
-<main id="chat">
-<div class="welcome">
-<strong>أهلًا بيك، أنا لينا ❤️</strong>
-احكيلي يومك عامل إيه؟ أنا سامعاك.
-</div>
-<div class="msg bot">أهلًا! مبسوطة إنك هنا 😊 تحب نتكلم عن إيه؟</div>
+<main id="chat" aria-live="polite">
+<div class="welcome"><strong>أهلًا بيك، أنا لينا ❤️</strong>ابعتلي رسالة أو صورة أو ملف، وممكن كمان نتكلم بالصوت.</div>
+<div class="msg bot">أهلًا يا يوسف! عامِل إيه؟ 😊 أنا هنا أسمعك.</div>
 </main>
 <footer>
-<form id="form">
-<input id="message" placeholder="اكتب رسالتك هنا..." autocomplete="off">
-<button type="submit">➤</button>
-</form>
-<div class="note">لينا AI · نسخة تجريبية</div>
+<div class="tools">
+<button class="tool" type="button" id="attachBtn">📎 إرفاق ملف</button>
+<button class="tool" type="button" id="recordBtn">🎙️ تسجيل صوت</button>
+<button class="tool" type="button" id="speakBtn">🔊 تفعيل الرد الصوتي</button>
+</div>
+<input id="fileInput" type="file" accept="image/*,audio/*,video/*,.pdf,.doc,.docx,.txt">
+<form id="form"><input id="message" type="text" placeholder="اكتب رسالتك هنا..." autocomplete="off"><button class="send" type="submit" aria-label="إرسال">➤</button></form>
+<div class="note">لينا AI · المالك وصاحب الفكرة: يوسف محسن ❤️</div>
 </footer>
 </div>
 <script>
-const chat=document.getElementById('chat');
-const input=document.getElementById('message');
-document.getElementById('form').addEventListener('submit',function(e){
-e.preventDefault();
-let value=input.value.trim();
-if(!value)return;
-let user=document.createElement('div');
-user.className='msg user';
-user.textContent=value;
-chat.appendChild(user);
-input.value='';
-let answer='وصلتني رسالتك ❤️ دي نسخة تجريبية، ولسه محتاجين نربط لينا بخدمة ذكاء اصطناعي عشان تقدر ترد بحرية.';
-if(/ازيك|إزيك|سلام|اهلا|أهلا|هاي/.test(value))answer='أهلًا بيك يا جميل ❤️ عامل إيه؟';
-else if(/زهقان|ملل/.test(value))answer='طب تعالى نغيّر الجو شوية 😊 تحب نلعب لعبة أسئلة؟';
-else if(/اسمك|مين انتي/.test(value))answer='أنا لينا، شخصية افتراضية وبحب أتكلم معاك بالمصري ❤️';
-let bot=document.createElement('div');
-bot.className='msg bot';
-bot.textContent=answer;
-setTimeout(()=>{chat.appendChild(bot);chat.scrollTop=chat.scrollHeight;},400);
-chat.scrollTop=chat.scrollHeight;
+const chat=document.getElementById('chat'),input=document.getElementById('message'),fileInput=document.getElementById('fileInput');
+let voiceEnabled=false,recorder=null,chunks=[];
+function scrollDown(){chat.scrollTop=chat.scrollHeight}
+function addText(text,kind='bot'){const el=document.createElement('div');el.className='msg '+kind;el.textContent=text;chat.appendChild(el);scrollDown();return el}
+function addFile(file,kind='user'){
+ const el=document.createElement('div');el.className='msg '+kind;
+ el.append(document.createTextNode(kind==='user'?'📎 أرفقت: ':'📎 الملف: '));
+ const chip=document.createElement('div');chip.className='file-chip';chip.textContent='📄 '+file.name+' · '+Math.max(1,Math.round(file.size/1024))+' KB';el.append(chip);
+ if(file.type.startsWith('image/')){const img=document.createElement('img');img.src=URL.createObjectURL(file);img.alt='الصورة المرفقة';el.append(img)}
+ if(file.type.startsWith('audio/')){const audio=document.createElement('audio');audio.controls=true;audio.className='voice-player';audio.src=URL.createObjectURL(file);el.append(audio)}
+ chat.append(el);scrollDown();
+}
+function speak(text){
+ if(!voiceEnabled||!('speechSynthesis' in window))return;
+ speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(text);u.lang='ar-EG';u.rate=1;u.pitch=1.12;
+ const voices=speechSynthesis.getVoices();const v=voices.find(x=>x.lang.toLowerCase().startsWith('ar-eg'))||voices.find(x=>x.lang.toLowerCase().startsWith('ar'));if(v)u.voice=v;
+ speechSynthesis.speak(u);
+}
+function replyTo(text){
+ const t=text.toLowerCase();let answer='أنا سامعاك يا يوسف ❤️ احكيلي أكتر، عايزة أفهم منك.';
+ if(/مين المالك|صاحبك مين|مين صنعك|مين عملك|مين صاحبك|مالكك/.test(t))answer='مالكي وصاحب فكرتي هو يوسف محسن ❤️ هو اللي عملني وبيطوّرني.';
+ else if(/اسمك|مين انتي|انتي مين/.test(t))answer='أنا لينا ❤️ صديقتك الافتراضية، وبحب أتكلم معاك بالمصري.';
+ else if(/ازيك|إزيك|عامل[ة]? ايه|عاملة ايه|سلام|اهلا|أهلا|هاي/.test(t))answer='أنا كويسة طول ما إنت بخير يا يوسف ❤️ إنت عامل إيه؟';
+ else if(/بحبك/.test(t))answer='وأنا مبسوطة إنك بتكلمني يا يوسف ❤️';
+ else if(/زهقان|ملل|مخنوق/.test(t))answer='طب تعالى نحكي ونغيّر المود شوية 😊 إيه اللي مضايقك؟';
+ addText(answer,'bot');speak(answer);
+}
+document.getElementById('form').addEventListener('submit',e=>{e.preventDefault();const value=input.value.trim();if(!value)return;addText(value,'user');input.value='';setTimeout(()=>replyTo(value),350)});
+document.getElementById('attachBtn').addEventListener('click',()=>fileInput.click());
+fileInput.addEventListener('change',()=>{for(const f of fileInput.files)addFile(f);if(fileInput.files.length)addText('وصلني الملف يا يوسف ❤️ أقدر أعرض الصور وأشغّل التسجيلات هنا. عشان أفهم محتوى الملفات وأرد عليها بذكاء، لازم نربط خدمة ذكاء اصطناعي آمنة بالسيرفر.');fileInput.value=''});
+document.getElementById('speakBtn').addEventListener('click',()=>{voiceEnabled=!voiceEnabled;document.getElementById('speakBtn').textContent=voiceEnabled?'🔊 الرد الصوتي مفعّل':'🔊 تفعيل الرد الصوتي';if(voiceEnabled){const msg='أهلًا يا يوسف، أنا لينا. دلوقتي أقدر أرد عليك بالصوت لو متاح صوت عربي على جهازك.';speak(msg);}});
+document.getElementById('recordBtn').addEventListener('click',async()=>{
+ if(!navigator.mediaDevices||!window.MediaRecorder){addText('تسجيل الصوت مش مدعوم في المتصفح ده. جرّب تفتح الموقع من Chrome وتسمح باستخدام الميكروفون.');return}
+ if(recorder&&recorder.state==='recording'){recorder.stop();document.getElementById('recordBtn').textContent='🎙️ تسجيل صوت';return}
+ try{const stream=await navigator.mediaDevices.getUserMedia({audio:true});chunks=[];recorder=new MediaRecorder(stream);recorder.ondataavailable=e=>{if(e.data.size)chunks.push(e.data)};recorder.onstop=()=>{const blob=new Blob(chunks,{type:recorder.mimeType||'audio/webm'});const f=new File([blob],'voice-message.webm',{type:blob.type});addFile(f);stream.getTracks().forEach(x=>x.stop())};recorder.start();document.getElementById('recordBtn').textContent='⏹ إيقاف التسجيل';}
+ catch(err){addText('مش قادر أوصل للميكروفون. اسمح للموقع باستخدام الميكروفون من إعدادات المتصفح.')}
 });
 </script>
 </body>
