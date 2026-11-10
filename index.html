@@ -272,7 +272,7 @@ document.getElementById("hackerUnlock").addEventListener("click",()=>{const pass
 document.getElementById("hackerModal").addEventListener("click",e=>{if(e.target.id==="hackerModal")e.currentTarget.hidden=true});
 
 const hackerBotHistory=[];
-document.getElementById("openHackerBot").addEventListener("click",()=>{document.getElementById("hackerBotChat").hidden=false;document.getElementById("hackerBotInput").focus()});
+document.getElementById("openHackerBot").addEventListener("click",()=>{window.location.href="https://t.me/Hakare8bot"});
 function hackerBotAdd(text,isUser=false){const el=document.createElement("div");el.className="hacker-bot-msg"+(isUser?" user":"");el.textContent=text;const box=document.getElementById("hackerBotMessages");box.appendChild(el);box.scrollTop=box.scrollHeight;return el}
 document.getElementById("hackerBotForm").addEventListener("submit",async e=>{e.preventDefault();const field=document.getElementById("hackerBotInput"),message=field.value.trim();if(!message)return;field.value="";hackerBotAdd(message,true);const wait=hackerBotAdd("بوت هكر بيفكر...");try{const response=await fetch(LINA_API,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({mode:"hacker",message,history:hackerBotHistory})});const data=await response.json();if(!response.ok)throw new Error(data.error||"تعذر الاتصال");wait.textContent=data.reply||"مفيش رد دلوقتي.";hackerBotHistory.push({role:"user",content:message},{role:"assistant",content:wait.textContent});if(hackerBotHistory.length>20)hackerBotHistory.splice(0,hackerBotHistory.length-20)}catch(err){wait.textContent="مش قادر أوصل لسيرفر البوت حاليًا. لازم نشر تحديث Worker الخاص بلينا الأول."}});
 
