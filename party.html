@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#12090d"><title>تحدي لينا المصري</title>
+<style>
+*{box-sizing:border-box}body{margin:0;min-height:100vh;background:radial-gradient(circle at top,#3a1020,#10090d 60%);color:#fff;font-family:Tahoma,Arial,sans-serif;padding:18px}.wrap{max-width:680px;margin:auto}.head{text-align:center;padding:18px 8px}.head .logo{font-size:48px}.head h1{margin:6px;color:#ff819c}.muted{color:#d1b6c0;font-size:14px;line-height:1.7}.card{background:#1b1016;border:1px solid #783047;border-radius:20px;padding:16px;margin:12px 0;box-shadow:0 12px 32px #0006}.btn{width:100%;padding:14px;border:1px solid #884056;border-radius:13px;background:#301622;color:#fff;font-weight:bold;font-size:16px;margin:7px 0;cursor:pointer}.btn.primary{background:linear-gradient(110deg,#ff597b,#a80d35);border:0}.btn:disabled{opacity:.5}.input{width:100%;padding:14px;border:1px solid #74334a;border-radius:12px;background:#100a0e;color:white;font-size:16px;margin:7px 0}.hidden{display:none!important}.meta{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;color:#ffd2dc;font-size:13px}.timer{text-align:center;font-size:44px;font-weight:bold;color:#ff829e;margin:8px}.question{text-align:center;font-size:21px;line-height:1.7;padding:22px 12px;background:#120b0f;border:1px solid #74334a;border-radius:16px;margin:12px 0}.answerline{display:flex;gap:8px}.answerline .input{flex:1;min-width:0}.answerline .btn{width:100px}.board,.results{background:#120b0f;border:1px solid #502637;border-radius:13px;padding:12px;margin-top:12px}.row{display:flex;justify-content:space-between;gap:8px;padding:8px 2px;border-bottom:1px solid #39202a;font-size:14px}.row:last-child{border:0}.leader{color:#ffda8b}.notice{text-align:center;color:#d7bac4;font-size:13px;line-height:1.7}.toplink{color:#ff9eb2;text-decoration:none;font-size:13px}
+</style></head><body><main class="wrap"><header class="head"><div class="logo">🎉</div><h1>تحدي لينا المصري</h1><p class="muted">أسئلة من كل حتة • 20 ثانية • الليدر وحده يقلب السؤال</p><a class="toplink" href="./">الرجوع إلى لينا AI</a></header>
+<section id="setup" class="card"><h2>اختار طريقة اللعب</h2><button id="solo" class="btn primary">🤖 العب مع لينا وشخصيات مصرية وهمية</button><button id="host" class="btn">👥 اعمل غرفة والعب مع صاحبك</button><input id="invite" class="input hidden" readonly placeholder="رابط الدعوة"><button id="copy" class="btn hidden">نسخ رابط الدعوة</button><p id="status" class="notice">الشخصيات الوهمية وأسماؤها بتتغير مع كل لعبة.</p></section>
+<section id="game" class="card hidden"><div class="meta"><span id="round">السؤال 1</span><span id="leader" class="leader">👑 الليدر: أنت</span></div><div id="clock" class="timer">20</div><div id="question" class="question">استعد!</div><div class="answerline"><input id="answer" class="input" placeholder="اكتب إجابتك..." autocomplete="off"><button id="send" class="btn primary">إرسال</button></div><p id="answerStatus" class="notice">اكتب إجابتك قبل انتهاء الوقت.</p><div id="results" class="results">الإجابات هتظهر بعد انتهاء الوقت.</div><div id="leaderboard" class="board"></div><button id="next" class="btn primary hidden">السؤال التالي ➜ (الليدر فقط)</button></section>
+<section class="card"><p class="notice">اللعبة للتسلية. في وضع الصديق، اللي ينشئ الغرفة هو الليدر ويتحكم في الانتقال بين الأسئلة. اتصال الصديق يحتاج إنترنت.</p></section></main>
+<script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
+<script>
+(()=>{
+const $=id=>document.getElementById(id);
+const bank=[
+['أفلام','مين بطل فيلم إكس لارج؟',['احمد حلمي','أحمد حلمي'],'أحمد حلمي'],
+['أفلام','في فيلم الفيل الأزرق، اسم الطبيب النفسي إيه؟',['يحيى راشد','يحيى'],'يحيى راشد'],
+['أغاني','مين غنى أغنية تملي معاك؟',['عمرو دياب'],'عمرو دياب'],
+['أغاني','مين صاحب أغنية بالبُنط العريض؟',['حسين الجسمي'],'حسين الجسمي'],
+['مسلسلات','اسم القرية في مسلسل الكبير أوي؟',['المزاريطة'],'المزاريطة'],
+['كورة','كام لاعب من كل فريق بيبدأوا ماتش الكورة؟',['11','١١','احداشر'],'11'],
+['كورة','منتخب مصر مشهور بلقب إيه؟',['الفراعنة'],'الفراعنة'],
+['سوشيال','اسم الفيديو القصير على تيك توك بيتقال عليه إيه؟',['فيديو','تيك توك','تيك توك فيديو'],'فيديو تيك توك'],
+['سوشيال','إيه اسم زر الإعجاب بالإنجليزي؟',['like'],'Like'],
+['معلومات عامة','الكوكب الأحمر اسمه إيه؟',['المريخ'],'المريخ'],
+['جغرافيا','عاصمة المغرب إيه؟',['الرباط'],'الرباط'],
+['جغرافيا','نهر النيل بيصب في أي بحر؟',['المتوسط','البحر المتوسط'],'البحر المتوسط'],
+['أكل','الطعمية المصرية بتتعمل غالبًا من إيه؟',['الفول'],'الفول'],
+['ألغاز','حاجة ليها أسنان ومابتعضش؟',['المشط'],'المشط'],
+['علوم','الإنسان عنده كام قلب؟',['واحد','1','١'],'واحد'],
+['أنمي','مين بطل أنمي ناروتو؟',['ناروتو'],'ناروتو'],
+['تاريخ','الأهرامات الأشهر في محافظة إيه؟',['الجيزة'],'الجيزة'],
+['رياضة','رياضة فيها مضرب وكورة صفراء؟',['تنس'],'التنس'],
+['تقنية','الموبايل بيتصل بالإنترنت لاسلكيًا غالبًا عن طريق إيه؟',['واي فاي','wifi','wi-fi'],'Wi‑Fi'],
+['ثقافة','الأسبوع فيه كام يوم؟',['7','٧','سبعة'],'7 أيام'],
+['أفلام','مين بطل سلسلة أفلام جون ويك؟',['كيانو ريفز'],'كيانو ريفز'],
+['أغاني','مين غنى أغنية الغزالة رايقة؟',['كريم محمود عبد العزيز','محمد اسامة','محمد أسامة'],'محمد أسامة'],
+['كورة','رياضة ليونيل ميسي؟',['كرة القدم','الكورة'],'كرة القدم'],
+['عواصم','عاصمة اليابان؟',['طوكيو'],'طوكيو']
+];
+const names=['ميدو','زياد','سلمى','كريم','نور','ملك','عمر','جنى','حمزة','منة','آدم','ليلى','يوسف','بسملة','حبيبة','علي','فريدة','مصطفى','تاليا','ياسين','رحمة','عمر','سيف'];
+let peer=null,conn=null,host=false,solo=false,round=0,q=null,tick=null,left=20,locked=false,players=[],answers={},used=[];
+const clean=x=>String(x||'').toLowerCase().replace(/[أإآ]/g,'ا').replace(/ى/g,'ي').replace(/ة/g,'ه').replace(/[ًٌٍَُِّْـ]/g,'').replace(/[^ء-يa-z0-9]/g,'').trim();
+const send=d=>{if(conn&&conn.open)conn.send(d)};
+function shuffle(a){return [...a].sort(()=>Math.random()-.5)}
+function initPlayers(){const n=shuffle(names);players=[{id:'me',name:'أنت',score:0},{id:'lina',name:'لينا ❤️',score:0},...n.slice(0,5).map((name,i)=>({id:'bot'+i,name,score:0,bot:true}))]}
+function drawBoard(){$('leaderboard').innerHTML='<b>🏆 الليدر — ترتيب النقاط</b>'+[...players].sort((a,b)=>b.score-a.score).map((p,i)=>'<div class="row"><span>'+(i+1)+'. '+p.name+(p.id==='me'?' 👑':'')+'</span><b>'+p.score+' نقطة</b></div>').join('')}
+function nextQ(){let pool=bank.map((_,i)=>i).filter(i=>!used.includes(i));if(!pool.length)used=[];const ix=shuffle(pool.length?pool:bank.map((_,i)=>i))[0];used.push(ix);return {category:bank[ix][0],text:bank[ix][1],accepted:bank[ix][2],answer:bank[ix][3]}}
+function startRound(incoming){q=incoming||nextQ();round++;answers={};locked=false;left=20;$('round').textContent='السؤال '+round+' · '+q.category;$('question').textContent=q.text;$('clock').textContent='20';$('answer').value='';$('answer').disabled=false;$('send').disabled=false;$('answerStatus').textContent='معاك 20 ثانية!';$('results').textContent='الإجابات هتظهر بعد انتهاء الوقت.';$('next').classList.toggle('hidden',!host);clearInterval(tick);tick=setInterval(()=>{$('clock').textContent=--left;if(left<=0)finish()},1000)}
+function judge(a){return q.accepted.some(v=>clean(v)===clean(a))}
+function finish(){if(locked)return;locked=true;clearInterval(tick);$('answer').disabled=true;$('send').disabled=true;
+if(solo){players.filter(p=>p.bot).forEach(p=>{if(Math.random()<.65){const ok=Math.random()<.65;answers[p.id]=ok?q.answer:'مش فاكر 😅';if(ok)p.score+=10}});if(Math.random()<.55){answers.lina=q.answer;players.find(p=>p.id==='lina').score+=10}else answers.lina='مش عارفة 😅'}
+let rows='';players.forEach(p=>{const a=answers[p.id]||'لم يجاوب';const ok=judge(a);if(ok&&!p.bot&&p.id!=='lina')p.score+=10;rows+='<div class="row"><span>'+p.name+': '+a+'</span><b style="color:'+(ok?'#8dffb0':'#ff91a9')+'">'+(ok?'صح +10':'غلط 0')+'</b></div>'});
+$('results').innerHTML='<b>الإجابة الصحيحة: '+q.answer+'</b>'+rows;$('answerStatus').textContent='انتهى الوقت! الليدر وحده يفتح السؤال التالي.';drawBoard();if(!host){}else send({type:'result',q,answers,players,round})}
+function submit(){if(locked)return;const a=$('answer').value.trim();if(!a)return;answers.me=a;$('answerStatus').textContent='إجابتك اتسجلت ✓';$('send').disabled=true;if(!host)send({type:'answer',answer:a})}
+function begin(isSolo){solo=isSolo;host=true;initPlayers();$('setup').classList.add('hidden');$('game').classList.remove('hidden');$('leader').textContent='👑 الليدر: أنت';startRound();drawBoard()}
+$('solo').onclick=()=>{cleanup();begin(true)};
+$('host').onclick=()=>{cleanup();host=true;solo=false;initPlayers();$('status').textContent='جاري إنشاء غرفة…';peer=new Peer();peer.on('open',id=>{const u=new URL(location.href);u.searchParams.set('room',id);$('invite').value=u.href;$('invite').classList.remove('hidden');$('copy').classList.remove('hidden');$('status').textContent='ابعت الرابط لصاحبك. أنت الليدر.';peer.on('connection',c=>{conn=c;conn.on('open',()=>{if(!$('game').classList.contains('hidden'))return;$('setup').classList.add('hidden');$('game').classList.remove('hidden');startRound();send({type:'welcome',q,round,players,leader:'أنت'})});conn.on('data',receive)})});peer.on('error',e=>$('status').textContent='مشكلة اتصال: '+e.type)};
+$('copy').onclick=async()=>{try{await navigator.clipboard.writeText($('invite').value);$('copy').textContent='اتنسخ ✓'}catch{$('invite').select()}};
+$('send').onclick=submit;$('answer').onkeydown=e=>{if(e.key==='Enter')submit()};
+$('next').onclick=()=>{if(!host||!locked)return;startRound();send({type:'next',q,round})};
+function receive(d){if(!d)return;if(d.type==='welcome'){host=false;solo=false;players=d.players||[];$('setup').classList.add('hidden');$('game').classList.remove('hidden');$('leader').textContent='👑 الليدر: '+d.leader;startRound(d.q);round=d.round;drawBoard()}else if(d.type==='answer'){answers.guest=d.answer;if(!players.some(p=>p.id==='guest'))players.push({id:'guest',name:'صاحبك',score:0})}else if(d.type==='next'){startRound(d.q);round=d.round;$('leader').textContent='👑 الليدر: صاحبك'}else if(d.type==='result'){q=d.q;answers=d.answers||{};players=d.players||players;round=d.round;locked=true;clearInterval(tick);$('answer').disabled=true;$('send').disabled=true;$('results').innerHTML='<b>الإجابة الصحيحة: '+q.answer+'</b>'+players.map(p=>{const a=answers[p.id]||'لم يجاوب';return '<div class="row"><span>'+p.name+': '+a+'</span><b>'+(judge(a)?'صح':'غلط')+'</b></div>'}).join('');$('answerStatus').textContent='مستني الليدر يفتح السؤال التالي.';drawBoard()}}
+function cleanup(){clearInterval(tick);try{if(conn)conn.close();if(peer)peer.destroy()}catch{}conn=null;peer=null;host=false;round=0;used=[];$('setup').classList.remove('hidden');$('game').classList.add('hidden');$('invite').classList.add('hidden');$('copy').classList.add('hidden')}
+const room=new URLSearchParams(location.search).get('room');if(room){$('status').textContent='جاري الاتصال بصاحب الغرفة…';peer=new Peer();peer.on('open',()=>{conn=peer.connect(room,{reliable:true});conn.on('open',()=>conn.send({type:'join'}));conn.on('data',receive)});peer.on('error',e=>$('status').textContent='تعذر الاتصال: '+e.type)}
+})();
+</script></body></html>
