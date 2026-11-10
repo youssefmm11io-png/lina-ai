@@ -75,6 +75,8 @@ button:active{transform:scale(.97)}
 .vip-badge{display:inline-block;background:linear-gradient(135deg,#f8df91,#a87820);color:#171006;border-radius:20px;padding:4px 10px;font-size:12px;font-weight:bold;margin:6px auto}
 .vip-modal{position:fixed;inset:0;z-index:30;background:#050505e8;display:grid;place-items:center;padding:16px}.vip-card{width:min(100%,460px);max-height:90dvh;overflow:auto;background:linear-gradient(150deg,#211b0e,#090909);border:1px solid #c49a42;border-radius:23px;padding:18px;color:#fff;text-align:center;box-shadow:0 20px 60px #000}.vip-card h3{color:#f4d88e;font-size:23px;margin:5px}.vip-plan{background:#151515;border:1px solid #8d6a2b;border-radius:15px;padding:13px;margin:10px 0;text-align:right}.vip-plan strong{color:#f5d98f}.vip-plan button,.vip-card button{border:1px solid #b18a3b;background:linear-gradient(135deg,#e7c36d,#8d6924);color:#171006;border-radius:11px;padding:10px 14px;font-weight:bold;margin-top:8px}.vip-card input[type=text]{width:100%;background:#111;border:1px solid #9a7735;border-radius:10px;margin:8px 0;padding:11px;color:white}.vip-card[hidden],.vip-modal[hidden]{display:none!important}
 
+.hacker-panel{background:linear-gradient(135deg,#ff173d,#9d001f)!important;border:1px solid #ff536e!important;color:#fff!important;text-shadow:0 0 7px #fff,0 0 14px #ff173d;box-shadow:0 0 8px #ff173d,0 0 18px #ff173d88,inset 0 0 12px #ff9aaa55!important;animation:hackerPulse 1.5s ease-in-out infinite alternate;letter-spacing:1px}.vip-theme .hacker-panel{background:linear-gradient(135deg,#ff173d,#9d001f)!important;border-color:#ff536e!important;color:#fff!important;box-shadow:0 0 8px #ff173d,0 0 18px #ff173d88,inset 0 0 12px #ff9aaa55!important}@keyframes hackerPulse{from{filter:brightness(.88);box-shadow:0 0 6px #ff173d,0 0 12px #ff173d66,inset 0 0 8px #ff9aaa33}to{filter:brightness(1.25);box-shadow:0 0 12px #ff173d,0 0 26px #ff173dcc,inset 0 0 16px #ff9aaa88}}
+
 /* VIP polish */
 .vip-plan{display:grid;grid-template-columns:1fr auto;align-items:center;gap:8px 10px;background:linear-gradient(120deg,#17140e,#090909);border:1px solid #d2a84d;box-shadow:inset 0 0 16px #d6ad5210,0 0 12px #d6ad5218}
 .vip-plan strong{grid-column:1/-1;color:#ffe7a6;font-size:16px}
@@ -137,7 +139,7 @@ button:active{transform:scale(.97)}
 <form id="form"><button class="plus-btn" type="button" id="plusBtn" aria-label="إضافة مرفق" aria-expanded="false">+</button><input id="message" type="text" placeholder="اكتب رسالتك هنا..." autocomplete="off"><button class="send" type="submit" aria-label="إرسال">➤</button></form>
 </div>
 <div class="note">لينا AI · المالك: 𝒀𝒐𝒖𝒔𝒔𝒆𝒇 ❤️</div>
-<div class="bottom-panels" aria-label="الأقسام"><button class="bottom-panel" id="openStore" type="button">🛍️ متجر</button><div class="bottom-panel">شحن رصيد</div><div class="bottom-panel">لعب</div></div>
+<div class="bottom-panels" aria-label="الأقسام"><button class="bottom-panel" id="openStore" type="button">🛍️ متجر</button><div class="bottom-panel hacker-panel">هكـــر</div><div class="bottom-panel">لعب</div></div>
 </footer>
 </div>
 <script>
