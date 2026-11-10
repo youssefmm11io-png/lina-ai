@@ -158,8 +158,7 @@ export default {
         .flatMap(item => item.content || [])
         .filter(item => item.type === "output_text")
         .map(item => item.text)
-        .join("
-");
+        .join("\n");
 
       return json({ reply: reply || "مش قادرة أجهز الرد دلوقتي، جرّب تاني ❤️" });
     } catch (error) {
