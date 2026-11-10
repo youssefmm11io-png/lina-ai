@@ -35,8 +35,8 @@ main{flex:1;min-height:0;overflow-y:auto;overflow-x:hidden;overscroll-behavior:c
 .file-chip{display:inline-flex;gap:7px;align-items:center;margin-top:7px;padding:8px 10px;border-radius:12px;background:#120d10;border:1px solid #6b3042;color:#ffdce4;font-size:13px}
 .voice-player{display:block;max-width:230px;margin-top:8px}
 header,footer{flex-shrink:0}footer{padding:10px 0 3px}
-.bottom-panels{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:10px;padding:9px;background:#191114;border:1px solid #713044;border-radius:18px;box-shadow:0 6px 20px #0005}
-.bottom-panel{min-height:54px;display:flex;align-items:center;justify-content:center;border:1px solid #653044;border-radius:13px;background:linear-gradient(145deg,#2b1720,#180f14);color:#ffdce4;font-size:14px;font-weight:bold;text-align:center;padding:8px 4px}
+.bottom-panels{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:8px;margin-top:10px;padding:9px;background:#191114;border:1px solid #713044;border-radius:18px;box-shadow:0 6px 20px #0005}
+.bottom-panel{width:auto;min-width:78px;min-height:42px;flex:0 1 auto;display:flex;align-items:center;justify-content:center;border:1px solid #653044;border-radius:13px;background:linear-gradient(145deg,#2b1720,#180f14);color:#ffdce4;font-size:13px;font-weight:bold;text-align:center;padding:7px 12px;white-space:nowrap}
 .composer-wrap{position:relative}
 form{display:flex;align-items:center;gap:8px;background:#191114;border:1px solid #713044;padding:8px;border-radius:20px;margin-bottom:10px;direction:rtl}
 input[type=text]{flex:1;min-width:0;background:transparent;border:0;outline:0;color:white;padding:11px;font-size:16px}
