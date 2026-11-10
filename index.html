@@ -102,6 +102,8 @@ button:active{transform:scale(.97)}
 .vip-theme .profile-link{background:linear-gradient(135deg,#ffffffaa 0%,#b9d9e8a8 24%,#ffffffd9 42%,#8ba9c0a8 62%,#ffffffc9 82%,#a9c5d8aa 100%)!important;color:#233746!important;border:1px solid #e9f7ff!important;box-shadow:0 0 13px #d9f1ff88,inset 0 1px 4px #fff!important;text-shadow:0 1px #fff9;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
 .vip-theme .bottom-panels .hacker-panel{background:linear-gradient(135deg,#ff173d,#9d001f)!important;border:1px solid #ff536e!important;color:#fff!important;text-shadow:0 0 7px #fff,0 0 14px #ff173d!important;box-shadow:0 0 8px #ff173d,0 0 18px #ff173d88,inset 0 0 12px #ff9aaa55!important;animation:hackerPulse 1.5s ease-in-out infinite alternate!important}
 .balance-pill{cursor:pointer;font-family:inherit}.balance-card .balance-total{display:flex;align-items:baseline;justify-content:center;gap:9px;margin:15px auto;padding:15px;border:1px solid #713044;border-radius:16px;background:#100b0e;color:#ffd98a}.balance-total strong{font-size:34px}.balance-total span{font-size:15px}.payment-heading{margin:18px 0 10px;color:#ffdce4}.payment-methods{display:grid;grid-template-columns:1fr 1fr;gap:8px}.payment-method{display:flex;flex-direction:column;gap:6px;align-items:center;justify-content:center;min-height:67px;padding:10px 6px;border:1px solid #633044;border-radius:13px;background:#171014;color:#f5dce3;font-weight:bold;opacity:.62;cursor:not-allowed}.payment-method small{color:#ff9caf;font-size:10px}.vip-theme .balance-card .balance-total{background:#111;border-color:#a98235;color:#ffe6a7}.vip-theme .balance-card .payment-method{border-color:#8d6a2b;color:#ffe6a7;background:#111}
+
+.hacker-modal{position:fixed;inset:0;z-index:60;background:#050305e8;display:grid;place-items:center;padding:18px}.hacker-card{width:min(100%,420px);max-height:88dvh;overflow:auto;background:linear-gradient(155deg,#29121c,#100b0e);border:1px solid #ff365d;border-radius:22px;padding:20px;text-align:center;box-shadow:0 0 28px #ff173d55}.hacker-card h3{color:#ff7894;margin:4px 0 15px}.hacker-card input{display:block;width:100%;background:#100b0e;border:1px solid #713044;border-radius:12px;color:#fff;padding:13px;margin:10px 0;font-size:16px;direction:ltr;text-align:left}.hacker-card button{border:1px solid #ff536e;background:linear-gradient(135deg,#ff173d,#9d001f);color:#fff;border-radius:12px;padding:11px 16px;margin:6px;font-weight:bold}.hacker-empty{min-height:130px;margin-top:12px;border:1px dashed #713044;border-radius:14px;background:#100b0e}.hacker-modal[hidden]{display:none!important}
 </style>
 </head>
 <body>
@@ -142,7 +144,8 @@ button:active{transform:scale(.97)}
 <form id="form"><button class="plus-btn" type="button" id="plusBtn" aria-label="إضافة مرفق" aria-expanded="false">+</button><input id="message" type="text" placeholder="اكتب رسالتك هنا..." autocomplete="off"><button class="send" type="submit" aria-label="إرسال">➤</button></form>
 </div>
 <div class="note">لينا AI · المالك: 𝒀𝒐𝒖𝒔𝒔𝒆𝒇 ❤️</div>
-<div class="bottom-panels" aria-label="الأقسام"><button class="bottom-panel" id="openStore" type="button">🛍️ متجر</button><div class="bottom-panel hacker-panel">هكـــر</div><div class="bottom-panel">لعب</div></div>
+<div class="bottom-panels" aria-label="الأقسام"><button class="bottom-panel" id="openStore" type="button">🛍️ متجر</button><button class="bottom-panel hacker-panel" id="openHacker" type="button">هكـــر</button><div class="bottom-panel">لعب</div></div>
+<section class="hacker-modal" id="hackerModal" hidden><div class="hacker-card"><h3>🔐 دخول قسم الهكر</h3><div id="hackerLogin"><input id="hackerPassword" type="password" placeholder="كلمة السر" autocomplete="off"><input id="hackerId" type="text" inputmode="numeric" placeholder="الـ ID الخاص بيك" autocomplete="off"><button type="button" id="hackerUnlock">دخول</button></div><div id="hackerContent" hidden><div class="hacker-empty"></div></div><button type="button" id="closeHacker">إغلاق</button></div></section>
 </footer>
 </div>
 <script>
@@ -251,6 +254,11 @@ document.getElementById('recordBtn').addEventListener('click',async()=>{closePlu
  try{const stream=await navigator.mediaDevices.getUserMedia({audio:true});chunks=[];recorder=new MediaRecorder(stream);recorder.ondataavailable=e=>{if(e.data.size)chunks.push(e.data)};recorder.onstop=()=>{const blob=new Blob(chunks,{type:recorder.mimeType||'audio/webm'});const f=new File([blob],'voice-message.webm',{type:blob.type});addFile(f);stream.getTracks().forEach(x=>x.stop())};recorder.start();document.getElementById('recordBtn').textContent='⏹ إيقاف التسجيل';}
  catch(err){addText('مش قادر أوصل للميكروفون. اسمح للموقع باستخدام الميكروفون من إعدادات المتصفح.')}
 });
+document.getElementById("openHacker").addEventListener("click",()=>{document.getElementById("hackerModal").hidden=false;document.getElementById("hackerLogin").hidden=false;document.getElementById("hackerContent").hidden=true;document.getElementById("hackerPassword").value="";document.getElementById("hackerId").value="";});
+document.getElementById("closeHacker").addEventListener("click",()=>document.getElementById("hackerModal").hidden=true);
+document.getElementById("hackerUnlock").addEventListener("click",()=>{const password=document.getElementById("hackerPassword").value;const enteredId=document.getElementById("hackerId").value.trim();const p=currentProfile();if(password!=="Youssef.200.12345"){alert("كلمة السر غير صحيحة.");return}if(!p||enteredId!==String(p.id)){alert("الـ ID غير صحيح.");return}document.getElementById("hackerLogin").hidden=true;document.getElementById("hackerContent").hidden=false;});
+document.getElementById("hackerModal").addEventListener("click",e=>{if(e.target.id==="hackerModal")e.currentTarget.hidden=true});
+
 </script>
 </body>
 </html>
