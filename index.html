@@ -668,7 +668,7 @@ document.addEventListener('click',e=>{if(e.target&&e.target.id==='adminMessageOk
  function accepted(answer){return question.accepted.some(a=>norm(a)===norm(answer))}
  function finishRound(){if(locked)return;locked=true;clearInterval(timer);$('partyAnswer').disabled=true;$('partySendAnswer').disabled=true;
   if(mode==='bots'){players.filter(p=>p.bot||p.id==='lina').forEach(p=>{if(Math.random()<.48){const right=Math.random()<.72;answers[p.id]=right?question.answer:'مش عارف 😅';if(right)p.score+=10}})}
-  const rows=players.filter(p=>!p.bot||answers[p.id]).map(p=>{const a=answers[p.id]||'لم يجاوب';const ok=accepted(a);if(p.id==='me'&&ok)p.score+=10;return '<div class="party-row"><span>'+p.name+': '+a+'</span><b style="color:'+(ok?'#8cffb0':'#ff8da5')+'">'+(ok?'صح +10':'غلط 0')+'</b></div>'});
+  const rows=players.filter(p=>!p.bot||answers[p.id]).map(p=>{const a=answers[p.id]||'لم يجاوب';const ok=accepted(a);if(ok&&!p.bot)p.score+=10;return '<div class="party-row"><span>'+p.name+': '+a+'</span><b style="color:'+(ok?'#8cffb0':'#ff8da5')+'">'+(ok?'صح +10':'غلط 0')+'</b></div>'});
   $('partyResults').innerHTML='<b>الحكم: '+question.answer+'</b>'+rows.join('');
   $('partyAnswerStatus').textContent='انتهى الوقت — الليدر هو اللي يفتح السؤال التالي.';
   if(mode==='friend')send({type:'roundResult',answers,players,question,round});
@@ -679,14 +679,14 @@ document.addEventListener('click',e=>{if(e.target&&e.target.id==='adminMessageOk
  $('choosePartyQuiz').addEventListener('click',()=>show('party'));
  $('backPartyHome').addEventListener('click',()=>show('home'));
  $('partyVsLina').addEventListener('click',()=>{show('setup');begin('bots')});
- $('partyCreateRoom').addEventListener('click',()=>{clean();mode='friend';leader=true;host=true;newPlayers();show('setup');$('partyConnectStatus').textContent='جاري إنشاء غرفة اللعب…';peer=new Peer();peer.on('open',id=>{const u=new URL(location.href);u.searchParams.set('party',id);$('partyInvite').value=u.href;$('partyCopyInvite').hidden=false;$('partyConnectStatus').textContent='ابعت الرابط لصاحبك. أنت الليدر وتتحكم في الأسئلة.';peer.on('connection',c=>{conn=c;conn.on('open',()=>{send({type:'welcome',players,round,question,answers,locked});$('partyConnectStatus').textContent='صاحبك دخل الغرفة!'});conn.on('data',receive)})});peer.on('error',e=>$('partyConnectStatus').textContent='تعذر إنشاء الغرفة: '+e.type)});
+ $('partyCreateRoom').addEventListener('click',()=>{clean();mode='friend';leader=true;host=true;newPlayers();show('setup');$('partyConnectStatus').textContent='جاري إنشاء غرفة اللعب…';peer=new Peer();peer.on('open',id=>{const u=new URL(location.href);u.searchParams.set('party',id);$('partyInvite').value=u.href;$('partyCopyInvite').hidden=false;$('partyConnectStatus').textContent='ابعت الرابط لصاحبك. أنت الليدر وتتحكم في الأسئلة.';peer.on('connection',c=>{conn=c;conn.on('open',()=>{show('game');startRound();send({type:'welcome',players,round,question,answers,locked});$('partyConnectStatus').textContent='صاحبك دخل الغرفة! أنت الليدر.'});conn.on('data',receive)})});peer.on('error',e=>$('partyConnectStatus').textContent='تعذر إنشاء الغرفة: '+e.type)});
  $('partyCopyInvite').addEventListener('click',async()=>{try{await navigator.clipboard.writeText($('partyInvite').value);$('partyCopyInvite').textContent='اتنسخ ✓'}catch{$('partyInvite').select()}});
  $('partySendAnswer').addEventListener('click',answer);$('partyAnswer').addEventListener('keydown',e=>{if(e.key==='Enter')answer()});
  $('partyNext').addEventListener('click',()=>{if(!leader||!locked)return;startRound();if(mode==='friend')send({type:'next',question,round})});
  $('partyExit').addEventListener('click',()=>{clean();show('home')});
  function receive(d){if(!d)return;
   if(d.type==='welcome'){players=d.players||[];leader=false;host=false;mode='friend';$('partyLeader').textContent='👑 الليدر: صاحبك';show('game');round=d.round||1;question=d.question;answers=d.answers||{};locked=!!d.locked;if(question){if(locked){paintQuestion();finishGuest(d)}else{paintQuestion();startGuestClock()}}showBoard()}
-  else if(d.type==='answer'){answers[d.from||'guest']=d.answer}
+  else if(d.type==='answer'){answers.guest=d.answer;if(!players.some(p=>p.id==='guest'))players.push({id:'guest',name:'صاحبك',score:0,real:true});}
   else if(d.type==='next'){round=d.round;startRoundGuest(d.question)}
   else if(d.type==='roundResult'){players=d.players||players;answers=d.answers||{};question=d.question||question;round=d.round||round;finishGuest(d)}
  }
