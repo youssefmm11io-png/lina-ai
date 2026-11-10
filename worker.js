@@ -10,7 +10,34 @@ const json = (data, status = 200) => new Response(JSON.stringify(data), {
 });
 
 export default {
-  async fetch(request, env) {\n    const url = new URL(request.url);\n    if (url.pathname.startsWith("/agent/")) {\n      if (request.method !== "POST") return json({ error: "Method not allowed" }, 405);\n      if (!env.DB) return json({ error: "قاعدة الأكواد المشتركة غير مربوطة بالسيرفر" }, 503);\n      try {\n        const body = await request.json();\n        const code = String(body.code || "").trim();\n        if (!/^\\\\d{22}$/.test(code)) return json({ error: "الكود لازم يتكون من 22 رقمًا" }, 400);\n        if (url.pathname === "/agent/register") {\n          const expiresAt = Number(body.expiresAt);\n          if (!Number.isFinite(expiresAt) || expiresAt <= Date.now()) return json({ error: "تاريخ انتهاء البطاقة غير صالح" }, 400);\n          await env.DB.prepare("INSERT OR IGNORE INTO agent_codes (code, expires_at, created_at) VALUES (?, ?, ?)").bind(code, expiresAt, Date.now()).run();\n          const row = await env.DB.prepare("SELECT code FROM agent_codes WHERE code = ?").bind(code).first();\n          return json({ ok: !!row });\n        }\n        if (url.pathname === "/agent/redeem") {\n          const userId = String(body.userId || "guest").slice(0, 100);\n          const result = await env.DB.prepare("UPDATE agent_codes SET redeemed_at = ?, redeemed_by = ? WHERE code = ? AND expires_at > ? AND redeemed_at IS NULL").bind(Date.now(), userId, code, Date.now()).run();\n          if (!result.meta || result.meta.changes !== 1) return json({ error: "الكود غير موجود أو منتهي أو تم استخدامه بالفعل" }, 409);\n          return json({ ok: true, message: "تم التفعيل مرة واحدة" });\n        }\n        return json({ error: "Unknown agent endpoint" }, 404);\n      } catch (error) {\n        return json({ error: "تعذر تنفيذ العملية على قاعدة الأكواد" }, 500);\n      }\n    }
+  async fetch(request, env) {
+    if (request.method === "OPTIONS") return new Response(null, { headers: cors });
+    const url = new URL(request.url);
+    if (url.pathname.startsWith("/agent/")) {
+      if (request.method !== "POST") return json({ error: "Method not allowed" }, 405);
+      if (!env.DB) return json({ error: "قاعدة الأكواد المشتركة غير مربوطة بالسيرفر" }, 503);
+      try {
+        const body = await request.json();
+        const code = String(body.code || "").trim();
+        if (!/^\\d{22}$/.test(code)) return json({ error: "الكود لازم يتكون من 22 رقمًا" }, 400);
+        if (url.pathname === "/agent/register") {
+          const expiresAt = Number(body.expiresAt);
+          if (!Number.isFinite(expiresAt) || expiresAt <= Date.now()) return json({ error: "تاريخ انتهاء البطاقة غير صالح" }, 400);
+          await env.DB.prepare("INSERT OR IGNORE INTO agent_codes (code, expires_at, created_at) VALUES (?, ?, ?)").bind(code, expiresAt, Date.now()).run();
+          const row = await env.DB.prepare("SELECT code FROM agent_codes WHERE code = ?").bind(code).first();
+          return json({ ok: !!row });
+        }
+        if (url.pathname === "/agent/redeem") {
+          const userId = String(body.userId || "guest").slice(0, 100);
+          const result = await env.DB.prepare("UPDATE agent_codes SET redeemed_at = ?, redeemed_by = ? WHERE code = ? AND expires_at > ? AND redeemed_at IS NULL").bind(Date.now(), userId, code, Date.now()).run();
+          if (!result.meta || result.meta.changes !== 1) return json({ error: "الكود غير موجود أو منتهي أو تم استخدامه بالفعل" }, 409);
+          return json({ ok: true, message: "تم التفعيل مرة واحدة" });
+        }
+        return json({ error: "Unknown agent endpoint" }, 404);
+      } catch (error) {
+        return json({ error: "تعذر تنفيذ العملية على قاعدة الأكواد" }, 500);
+      }
+    }
     if (request.method === "OPTIONS") return new Response(null, { headers: cors });
     if (request.method === "GET") return json({ ok: true, name: "Lina AI", status: "ready" });
     if (request.method !== "POST") return json({ error: "Method not allowed" }, 405);
