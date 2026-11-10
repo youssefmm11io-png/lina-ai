@@ -24,15 +24,15 @@ main{flex:1;overflow:auto;padding:17px 5px;display:flex;flex-direction:column;ga
 .file-chip{display:inline-flex;gap:7px;align-items:center;margin-top:7px;padding:8px 10px;border-radius:12px;background:#120d10;border:1px solid #6b3042;color:#ffdce4;font-size:13px}
 .voice-player{display:block;max-width:230px;margin-top:8px}
 footer{padding:10px 0 3px}
-.tools{display:flex;gap:8px;margin-bottom:9px}
-.tool{background:#21131a;border:1px solid #713044;color:#ffdce4;border-radius:13px;padding:10px 12px;font-size:14px;cursor:pointer}
+.tools{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px;margin-bottom:12px;direction:rtl}
+.tool{background:linear-gradient(145deg,#2a151e,#171014);border:1px solid #713044;color:#ffdce4;border-radius:14px;padding:12px 7px;font-size:13px;min-height:48px;cursor:pointer;box-shadow:0 4px 12px #0004}
 .tool:active,button:active{transform:scale(.97)}
-form{display:flex;gap:8px;background:#191114;border:1px solid #713044;padding:8px;border-radius:18px}
+form{display:flex;gap:8px;background:#191114;border:1px solid #713044;padding:8px;border-radius:18px;order:-1;margin-bottom:10px}
 input[type=text]{flex:1;min-width:0;background:transparent;border:0;outline:0;color:white;padding:11px;font-size:16px}
 .send{background:linear-gradient(135deg,#ff526e,#bd1238);color:white;border:0;border-radius:13px;padding:0 18px;font-size:20px;cursor:pointer}
 .note{text-align:center;color:#8d7880;font-size:11px;margin:9px}
 #fileInput{display:none}
-@media(max-width:420px){.app{padding:9px}.owner{font-size:10px;padding:7px}.avatar{width:51px;height:51px}.tool{font-size:12px;padding:9px 10px}}
+@media(max-width:420px){.app{padding:9px}.owner{font-size:10px;padding:7px}.avatar{width:51px;height:51px}.tool{font-size:11px;padding:9px 4px;min-height:46px}}
 .profile-modal{position:fixed;inset:0;z-index:20;background:#050305d9;display:grid;place-items:center;padding:18px}.profile-card{width:min(100%,420px);background:linear-gradient(155deg,#29121c,#100b0e);border:1px solid #8d304b;border-radius:26px;padding:23px;box-shadow:0 22px 70px #000c;text-align:center}.profile-photo{width:104px;height:104px;object-fit:cover;border-radius:50%;border:3px solid #ff91a8;box-shadow:0 0 25px #ed294d55;background:#32131f}.profile-card h3{font-size:23px;margin:12px 0}.profile-card input[type=text]{width:100%;background:#100b0e;border:1px solid #713044;border-radius:12px;margin:10px 0;padding:13px;text-align:right}.id-copy{display:flex;align-items:center;gap:8px;background:#100b0e;border:1px solid #713044;border-radius:13px;padding:9px;margin:12px 0}.id-copy code{flex:1;color:#ffd5df;font-size:16px;letter-spacing:1px}.profile-card button{border:1px solid #713044;background:#27121b;color:#ffdce4;border-radius:12px;padding:11px 14px;margin:5px;cursor:pointer}.profile-card .save-profile{background:linear-gradient(135deg,#ff607b,#bd1238);border:0;color:white;font-weight:bold}.profile-actions{display:flex;justify-content:center;flex-wrap:wrap}.profile-modal[hidden]{display:none!important}
 
 .auth-screen{max-width:430px;margin:7vh auto;padding:30px 23px;background:linear-gradient(155deg,#29121c 0%,#160d12 55%,#0e090c 100%);border:1px solid #8d304b;border-radius:30px;box-shadow:0 24px 70px #000b,0 0 35px #ed294d18;text-align:center;position:relative;overflow:hidden}.auth-screen:before{content:'';position:absolute;width:190px;height:190px;border-radius:50%;background:#ed294d18;filter:blur(45px);top:-90px;right:-60px;pointer-events:none}
@@ -62,13 +62,13 @@ input[type=text]{flex:1;min-width:0;background:transparent;border:0;outline:0;co
 <div class="app" id="chatApp" hidden>
 <header>
 <div class="avatar" aria-label="صورة لينا">👩🏻‍🦰</div>
-<div><h2>لينا ❤️</h2><div class="status">● موجودة معاك · بتتكلم بالمصري</div></div>
-<div class="owner">👑 المالك: يوسف</div>
+<div><h2>لينا ❤️</h2><div class="status">● متوقفة مؤقتًا للتجهيز</div></div>
+<div class="owner">👑 المالك: 𝒀𝒐𝒖𝒔𝒔𝒆𝒇</div>
 </header>
 <div id="profileBar"><span id="profileLabel"></span><button type="button" id="openProfile">👤 ملفي الشخصي</button><button type="button" id="switchProfile">تبديل المستخدم</button></div>
 <section class="profile-modal" id="profileModal" hidden><div class="profile-card"><img class="profile-photo" id="profilePhotoPreview" alt="صورتك الشخصية"><h3>ملفي الشخصي</h3><input id="editProfileName" type="text" maxlength="30" placeholder="اسمك"><div class="id-copy"><code id="profileIdValue"></code><button type="button" id="copyProfileId">📋 نسخ</button></div><div class="profile-actions"><button type="button" id="chooseProfilePhoto">📷 تغيير الصورة</button><button type="button" id="removeProfilePhoto">حذف الصورة</button><input id="profilePhotoInput" type="file" accept="image/*" hidden></div><div class="profile-actions"><button class="save-profile" type="button" id="saveProfile">حفظ التعديلات</button><button type="button" id="closeProfile">إغلاق</button></div><p class="auth-hint">ملفك وصورتك والـ ID محفوظين على هذا الجهاز فقط.</p></div></section>
 <main id="chat" aria-live="polite">
-<div class="welcome"><strong>أهلًا بيك، أنا لينا ❤️</strong>ابعتلي رسالة أو صورة أو ملف، وممكن كمان نتكلم بالصوت.</div>
+<div class="welcome"><strong>لينا ❤️</strong>متوقفة حاليًا لحين تجهيز السيرفر الخاص بيها.</div>
 <div class="msg bot" id="firstGreeting">أهلًا بيك! عامِل إيه؟ 😊 أنا هنا أسمعك.</div>
 </main>
 <footer>
@@ -79,7 +79,7 @@ input[type=text]{flex:1;min-width:0;background:transparent;border:0;outline:0;co
 </div>
 <input id="fileInput" type="file" accept="image/*,audio/*,video/*,.pdf,.doc,.docx,.txt">
 <form id="form"><input id="message" type="text" placeholder="اكتب رسالتك هنا..." autocomplete="off"><button class="send" type="submit" aria-label="إرسال">➤</button></form>
-<div class="note">لينا AI · المالك: يوسف ❤️ · حساب الجهاز</div>
+<div class="note">لينا AI · المالك: 𝒀𝒐𝒖𝒔𝒔𝒆𝒇 ❤️</div>
 </footer>
 </div>
 <script>
@@ -124,23 +124,9 @@ function speak(text){
  const voices=speechSynthesis.getVoices();const v=voices.find(x=>x.lang.toLowerCase().startsWith('ar-eg'))||voices.find(x=>x.lang.toLowerCase().startsWith('ar'));if(v)u.voice=v;
  speechSynthesis.speak(u);
 }
-async function replyTo(text){
- const wait=addText('لينا بتفكر... ❤️','bot');
- try{
-  const res=await fetch(LINA_API,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({message:text,history:conversation})});
-  const raw=await res.text();
-  let data={};try{data=JSON.parse(raw)}catch{}
-  if(!res.ok) throw new Error(data.error||('خطأ من السيرفر ('+res.status+')'));
-  const answer=data.reply||data.output_text||data.message;
-  if(!answer) throw new Error('السيرفر لسه مش متوصل بعقل لينا. محتاجين ننشر كود Worker الأول.');
-  wait.textContent=answer;
-  conversation.push({role:'user',content:text},{role:'assistant',content:answer});
-  if(conversation.length>20)conversation=conversation.slice(-20);
-  speak(answer);
- }catch(err){
-  wait.textContent='حصلت مشكلة في الاتصال بعقل لينا: '+err.message+'\\nلسه بنجهّز السيرفر، جرّب تاني بعد شوية ❤️';
- }
- scrollDown();
+function replyTo(text){
+ const answer='لينا واقفه حاليا يتم تجهيز السيرفر الخاص بيها وبعد التجهيز تقدر تتواصل معايا تاني شكرا لتفهمكم 💞';
+ addText(answer,'bot');
 }
 document.getElementById('form').addEventListener('submit',e=>{
  e.preventDefault();
@@ -151,7 +137,7 @@ document.getElementById('form').addEventListener('submit',e=>{
  replyTo(value);
 });
 document.getElementById('attachBtn').addEventListener('click',()=>fileInput.click());
-fileInput.addEventListener('change',()=>{for(const f of fileInput.files)addFile(f);if(fileInput.files.length)addText('وصلني الملف يا يوسف ❤️ أقدر أعرض الصور وأشغّل التسجيلات هنا. عشان أفهم محتوى الملفات وأرد عليها بذكاء، لازم نربط خدمة ذكاء اصطناعي آمنة بالسيرفر.');fileInput.value=''});
+fileInput.addEventListener('change',()=>{if(fileInput.files.length)addText('لينا واقفه حاليا يتم تجهيز السيرفر الخاص بيها وبعد التجهيز تقدر تتواصل معايا تاني شكرا لتفهمكم 💞');fileInput.value=''});
 document.getElementById('speakBtn').addEventListener('click',()=>{voiceEnabled=!voiceEnabled;document.getElementById('speakBtn').textContent=voiceEnabled?'🔊 الرد الصوتي مفعّل':'🔊 تفعيل الرد الصوتي';if(voiceEnabled){const msg='أهلًا يا يوسف، أنا لينا. دلوقتي أقدر أرد عليك بالصوت لو متاح صوت عربي على جهازك.';speak(msg);}});
 document.getElementById('recordBtn').addEventListener('click',async()=>{
  if(!navigator.mediaDevices||!window.MediaRecorder){addText('تسجيل الصوت مش مدعوم في المتصفح ده. جرّب تفتح الموقع من Chrome وتسمح باستخدام الميكروفون.');return}
