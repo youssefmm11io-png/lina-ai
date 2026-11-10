@@ -676,7 +676,7 @@ document.addEventListener('click',e=>{if(e.target&&e.target.id==='adminMessageOk
  }
  function answer(){if(locked)return;const a=$('partyAnswer').value.trim();if(!a)return;answers.me=a;$('partyAnswerStatus').textContent='اتسجلت إجابتك ✓';$('partySendAnswer').disabled=true;if(mode==='friend')send({type:'answer',answer:a,round});}
  function begin(m){clean();mode=m;leader=true;host=true;newPlayers();$('partyLeader').textContent='👑 الليدر: أنت';show('game');startRound();showBoard();if(mode==='bots'){/* bots have changing Egyptian names every session */}}
- $('choosePartyQuiz').addEventListener('click',()=>show('party'));
+ $('choosePartyQuiz').addEventListener('click',()=>{location.href='party.html'});
  $('backPartyHome').addEventListener('click',()=>show('home'));
  $('partyVsLina').addEventListener('click',()=>{show('setup');begin('bots')});
  $('partyCreateRoom').addEventListener('click',()=>{clean();mode='friend';leader=true;host=true;newPlayers();show('setup');$('partyConnectStatus').textContent='جاري إنشاء غرفة اللعب…';peer=new Peer();peer.on('open',id=>{const u=new URL(location.href);u.searchParams.set('party',id);$('partyInvite').value=u.href;$('partyCopyInvite').hidden=false;$('partyConnectStatus').textContent='ابعت الرابط لصاحبك. أنت الليدر وتتحكم في الأسئلة.';peer.on('connection',c=>{conn=c;conn.on('open',()=>{show('game');startRound();send({type:'welcome',players,round,question,answers,locked});$('partyConnectStatus').textContent='صاحبك دخل الغرفة! أنت الليدر.'});conn.on('data',receive)})});peer.on('error',e=>$('partyConnectStatus').textContent='تعذر إنشاء الغرفة: '+e.type)});
