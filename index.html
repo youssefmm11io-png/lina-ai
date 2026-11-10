@@ -348,26 +348,63 @@ const chatAppEl=document.getElementById('chatApp'),compactLina=document.getEleme
 function toggleTopPanel(){const collapsed=chatAppEl.classList.toggle('header-collapsed');compactLina.setAttribute('aria-expanded',String(!collapsed));compactLina.setAttribute('aria-label',collapsed?'إظهار لوحة لينا':'إخفاء لوحة لينا');compactLina.querySelector('.compact-arrow').textContent=collapsed?'⌄':'⌃';topToggle.setAttribute('aria-expanded',String(!collapsed));topToggle.setAttribute('aria-label',collapsed?'إظهار اللوحة':'إخفاء اللوحة');topToggle.textContent=collapsed?'⌄':'⌃'}
 compactLina.addEventListener('click',toggleTopPanel);
 topToggle.addEventListener('click',toggleTopPanel);
-document.getElementById('ownerAdminBtn').addEventListener('click',()=>{if(currentProfile().id!=='381914940835')return;renderAdminUsers();document.getElementById('ownerAdminModal').hidden=false});
-document.getElementById('closeOwnerAdmin').addEventListener('click',()=>document.getElementById('ownerAdminModal').hidden=true);
+const OWNER_SECRET_KEY='lina_owner_secret_session';
+async function adminRequest(path,body={}){
+ const secret=sessionStorage.getItem(OWNER_SECRET_KEY)||'';
+ if(!secret)throw new Error('أدخل مفتاح المالك أولًا.');
+ const response=await fetch(LINA_API+path,{method:'POST',headers:{'Content-Type':'application/json','X-Owner-Secret':secret},body:JSON.stringify(body)});
+ const data=await response.json().catch(()=>({error:'استجابة غير مفهومة من السيرفر'}));
+ if(!response.ok)throw new Error(data.error||'فشل تنفيذ الطلب');
+ return data;
+}
+function adminMessage(message){document.getElementById('adminResults').textContent=message}
 function adminAllowed(){return currentProfile().id==='381914940835'}
-function renderAdminUsers(){const box=document.getElementById('adminResults');const list=getProfiles();box.innerHTML='<h4>الحسابات المسجلة على هذا الجهاز ('+list.length+')</h4>'+list.map(p=>'<div class="admin-user-row"><strong>'+escapeAdmin(p.name||'بدون اسم')+'</strong><br>ID: '+escapeAdmin(p.id)+' · الرصيد: '+Number(p.balance||0)+' · الحالة: '+(p.banned?'محظور':p.closed?'مغلق':'نشط')+'<br><button data-pick="'+escapeAdmin(p.id)+'">اختيار الحساب</button></div>').join('')||'<p>لا توجد حسابات أخرى محفوظة محليًا.</p>';box.querySelectorAll('[data-pick]').forEach(b=>b.onclick=()=>{document.getElementById('adminUserId').value=b.dataset.pick})}
-function escapeAdmin(v){return String(v).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
-function adminTarget(){const id=document.getElementById('adminUserId').value.trim();if(!id)return null;let p=getProfiles().find(x=>String(x.id)===id);if(!p){p={id,name:'حساب تجريبي — غير مربوط بسيرفر',balance:3,warnings:0,createdAt:new Date().toLocaleString('ar-EG'),demo:true};const list=getProfiles();list.push(p);saveProfiles(list)}return p}
-document.querySelectorAll('[data-admin]').forEach(btn=>btn.addEventListener('click',()=>{
+async function ensureOwnerSecret(){
+ let secret=sessionStorage.getItem(OWNER_SECRET_KEY)||'';
+ if(!secret){secret=prompt('أدخل مفتاح المالك (OWNER_SECRET). لن يتم حفظه في الموقع.');if(!secret)return false;sessionStorage.setItem(OWNER_SECRET_KEY,secret.trim());}
+ try{await adminRequest('/admin/overview');return true}catch(e){sessionStorage.removeItem(OWNER_SECRET_KEY);showAdminMessage(e.message);return false}
+}
+function renderAdminUsers(users=[]){
+ const box=document.getElementById('adminResults');
+ box.innerHTML='<h4>👥 المستخدمون على السيرفر ('+users.length+')</h4>'+ (users.length?users.map(p=>'<div class="admin-user-row"><strong>'+escapeAdmin(p.name||'بدون اسم')+'</strong><br>ID: '+escapeAdmin(p.id)+' · الرصيد: '+Number(p.balance||0)+' · التحذيرات: '+Number(p.warnings||0)+'<br>الحالة: '+(p.banned?'محظور':p.closed?'مغلق':'نشط')+'<br><button type="button" data-pick="'+escapeAdmin(p.id)+'">اختيار الحساب</button></div>').join(''):'<p>لا يوجد مستخدمون مسجلون على السيرفر حتى الآن.</p>');
+ box.querySelectorAll('[data-pick]').forEach(b=>b.onclick=()=>{document.getElementById('adminUserId').value=b.dataset.pick});
+}
+function escapeAdmin(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+async function loadAdminUsers(query=''){
+ const data=await adminRequest('/admin/users',{query});
+ renderAdminUsers(data.users||[]);
+}
+async function loadAdminReports(){
+ const data=await adminRequest('/admin/reports');
+ const box=document.getElementById('adminResults'),rows=data.reports||[];
+ box.innerHTML='<h4>📩 البلاغات ('+rows.length+')</h4>'+(rows.length?rows.map(r=>'<div class="admin-report-row"><strong>#'+r.id+' · '+escapeAdmin(r.from_name)+'</strong><br>ID: '+escapeAdmin(r.from_id)+'<br>'+escapeAdmin(r.message)+'<br>'+escapeAdmin(r.created_at)+' · الحالة: '+escapeAdmin(r.status)+'<br><button type="button" data-report="'+r.id+'" data-status="reviewed">قيد المراجعة</button> <button type="button" data-report="'+r.id+'" data-status="resolved">تم الحل</button></div>').join(''):'<p>لا توجد بلاغات على السيرفر.</p>');
+ box.querySelectorAll('[data-report]').forEach(b=>b.onclick=async()=>{try{await adminRequest('/admin/report-status',{id:Number(b.dataset.report),status:b.dataset.status});await loadAdminReports()}catch(e){adminMessage(e.message)}});
+}
+document.getElementById('ownerAdminBtn').addEventListener('click',async()=>{if(!adminAllowed())return;document.getElementById('ownerAdminModal').hidden=false;adminMessage('جاري الاتصال بالسيرفر…');if(await ensureOwnerSecret()){try{const d=await adminRequest('/admin/overview');adminMessage('✅ اتصال السيرفر ناجح · المستخدمون: '+d.stats.users+' · البلاغات: '+d.stats.reports+' · البلاغات الجديدة: '+d.stats.newReports)}catch(e){adminMessage(e.message)}}});
+document.getElementById('closeOwnerAdmin').addEventListener('click',()=>document.getElementById('ownerAdminModal').hidden=true);
+document.querySelectorAll('[data-admin]').forEach(btn=>btn.addEventListener('click',async()=>{
  if(!adminAllowed())return;
  const action=btn.dataset.admin,box=document.getElementById('adminResults');
- if(action==='users'){renderAdminUsers();return}
- if(action==='reports'){const reports=JSON.parse(localStorage.getItem('lina_local_reports')||'[]');box.innerHTML='<h4>البلاغات ('+reports.length+')</h4>'+reports.map((r,i)=>'<div class="admin-report-row">#'+(i+1)+' · '+escapeAdmin(r.fromName)+'<br>ID: '+escapeAdmin(r.fromId)+'<br>'+escapeAdmin(r.message)+'<br>'+escapeAdmin(r.date)+'</div>').join('')||'<p>لا توجد بلاغات على هذا الجهاز.</p>';return}
- const p=adminTarget();if(!p){box.innerHTML='<p>اكتب ID أولًا.</p>';return}
- if(action==='lookup'){box.innerHTML='<div class="admin-user-row"><strong>'+escapeAdmin(p.name)+'</strong><br>ID: '+escapeAdmin(p.id)+'<br>الرصيد: '+Number(p.balance||0)+' نقطة<br>الحالة: '+(p.banned?'محظور':p.closed?'مغلق':'نشط')+'<br>تحذيرات: '+(p.warnings||0)+'<br>تاريخ إنشاء الملف: '+escapeAdmin(p.createdAt||'غير مسجل')+(p.demo?'<br>⚠️ حساب تجريبي للاختبار فقط — ليس مستخدمًا حقيقيًا على جهاز آخر.':'')+'</div>';return}
- if(action==='credit'||action==='debit'){const n=Number(prompt(action==='credit'?'عدد النقاط لإضافتها':'عدد النقاط لسحبها'));if(!Number.isFinite(n)||n<=0)return;p.balance=Math.max(0,Math.floor(Number(p.balance||0)+(action==='credit'?n:-n)));box.textContent='تم تحديث الرصيد محليًا إلى '+p.balance+' نقطة.'}
- if(action==='warn'){p.warnings=(p.warnings||0)+1;p.lastWarning=prompt('اكتب نص التحذير','يرجى الالتزام بقواعد الاستخدام')||'تحذير من المالك';box.textContent='تم حفظ التحذير محليًا على الحساب.'}
- if(action==='ban'){p.banned=!p.banned;box.textContent=p.banned?'تم حظر الحساب محليًا.':'تم فك حظر الحساب محليًا.'}
- if(action==='close'){p.closed=!p.closed;box.textContent=p.closed?'تم إغلاق الحساب محليًا.':'تم فتح الحساب محليًا.'}
- const list=getProfiles(),i=list.findIndex(x=>x.id===p.id);if(i>=0)list[i]=p;saveProfiles(list);renderAdminUsers();
+ try{
+  if(!await ensureOwnerSecret())return;
+  if(action==='users'){await loadAdminUsers();return}
+  if(action==='reports'){await loadAdminReports();return}
+  const id=document.getElementById('adminUserId').value.trim();
+  if(!id){adminMessage('اكتب ID المستخدم أولًا.');return}
+  if(action==='lookup'){
+   const d=await adminRequest('/admin/user-action',{id,action:'lookup'}),p=d.user;
+   box.innerHTML='<div class="admin-user-row"><strong>'+escapeAdmin(p.name)+'</strong><br>ID: '+escapeAdmin(p.id)+'<br>الرصيد: '+Number(p.balance||0)+' نقطة<br>الحالة: '+(p.banned?'محظور':p.closed?'مغلق':'نشط')+'<br>التحذيرات: '+Number(p.warnings||0)+'<br>تاريخ التسجيل: '+escapeAdmin(p.created_at||'غير متاح')+'</div>';return;
+  }
+  if(action==='credit'||action==='debit'){
+   const amount=Number(prompt(action==='credit'?'عدد النقاط لإضافتها':'عدد النقاط لسحبها'));
+   if(!Number.isSafeInteger(amount)||amount<1){adminMessage('اكتب عدد نقاط صحيح أكبر من صفر.');return}
+   const d=await adminRequest('/admin/user-action',{id,action,amount});adminMessage('✅ تم تحديث الرصيد إلى '+d.user.balance+' نقطة.');
+  }else if(['warn','ban','close'].includes(action)){
+   const d=await adminRequest('/admin/user-action',{id,action});
+   const p=d.user;adminMessage('✅ تم تنفيذ الأمر. الحالة: '+(p.banned?'محظور':p.closed?'مغلق':'نشط')+' · التحذيرات: '+p.warnings+' · الرصيد: '+p.balance);
+  }
+ }catch(e){adminMessage('❌ '+e.message)}
 }));
-
 const balanceModal=document.getElementById('balanceModal');document.getElementById('openBalance').addEventListener('click',()=>{const p=currentProfile();const balance=Math.max(0,Math.floor(Number(p.balance)||0));document.getElementById('modalBalanceValue').textContent=balance;document.getElementById('balanceValue').textContent=balance;balanceModal.hidden=false});document.getElementById('closeBalanceModal').addEventListener('click',()=>balanceModal.hidden=true);balanceModal.addEventListener('click',e=>{if(e.target===balanceModal)balanceModal.hidden=true});
 const vipStore=document.getElementById('vipStoreModal');
 document.getElementById('openStore').addEventListener('click',()=>{const p=currentProfile();document.getElementById('vipStoreStatus').textContent=vipActive(p)?'عضويتك VIP مفعلة بالفعل.': 'رصيدك الحالي: '+Number(p.balance||0)+' نقطة.';vipStore.hidden=false});
