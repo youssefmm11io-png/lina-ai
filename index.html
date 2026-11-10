@@ -129,7 +129,7 @@ button:active{transform:scale(.97)}
 .xcxc-hint{font-size:12px;color:#c9aeb7;line-height:1.7}
 .xcxc-panel[hidden]{display:none!important}
 
-.encrypted-codes-launch{display:block;width:100%;margin:10px 0!important;background:linear-gradient(135deg,#050505,#26000b,#85001f)!important;border:1px solid #ff3157!important;color:#fff!important;font-size:17px!important;box-shadow:0 0 13px #ff174466;text-shadow:0 0 8px #ff3157}.code-redeem-box{padding:10px;margin:8px 0 16px;background:#0b080a;border:1px solid #713044;border-radius:13px}.code-redeem-box input{width:100%;min-width:0;background:#160d12;border:1px solid #713044;border-radius:10px;color:#fff;padding:12px;text-align:center;direction:ltr;font:13px monospace}.code-redeem-box button{width:100%;margin:9px 0 2px!important;padding:12px!important;background:linear-gradient(135deg,#ff526e,#bd1238)!important;color:#fff!important;border:0!important;border-radius:11px;font-weight:bold}.code-redeem-box p{min-height:18px;margin:8px 0 0;color:#ffdce4;font-size:12px;line-height:1.6}.encrypted-codes-panel{margin:12px 0;padding:14px;background:linear-gradient(155deg,#17070d,#050505);border:1px solid #a5002b;border-radius:15px;box-shadow:0 0 18px #b0003544;text-align:center}.encrypted-codes-panel[hidden]{display:none!important}.encrypted-codes-panel h4{color:#ff496b;margin:4px 0 13px}.encrypted-code-row{display:flex;align-items:center;gap:8px;margin:8px 0;padding:9px;border:1px solid #562033;border-radius:10px;background:#0b080a}.encrypted-code-value{flex:1;min-width:0;direction:ltr;text-align:left;color:#ffdce4;font:12px monospace;overflow-wrap:anywhere}.encrypted-code-copy{flex:0 0 auto;margin:0!important;padding:8px 11px!important;font-size:12px!important}\n</style>
+.encrypted-codes-launch{display:block;width:100%;margin:10px 0!important;background:linear-gradient(135deg,#050505,#26000b,#85001f)!important;border:1px solid #ff3157!important;color:#fff!important;font-size:17px!important;box-shadow:0 0 13px #ff174466;text-shadow:0 0 8px #ff3157}.code-redeem-box{padding:10px;margin:8px 0 16px;background:#0b080a;border:1px solid #713044;border-radius:13px}.code-redeem-box input{width:100%;min-width:0;background:#160d12;border:1px solid #713044;border-radius:10px;color:#fff;padding:12px;text-align:center;direction:ltr;font:13px monospace}.code-redeem-box button{width:100%;margin:9px 0 2px!important;padding:12px!important;background:linear-gradient(135deg,#ff526e,#bd1238)!important;color:#fff!important;border:0!important;border-radius:11px;font-weight:bold}.code-redeem-box p{min-height:18px;margin:8px 0 0;color:#ffdce4;font-size:12px;line-height:1.6}.encrypted-codes-panel{margin:12px 0;padding:14px;background:linear-gradient(155deg,#17070d,#050505);border:1px solid #a5002b;border-radius:15px;box-shadow:0 0 18px #b0003544;text-align:center}.encrypted-codes-panel[hidden]{display:none!important}.encrypted-codes-panel h4{color:#ff496b;margin:4px 0 13px}.encrypted-code-row{display:flex;align-items:center;gap:8px;margin:8px 0;padding:9px;border:1px solid #562033;border-radius:10px;background:#0b080a}.encrypted-code-value{flex:1;min-width:0;direction:ltr;text-align:left;color:#ffdce4;font:12px monospace;overflow-wrap:anywhere;filter:blur(5px);user-select:none;pointer-events:none}.encrypted-code-copy{flex:0 0 auto;margin:0!important;padding:8px 11px!important;font-size:12px!important}.encrypted-code-row.locked{opacity:.42;filter:grayscale(1)}.encrypted-code-row.locked .encrypted-code-copy{pointer-events:none;cursor:not-allowed}.encrypted-code-lock-note{color:#ffb4c2;font-size:12px;line-height:1.7;padding:9px;background:#260d16;border:1px dashed #a52d4b;border-radius:10px;margin:10px 0}\n</style>
 </head>
 <body>
 <section class="auth-screen" id="authScreen">
@@ -324,7 +324,7 @@ document.getElementById("hackerBotForm").addEventListener("submit",async e=>{e.p
 
 
 
-/* قائمة الأكواد المشفرة واستبدال الهدايا */
+/* قائمة الأكواد المشفرة واستبدال الهدايا — قفل أسبوعي لكل جهاز */
 (()=>{
  const codes=[
  'A7#kP2!mQ9@xL4$zR8&vT5','B3@rN8#qW1!yK6$hM2&cP9',
@@ -340,6 +340,8 @@ document.getElementById("hackerBotForm").addEventListener("submit",async e=>{e.p
  ];
  const redeemedKey='lina_encrypted_codes_redeemed_v1';
  const rewardKey='lina_encrypted_codes_rewards_v1';
+ const lockKey='lina_encrypted_codes_device_lock_v2';
+ const WEEK=7*24*60*60*1000;
  const read=(key,fallback)=>{try{return JSON.parse(localStorage.getItem(key)||JSON.stringify(fallback))}catch{return fallback}};
  const redeemed=read(redeemedKey,[]);
  const rewards=read(rewardKey,{});
@@ -349,16 +351,28 @@ document.getElementById("hackerBotForm").addEventListener("submit",async e=>{e.p
  const prizeTypes=['points','vip','botpass'];
  codes.forEach(code=>{if(!rewards[code])rewards[code]=prizeTypes[Math.floor(Math.random()*prizeTypes.length)]});
  localStorage.setItem(rewardKey,JSON.stringify(rewards));
+ function getLock(){const x=read(lockKey,null);return x&&Number(x.until)>Date.now()?x:null}
+ function lockDevice(code){const x={until:Date.now()+WEEK,code};localStorage.setItem(lockKey,JSON.stringify(x));return x}
  function renderCodes(){
   list.replaceChildren();
+  const lock=getLock();
+  if(lock){
+   const note=document.createElement('div');note.className='encrypted-code-lock-note';
+   note.textContent='🔒 تم تجميد كل الأكواد على هذا الجهاز بعد نسخ كود. تقدر تستخدم كود واحد فقط خلال الأسبوع. ينتهي القفل: '+new Date(lock.until).toLocaleString('ar-EG');
+   list.appendChild(note);
+  }
   codes.forEach((code,index)=>{
    if(redeemed.includes(code))return;
-   const row=document.createElement('div');row.className='encrypted-code-row';
-   const value=document.createElement('span');value.className='encrypted-code-value';value.textContent=(index+1)+'. '+code;
-   const copy=document.createElement('button');copy.type='button';copy.className='encrypted-code-copy';copy.textContent='نسخ';
+   const row=document.createElement('div');row.className='encrypted-code-row'+(lock?' locked':'');
+   const value=document.createElement('span');value.className='encrypted-code-value';value.textContent=(index+1)+'. ••••••••••••••••••••••';
+   const copy=document.createElement('button');copy.type='button';copy.className='encrypted-code-copy';copy.textContent=lock?'🔒 مجمد':'نسخ الكود';
+   copy.disabled=!!lock;
    copy.addEventListener('click',async()=>{
-    try{await navigator.clipboard.writeText(code);showAdminMessage('تم نسخ الكود بنجاح.')}
-    catch(err){const area=document.createElement('textarea');area.value=code;area.style.position='fixed';area.style.opacity='0';document.body.appendChild(area);area.select();try{document.execCommand('copy');showAdminMessage('تم نسخ الكود بنجاح.')}catch(e){showAdminMessage('تعذر النسخ تلقائيًا.')}area.remove()}
+    if(getLock()){renderCodes();return}
+    const active=lockDevice(code);
+    try{await navigator.clipboard.writeText(code);status.textContent='تم نسخ كود واحد. باقي الأكواد اتجمدت لمدة 7 أيام على الجهاز ده.'}
+    catch(err){status.textContent='تم حجز كودك وتجميد الباقي لمدة 7 أيام، لكن النسخ التلقائي لم يعمل. حاول تسمح للمتصفح بالنسخ.'}
+    renderCodes();
    });
    row.append(value,copy);list.appendChild(row);
   });
@@ -366,6 +380,7 @@ document.getElementById("hackerBotForm").addEventListener("submit",async e=>{e.p
  }
  document.getElementById('openEncryptedCodes').addEventListener('click',()=>{
   const panel=document.getElementById('encryptedCodesPanel');panel.hidden=!panel.hidden;
+  if(!panel.hidden)renderCodes();
  });
  document.getElementById('redeemEncryptedCodeBtn').addEventListener('click',()=>{
   const entered=input.value.trim();
@@ -374,6 +389,9 @@ document.getElementById("hackerBotForm").addEventListener("submit",async e=>{e.p
   if(redeemed.includes(entered)){status.textContent='الكود ده اتستخدم قبل كده.';return}
   const p=currentProfile();
   if(!p||!p.id){status.textContent='سجل دخولك الأول.';return}
+  const lock=getLock();
+  if(lock&&lock.code!==entered){status.textContent='الجهاز ده استخدم/نسخ كود بالفعل. استنى لحد انتهاء الـ 7 أيام.';return}
+  if(!lock)lockDevice(entered);
   const reward=rewards[entered];
   let message='';
   if(reward==='points'){
@@ -388,11 +406,11 @@ document.getElementById("hackerBotForm").addEventListener("submit",async e=>{e.p
    message='مبروك! جائزتك كلمة سر البوت 🔐 افتح بوت هكر من داخل الموقع للحصول على كلمة السر الموجودة هناك.';
   }
   redeemed.push(entered);localStorage.setItem(redeemedKey,JSON.stringify(redeemed));
-  input.value='';status.textContent=message;renderCodes();showAdminMessage(message);
+  input.value='';status.textContent=message+' — باقي الأكواد مجمدة لمدة 7 أيام.';renderCodes();showAdminMessage(message);
  });
  renderCodes();
 })();
-
+ 
 /* X_C_X_C activation and PIN gate */
 (()=>{
  const byId=id=>document.getElementById(id);
