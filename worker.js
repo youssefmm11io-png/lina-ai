@@ -67,13 +67,34 @@ export default {
   async fetch(request, env) {
     if (request.method === "OPTIONS") return new Response(null, { headers: cors });
     const url = new URL(request.url);
-    if (url.pathname.startsWith("/admin/")) {\n      try { return await adminApi(request, env, url); } catch (error) { return json({error:"تعذر تنفيذ عملية الإدارة"},500); }\n    }\n    if (url.pathname === "/users/register") {\n      if (request.method !== "POST") return json({error:"Method not allowed"},405);\n      if (!env.DB) return json({error:"قاعدة البيانات غير مربوطة"},503);\n      try {\n        const b=await request.json(), id=clean(b.id,100), name=clean(b.name,40), promo=clean(b.promoCode,7).toUpperCase();\n        if(!id||!name) return json({error:"الاسم والـ ID مطلوبان"},400);\n        const existing=await env.DB.prepare("SELECT * FROM users WHERE id=?").bind(id).first();\n        if(existing) return json({ok:true,user:existing,existing:true});\n        await env.DB.prepare("INSERT INTO users (id,name,balance,promo_code,referred_by) VALUES (?,?,3,?,?)").bind(id,name,clean(b.promoCode,7)||null,null).run();\n        const user=await env.DB.prepare("SELECT * FROM users WHERE id=?").bind(id).first();\n        return json({ok:true,user},201);\n      } catch(error) { return json({error:"تعذر تسجيل المستخدم"},500); }\n    }\n    if (url.pathname === "/reports/create") {\n      if (request.method !== "POST") return json({error:"Method not allowed"},405);\n      if (!env.DB) return json({error:"قاعدة البيانات غير مربوطة"},503);\n      try { const b=await request.json(), id=clean(b.fromId,100), name=clean(b.fromName,40), message=clean(b.message,2000); if(!id||!message)return json({error:"بيانات البلاغ ناقصة"},400); const r=await env.DB.prepare("INSERT INTO reports (from_id,from_name,message) VALUES (?,?,?)").bind(id,name||"مستخدم",message).run(); return json({ok:true,id:r.meta?.last_row_id||null},201); } catch(error){return json({error:"تعذر حفظ البلاغ"},500)}\n    }\n    if (url.pathname.startsWith("/agent/")) {
+    if (url.pathname.startsWith("/admin/")) {
+      try { return await adminApi(request, env, url); } catch (error) { return json({error:"تعذر تنفيذ عملية الإدارة"},500); }
+    }
+    if (url.pathname === "/users/register") {
+      if (request.method !== "POST") return json({error:"Method not allowed"},405);
+      if (!env.DB) return json({error:"قاعدة البيانات غير مربوطة"},503);
+      try {
+        const b=await request.json(), id=clean(b.id,100), name=clean(b.name,40), promo=clean(b.promoCode,7).toUpperCase();
+        if(!id||!name) return json({error:"الاسم والـ ID مطلوبان"},400);
+        const existing=await env.DB.prepare("SELECT * FROM users WHERE id=?").bind(id).first();
+        if(existing) return json({ok:true,user:existing,existing:true});
+        await env.DB.prepare("INSERT INTO users (id,name,balance,promo_code,referred_by) VALUES (?,?,3,?,?)").bind(id,name,clean(b.promoCode,7)||null,null).run();
+        const user=await env.DB.prepare("SELECT * FROM users WHERE id=?").bind(id).first();
+        return json({ok:true,user},201);
+      } catch(error) { return json({error:"تعذر تسجيل المستخدم"},500); }
+    }
+    if (url.pathname === "/reports/create") {
+      if (request.method !== "POST") return json({error:"Method not allowed"},405);
+      if (!env.DB) return json({error:"قاعدة البيانات غير مربوطة"},503);
+      try { const b=await request.json(), id=clean(b.fromId,100), name=clean(b.fromName,40), message=clean(b.message,2000); if(!id||!message)return json({error:"بيانات البلاغ ناقصة"},400); const r=await env.DB.prepare("INSERT INTO reports (from_id,from_name,message) VALUES (?,?,?)").bind(id,name||"مستخدم",message).run(); return json({ok:true,id:r.meta?.last_row_id||null},201); } catch(error){return json({error:"تعذر حفظ البلاغ"},500)}
+    }
+    if (url.pathname.startsWith("/agent/")) {
       if (request.method !== "POST") return json({ error: "Method not allowed" }, 405);
       if (!env.DB) return json({ error: "قاعدة الأكواد المشتركة غير مربوطة بالسيرفر" }, 503);
       try {
         const body = await request.json();
         const code = String(body.code || "").trim();
-        if (!/^\\d{22}$/.test(code)) return json({ error: "الكود لازم يتكون من 22 رقمًا" }, 400);
+        if (!/^\d{22}$/.test(code)) return json({ error: "الكود لازم يتكون من 22 رقمًا" }, 400);
         if (url.pathname === "/agent/register") {
           const expiresAt = Number(body.expiresAt);
           if (!Number.isFinite(expiresAt) || expiresAt <= Date.now()) return json({ error: "تاريخ انتهاء البطاقة غير صالح" }, 400);
@@ -137,7 +158,8 @@ export default {
         .flatMap(item => item.content || [])
         .filter(item => item.type === "output_text")
         .map(item => item.text)
-        .join("\n");
+        .join("
+");
 
       return json({ reply: reply || "مش قادرة أجهز الرد دلوقتي، جرّب تاني ❤️" });
     } catch (error) {
