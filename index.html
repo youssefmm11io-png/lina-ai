@@ -155,6 +155,21 @@ button:active{transform:scale(.97)}
 .games-status{min-height:42px;color:#ffd5df;font-weight:bold;line-height:1.7;padding:8px}
 .games-link{width:100%;padding:11px;background:#090709;border:1px solid #713044;border-radius:12px;color:#ffb4c4;margin:8px 0}
 .games-page[hidden]{display:none!important}
+
+/* Egyptian party trivia */
+.party-card{width:min(100%,620px);margin:12px auto;padding:16px;border:1px solid #8c2946;border-radius:22px;background:linear-gradient(145deg,#241019,#0c090b);box-shadow:0 15px 45px #0009;text-align:center}
+.party-card h3{margin:5px;color:#ff8da5;font-size:23px}.party-muted{color:#cbb3bc;font-size:13px;line-height:1.7}
+.party-btn{width:100%;padding:12px;margin:6px 0;border-radius:13px;border:1px solid #813149;background:#28131c;color:#ffe5eb;font-weight:bold;font-size:15px}
+.party-btn.primary{background:linear-gradient(120deg,#ff5a78,#a90f32);border:0;color:white}
+.party-input{width:100%;padding:13px;border:1px solid #713044;border-radius:12px;background:#100b0e;color:white;margin:7px 0;font-size:16px}
+.party-top{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;color:#ffd4de;font-size:13px;margin:10px 0}
+.party-clock{font-size:35px;font-weight:900;color:#ff7894;margin:8px}
+.party-question{font-size:20px;font-weight:bold;line-height:1.6;padding:18px 10px;background:#170e12;border:1px solid #713044;border-radius:16px;margin:12px 0}
+.party-answer-row{display:flex;gap:7px}.party-answer-row input{flex:1;min-width:0}
+.party-leader{color:#ffd98a}.party-board{text-align:right;background:#120c10;border:1px solid #512334;border-radius:13px;padding:10px;margin:10px 0}
+.party-row{display:flex;justify-content:space-between;padding:7px;border-bottom:1px solid #38202a;font-size:13px}.party-row:last-child{border:0}
+.party-results{text-align:right;background:#1b1016;border-radius:13px;padding:10px;margin-top:10px;line-height:1.8;font-size:13px}
+
 </style>
 </head>
 <body>
@@ -204,6 +219,7 @@ button:active{transform:scale(.97)}
   <p class="games-sub">اختار اللعبة وطريقة اللعب</p>
   <div id="gamesHome">
    <button class="games-btn primary" id="chooseXO">❌⭕ لعبة XO</button>
+   <button class="games-btn primary" id="choosePartyQuiz">🎉 Sporcle Party — تحدي المعلومات</button>
   </div>
   <div id="xoModes" hidden>
    <h2>اختار هتلعب مع مين؟</h2>
@@ -224,6 +240,33 @@ button:active{transform:scale(.97)}
    <button class="games-btn" id="xoAgain">لعبة جديدة</button>
    <button class="games-btn" id="xoExit">إنهاء المباراة</button>
   </div>
+
+   <button class="games-btn" id="backPartyHome">رجوع للألعاب</button>
+  </div>
+  <div id="partyQuiz" hidden class="party-card">
+   <h3>🎉 تحدي لينا المصري</h3>
+   <p class="party-muted">أسئلة عشوائية من كل حتة — 20 ثانية للإجابة — الليدر وحده يقلب السؤال</p>
+   <div id="partySetup">
+    <button class="party-btn primary" id="partyVsLina">🤖 العب مع لينا وشخصيات وهمية</button>
+    <button class="party-btn" id="partyCreateRoom">👥 العب مع صاحبك برابط دعوة + شخصيات وهمية</button>
+    <input class="party-input" id="partyInvite" readonly placeholder="رابط الدعوة هيظهر هنا">
+    <button class="party-btn" id="partyCopyInvite" hidden>نسخ رابط الدعوة</button>
+    <div class="party-muted" id="partyConnectStatus">اختار طريقة اللعب وابدأ التحدي.</div>
+   </div>
+   <div id="partyGame" hidden>
+    <div class="party-top"><span id="partyRound">السؤال 1</span><span id="partyLeader" class="party-leader">👑 الليدر: أنت</span></div>
+    <div class="party-clock" id="partyClock">20</div>
+    <div class="party-question" id="partyQuestion">استعد!</div>
+    <div class="party-answer-row"><input class="party-input" id="partyAnswer" placeholder="اكتب إجابتك هنا..." autocomplete="off"><button class="party-btn primary" id="partySendAnswer" style="width:100px">إرسال</button></div>
+    <div class="party-muted" id="partyAnswerStatus">الإجابات بتظهر بعد انتهاء الوقت.</div>
+    <div class="party-results" id="partyResults">لسه مفيش إجابات.</div>
+    <div class="party-board" id="partyLeaderboard"></div>
+    <button class="party-btn primary" id="partyNext" hidden>السؤال اللي بعده ➜ (الليدر فقط)</button>
+   </div>
+   <button class="party-btn" id="partyExit">إنهاء والرجوع</button>
+  </div>
+ </div>
+</section>
  </div>
 </section>
 \n<div class="secret-privacy-cover" id="secretPrivacyCover" aria-live="polite">🔒 المنطقة السرية محمية<span>تم إخفاء المحتوى أثناء مغادرة الصفحة.</span></div>
@@ -581,5 +624,79 @@ document.addEventListener('click',e=>{if(e.target&&e.target.id==='adminMessageOk
  const invite=new URLSearchParams(location.search).get('xo');if(invite){page.hidden=false;show('lobby');connectHost(invite)}
 })();
 </script>
+
+<script>
+/* Egyptian Sporcle-style party quiz. Friend mode uses PeerJS; host is the only round leader. */
+(()=> {
+ const $=id=>document.getElementById(id);
+ const page=$('gamesPage');if(!page||!$('choosePartyQuiz'))return;
+ const setup=$('partySetup'),game=$('partyGame');
+ let peer=null,conn=null,host=false,mode='bots',leader=true,round=0,timer=null,seconds=20,question=null,answers={},players=[],locked=false;
+ const bank=[
+  ['أفلام','مين بطل فيلم «إكس لارج»؟',['احمد حلمي','أحمد حلمي'],'أحمد حلمي'],
+  ['أفلام','في فيلم «الفيل الأزرق»، اسم الطبيب النفسي إيه؟',['يحيى','د يحيى','يحيى راشد'],'يحيى راشد'],
+  ['أغاني','مين غنى أغنية «تملي معاك»؟',['عمرو دياب'],'عمرو دياب'],
+  ['أغاني','مين صاحب أغنية «بالبنط العريض»؟',['حسين الجسمي','حسين الجسمى'],'حسين الجسمي'],
+  ['مسلسلات','اسم عائلة مسلسل الكبير أوي إيه؟',['المزاريطة','عائلة المزاريطة'],'المزاريطة'],
+  ['كورة','كام لاعب من كل فريق بيكونوا جوه الملعب في بداية ماتش الكورة؟',['11','احداشر','١١'],'11'],
+  ['كورة','منتخب مصر مشهور بلقب إيه؟',['الفراعنة','منتخب الفراعنة'],'الفراعنة'],
+  ['تيك توك','إيه اسم الفيديو القصير اللي بيختفي بعد 24 ساعة على إنستجرام؟',['ستوري','story','الستوري'],'ستوري'],
+  ['تيك توك','اسم زر الإعجاب الشائع في أغلب الفيديوهات؟',['لايك','like','اعجاب','إعجاب'],'لايك'],
+  ['معلومات عامة','الكوكب المعروف بالكوكب الأحمر؟',['المريخ'],'المريخ'],
+  ['معلومات عامة','عاصمة المغرب إيه؟',['الرباط'],'الرباط'],
+  ['جغرافيا','نهر النيل بيصب في أي بحر؟',['البحر المتوسط','المتوسط'],'البحر المتوسط'],
+  ['أكل','الطعمية المصرية بتتعمل غالبًا من إيه؟',['الفول','فول'],'الفول'],
+  ['ألغاز','حاجة ليها أسنان ومابتعضش، إيه هي؟',['المشط','مشط'],'المشط'],
+  ['علوم','الإنسان عنده كام قلب؟',['1','واحد','قلب واحد'],'واحد'],
+  ['أنمي','مين الشخصية الرئيسية في أنمي ناروتو؟',['ناروتو','ناروتو اوزوماكي'],'ناروتو'],
+  ['تاريخ','الأهرامات الأشهر موجودة في محافظة إيه؟',['الجيزة','محافظة الجيزة'],'الجيزة'],
+  ['رياضة','رياضة فيها مضرب وكورة صفراء؟',['تنس','التنس'],'التنس'],
+  ['تقنية','اختصار Wi-Fi بيستخدم للاتصال بإيه؟',['الانترنت','الإنترنت','شبكة لاسلكية','الشبكة'],'الإنترنت'],
+  ['ثقافة','عدد أيام الأسبوع كام؟',['7','سبعة','٧'],'7']
+ ];
+ const egyptNames=['ميدو','زياد','سلمى','كريم','نور','ملك','عمر','جنى','حمزة','منة','آدم','ليلى','يوسف','بسملة','حبيبة','علي','فريدة','مصطفى','تاليا','ياسين'];
+ const norm=x=>String(x||'').toLowerCase().replace(/[أإآ]/g,'ا').replace(/[ى]/g,'ي').replace(/[ة]/g,'ه').replace(/[ًٌٍَُِّْـ]/g,'').replace(/[^؀-ۿ0-9a-z]/g,'').trim();
+ const send=o=>{if(conn&&conn.open)conn.send(o)};
+ function shuffle(a){return [...a].sort(()=>Math.random()-.5)}
+ function newPlayers(){const names=shuffle(egyptNames);players=[{id:'me',name:'أنت',score:0,real:true}];if(mode==='bots')players.push({id:'lina',name:'لينا ❤️',score:0,real:true});for(let i=0;i<5;i++)players.push({id:'bot'+i,name:names[i],score:0,bot:true});}
+ function showBoard(){ $('partyLeaderboard').innerHTML='<b>🏆 الليدر — ترتيب النقاط</b>'+[...players].sort((a,b)=>b.score-a.score).map((p,i)=>'<div class="party-row"><span>'+(i+1)+'. '+p.name+(p.id==='me'?' 👑':'')+'</span><b>'+p.score+' نقطة</b></div>').join(''); }
+ function show(which){$('gamesHome').hidden=which!=='home';$('xoModes').hidden=true;$('xoLobby').hidden=true;$('xoMatch').hidden=true;$('partyQuiz').hidden=which!=='party';setup.hidden=which!=='setup';game.hidden=which!=='game'}
+ function clean(){clearInterval(timer);timer=null;try{conn&&conn.close();peer&&peer.destroy()}catch{}conn=null;peer=null;locked=false}
+ function chooseQuestion(){const q=bank[Math.floor(Math.random()*bank.length)];return {category:q[0],text:q[1],accepted:q[2],answer:q[3]}}
+ function paintQuestion(){ $('partyRound').textContent='السؤال '+round+' · '+question.category;$('partyQuestion').textContent=question.text;$('partyClock').textContent='20';$('partyAnswer').value='';$('partyAnswer').disabled=false;$('partySendAnswer').disabled=false;$('partyAnswerStatus').textContent='اكتب إجابتك قبل انتهاء الوقت!';$('partyResults').textContent='الإجابات هتظهر بعد انتهاء الـ20 ثانية.';$('partyNext').hidden=!leader; }
+ function startRound(q){question=q||chooseQuestion();round++;answers={};locked=false;seconds=20;paintQuestion();clearInterval(timer);timer=setInterval(()=>{seconds--;$('partyClock').textContent=seconds;if(seconds<=0)finishRound()},1000)}
+ function accepted(answer){return question.accepted.some(a=>norm(a)===norm(answer))}
+ function finishRound(){if(locked)return;locked=true;clearInterval(timer);$('partyAnswer').disabled=true;$('partySendAnswer').disabled=true;
+  if(mode==='bots'){players.filter(p=>p.bot||p.id==='lina').forEach(p=>{if(Math.random()<.48){const right=Math.random()<.72;answers[p.id]=right?question.answer:'مش عارف 😅';if(right)p.score+=10}})}
+  const rows=players.filter(p=>!p.bot||answers[p.id]).map(p=>{const a=answers[p.id]||'لم يجاوب';const ok=accepted(a);if(p.id==='me'&&ok)p.score+=10;return '<div class="party-row"><span>'+p.name+': '+a+'</span><b style="color:'+(ok?'#8cffb0':'#ff8da5')+'">'+(ok?'صح +10':'غلط 0')+'</b></div>'});
+  $('partyResults').innerHTML='<b>الحكم: '+question.answer+'</b>'+rows.join('');
+  $('partyAnswerStatus').textContent='انتهى الوقت — الليدر هو اللي يفتح السؤال التالي.';
+  if(mode==='friend')send({type:'roundResult',answers,players,question,round});
+  showBoard();$('partyNext').hidden=!leader;
+ }
+ function answer(){if(locked)return;const a=$('partyAnswer').value.trim();if(!a)return;answers.me=a;$('partyAnswerStatus').textContent='اتسجلت إجابتك ✓';$('partySendAnswer').disabled=true;if(mode==='friend')send({type:'answer',answer:a,round});}
+ function begin(m){clean();mode=m;leader=true;host=true;newPlayers();$('partyLeader').textContent='👑 الليدر: أنت';show('game');startRound();showBoard();if(mode==='bots'){/* bots have changing Egyptian names every session */}}
+ $('choosePartyQuiz').addEventListener('click',()=>show('party'));
+ $('backPartyHome').addEventListener('click',()=>show('home'));
+ $('partyVsLina').addEventListener('click',()=>{show('setup');begin('bots')});
+ $('partyCreateRoom').addEventListener('click',()=>{clean();mode='friend';leader=true;host=true;newPlayers();show('setup');$('partyConnectStatus').textContent='جاري إنشاء غرفة اللعب…';peer=new Peer();peer.on('open',id=>{const u=new URL(location.href);u.searchParams.set('party',id);$('partyInvite').value=u.href;$('partyCopyInvite').hidden=false;$('partyConnectStatus').textContent='ابعت الرابط لصاحبك. أنت الليدر وتتحكم في الأسئلة.';peer.on('connection',c=>{conn=c;conn.on('open',()=>{send({type:'welcome',players,round,question,answers,locked});$('partyConnectStatus').textContent='صاحبك دخل الغرفة!'});conn.on('data',receive)})});peer.on('error',e=>$('partyConnectStatus').textContent='تعذر إنشاء الغرفة: '+e.type)});
+ $('partyCopyInvite').addEventListener('click',async()=>{try{await navigator.clipboard.writeText($('partyInvite').value);$('partyCopyInvite').textContent='اتنسخ ✓'}catch{$('partyInvite').select()}});
+ $('partySendAnswer').addEventListener('click',answer);$('partyAnswer').addEventListener('keydown',e=>{if(e.key==='Enter')answer()});
+ $('partyNext').addEventListener('click',()=>{if(!leader||!locked)return;startRound();if(mode==='friend')send({type:'next',question,round})});
+ $('partyExit').addEventListener('click',()=>{clean();show('home')});
+ function receive(d){if(!d)return;
+  if(d.type==='welcome'){players=d.players||[];leader=false;host=false;mode='friend';$('partyLeader').textContent='👑 الليدر: صاحبك';show('game');round=d.round||1;question=d.question;answers=d.answers||{};locked=!!d.locked;if(question){if(locked){paintQuestion();finishGuest(d)}else{paintQuestion();startGuestClock()}}showBoard()}
+  else if(d.type==='answer'){answers[d.from||'guest']=d.answer}
+  else if(d.type==='next'){round=d.round;startRoundGuest(d.question)}
+  else if(d.type==='roundResult'){players=d.players||players;answers=d.answers||{};question=d.question||question;round=d.round||round;finishGuest(d)}
+ }
+ function startGuestClock(){seconds=20;clearInterval(timer);timer=setInterval(()=>{$('partyClock').textContent=--seconds;if(seconds<=0){clearInterval(timer);$('partyAnswerStatus').textContent='انتهى الوقت عند الليدر. مستني النتيجة.'}},1000)}
+ function startRoundGuest(q){question=q;answers={};locked=false;paintQuestion();$('partyNext').hidden=true;startGuestClock()}
+ function finishGuest(d){locked=true;clearInterval(timer);$('partyAnswer').disabled=true;$('partySendAnswer').disabled=true;players=d.players||players;question=d.question||question;answers=d.answers||answers;$('partyResults').innerHTML='<b>الحكم: '+question.answer+'</b>'+players.map(p=>{const a=answers[p.id]||'لم يجاوب';const ok=accepted(a);return '<div class="party-row"><span>'+p.name+': '+a+'</span><b>'+(ok?'صح':'غلط')+'</b></div>'}).join('');$('partyAnswerStatus').textContent='الليدر هيقلب السؤال التالي لما يكون جاهز.';showBoard()}
+ const invite=new URLSearchParams(location.search).get('party');
+ if(invite){show('party');setup.hidden=false;clean();mode='friend';leader=false;peer=new Peer();$('partyConnectStatus').textContent='جاري الاتصال بالليدر…';peer.on('open',()=>{conn=peer.connect(invite,{reliable:true});conn.on('open',()=>{conn.send({type:'join'})});conn.on('data',receive)});peer.on('error',e=>$('partyConnectStatus').textContent='فشل الاتصال: '+e.type)}
+})();
+</script>
+
 <div class="admin-message-overlay" id="adminMessageOverlay" hidden role="dialog" aria-modal="true" aria-labelledby="adminMessageTitle"><div class="admin-message-card" id="adminMessageCard"><h3 class="admin-message-title" id="adminMessageTitle">تنبيه</h3><div class="admin-message-body" id="adminMessageBody"></div><div class="admin-message-sign">𝒀𝒐𝒖𝒔𝒔𝒆𝒇</div><button class="admin-message-ok" id="adminMessageOk" type="button">حاضر</button></div></div></body>
 </html>
