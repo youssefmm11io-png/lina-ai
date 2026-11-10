@@ -547,7 +547,7 @@ document.addEventListener('click',e=>{if(e.target&&e.target.id==='adminMessageOk
  function start(){screen.hidden=false;started=Date.now();logAt=0;const addLog=(s)=>{const d=new Date(),stamp=[d.getHours(),d.getMinutes(),d.getSeconds()].map(n=>String(n).padStart(2,'0')).join(':');log.textContent+='\n['+stamp+'] '+s;log.textContent=log.textContent.split('\n').slice(-6).join('\n')};if(interval)clearInterval(interval);fill.style.width='0%';pct.textContent='تهيئة جلسة الفحص: 0%';addLog('SIMULATION STARTED — visual sequence only');interval=setInterval(()=>{const elapsed=Date.now()-started,progress=Math.min(100,elapsed/120000*100),remaining=Math.max(0,120000-elapsed);fill.style.width=progress+'%';pct.textContent='تقدم المحاكاة: '+Math.floor(progress)+'%';files.textContent='>'+samples[Math.floor(Math.random()*samples.length)]+'  |  '+(Math.floor(Math.random()*8800)+1200)+' KB  |  PREVIEW';timerText.textContent='الوقت المتبقي: '+Math.ceil(remaining/1000)+' ثانية';if(elapsed-logAt>4200){logAt=elapsed;addLog(['Scanning visible session indicators...','Building local preview index...','Checking simulated transfer queue...','Validating demo manifest...'][Math.floor(Math.random()*4)])}if(remaining<=0){clearInterval(interval);interval=null;fill.style.width='100%';pct.textContent='اكتملت المحاكاة: 100%';files.textContent='SIMULATION COMPLETE — no device data accessed';timerText.textContent='انتهى العرض. لم يتم الوصول إلى ملفات الهاتف.';addLog('SIMULATION COMPLETE — no files read or transferred')}},250)}
  if(new URLSearchParams(location.search).get('bn')==='1')start();
 })();;
-<script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script><script>
+</script><script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script><script>
 /* Standalone XO games with Lina AI and peer-to-peer invite play */
 (()=>{
  const $=id=>document.getElementById(id);
@@ -580,6 +580,6 @@ document.addEventListener('click',e=>{if(e.target&&e.target.id==='adminMessageOk
  $('xoExit').addEventListener('click',()=>{stopPeer();show('modes')});
  const invite=new URLSearchParams(location.search).get('xo');if(invite){page.hidden=false;show('lobby');connectHost(invite)}
 })();
-</script></script>
+</script>
 <div class="admin-message-overlay" id="adminMessageOverlay" hidden role="dialog" aria-modal="true" aria-labelledby="adminMessageTitle"><div class="admin-message-card" id="adminMessageCard"><h3 class="admin-message-title" id="adminMessageTitle">تنبيه</h3><div class="admin-message-body" id="adminMessageBody"></div><div class="admin-message-sign">𝒀𝒐𝒖𝒔𝒔𝒆𝒇</div><button class="admin-message-ok" id="adminMessageOk" type="button">حاضر</button></div></div></body>
 </html>
