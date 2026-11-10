@@ -1,19 +1,73 @@
 const cors = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Methods": "POST, OPTIONS, GET",
-  "Access-Control-Allow-Headers": "Content-Type"
+  "Access-Control-Allow-Headers": "Content-Type, X-Owner-Secret"
 };
-
 const json = (data, status = 200) => new Response(JSON.stringify(data), {
-  status,
-  headers: { ...cors, "Content-Type": "application/json; charset=utf-8" }
+  status, headers: { ...cors, "Content-Type": "application/json; charset=utf-8" }
 });
-
+const clean = (v, n=500) => String(v ?? "").trim().slice(0,n);
+const owner = (request, env) => !!env.OWNER_SECRET &&
+  request.headers.get("X-Owner-Secret") === env.OWNER_SECRET;
+async function adminApi(request, env, url) {
+  if (!env.DB) return json({error:"قاعدة البيانات غير مربوطة"},503);
+  if (!owner(request,env)) return json({error:"غير مصرح — تحقق من كلمة سر المالك"},401);
+  if (request.method !== "POST") return json({error:"Method not allowed"},405);
+  const b = await request.json();
+  if (url.pathname === "/admin/overview") {
+    const [users,reports,pending,agents] = await Promise.all([
+      env.DB.prepare("SELECT COUNT(*) AS n FROM users").first(),
+      env.DB.prepare("SELECT COUNT(*) AS n FROM reports").first(),
+      env.DB.prepare("SELECT COUNT(*) AS n FROM reports WHERE status='new'").first(),
+      env.DB.prepare("SELECT COUNT(*) AS n FROM agent_codes").first()
+    ]);
+    return json({ok:true,stats:{users:users.n,reports:reports.n,newReports:pending.n,agentCodes:agents.n}});
+  }
+  if (url.pathname === "/admin/users") {
+    const q=clean(b.query,100);
+    const rows=q
+      ? await env.DB.prepare("SELECT * FROM users WHERE id LIKE ? OR name LIKE ? ORDER BY created_at DESC LIMIT 100").bind("%"+q+"%","%"+q+"%").all()
+      : await env.DB.prepare("SELECT * FROM users ORDER BY created_at DESC LIMIT 100").all();
+    return json({ok:true,users:rows.results||[]});
+  }
+  if (url.pathname === "/admin/reports") {
+    const rows=await env.DB.prepare("SELECT * FROM reports ORDER BY CASE status WHEN 'new' THEN 0 ELSE 1 END, created_at DESC LIMIT 200").all();
+    return json({ok:true,reports:rows.results||[]});
+  }
+  if (url.pathname === "/admin/user-action") {
+    const id=clean(b.id,100), action=clean(b.action,20);
+    if(!id) return json({error:"مطلوب ID المستخدم"},400);
+    const user=await env.DB.prepare("SELECT * FROM users WHERE id=?").bind(id).first();
+    if(!user) return json({error:"المستخدم غير موجود"},404);
+    if(action==="credit"||action==="debit"){
+      const amount=Math.floor(Number(b.amount));
+      if(!Number.isSafeInteger(amount)||amount<1||amount>100000000) return json({error:"قيمة النقاط غير صالحة"},400);
+      const delta=action==="credit"?amount:-amount;
+      await env.DB.prepare("UPDATE users SET balance=MAX(0,balance+?) WHERE id=?").bind(delta,id).run();
+    } else if(action==="warn") {
+      await env.DB.prepare("UPDATE users SET warnings=warnings+1 WHERE id=?").bind(id).run();
+    } else if(action==="ban"||action==="close") {
+      const col=action==="ban"?"banned":"closed";
+      await env.DB.prepare("UPDATE users SET "+col+"=CASE "+col+" WHEN 1 THEN 0 ELSE 1 END WHERE id=?").bind(id).run();
+    } else if(action==="lookup") {
+      return json({ok:true,user});
+    } else return json({error:"عملية غير معروفة"},400);
+    const updated=await env.DB.prepare("SELECT * FROM users WHERE id=?").bind(id).first();
+    return json({ok:true,user:updated});
+  }
+  if (url.pathname === "/admin/report-status") {
+    const id=Number(b.id), status=clean(b.status,20);
+    if(!Number.isSafeInteger(id)||!["new","reviewed","resolved"].includes(status)) return json({error:"بيانات البلاغ غير صالحة"},400);
+    await env.DB.prepare("UPDATE reports SET status=? WHERE id=?").bind(status,id).run();
+    return json({ok:true});
+  }
+  return json({error:"Unknown admin endpoint"},404);
+}
 export default {
   async fetch(request, env) {
     if (request.method === "OPTIONS") return new Response(null, { headers: cors });
     const url = new URL(request.url);
-    if (url.pathname.startsWith("/agent/")) {
+    if (url.pathname.startsWith("/admin/")) {\n      try { return await adminApi(request, env, url); } catch (error) { return json({error:"تعذر تنفيذ عملية الإدارة"},500); }\n    }\n    if (url.pathname === "/users/register") {\n      if (request.method !== "POST") return json({error:"Method not allowed"},405);\n      if (!env.DB) return json({error:"قاعدة البيانات غير مربوطة"},503);\n      try {\n        const b=await request.json(), id=clean(b.id,100), name=clean(b.name,40), promo=clean(b.promoCode,7).toUpperCase();\n        if(!id||!name) return json({error:"الاسم والـ ID مطلوبان"},400);\n        const existing=await env.DB.prepare("SELECT * FROM users WHERE id=?").bind(id).first();\n        if(existing) return json({ok:true,user:existing,existing:true});\n        await env.DB.prepare("INSERT INTO users (id,name,balance,promo_code,referred_by) VALUES (?,?,3,?,?)").bind(id,name,clean(b.promoCode,7)||null,null).run();\n        const user=await env.DB.prepare("SELECT * FROM users WHERE id=?").bind(id).first();\n        return json({ok:true,user},201);\n      } catch(error) { return json({error:"تعذر تسجيل المستخدم"},500); }\n    }\n    if (url.pathname === "/reports/create") {\n      if (request.method !== "POST") return json({error:"Method not allowed"},405);\n      if (!env.DB) return json({error:"قاعدة البيانات غير مربوطة"},503);\n      try { const b=await request.json(), id=clean(b.fromId,100), name=clean(b.fromName,40), message=clean(b.message,2000); if(!id||!message)return json({error:"بيانات البلاغ ناقصة"},400); const r=await env.DB.prepare("INSERT INTO reports (from_id,from_name,message) VALUES (?,?,?)").bind(id,name||"مستخدم",message).run(); return json({ok:true,id:r.meta?.last_row_id||null},201); } catch(error){return json({error:"تعذر حفظ البلاغ"},500)}\n    }\n    if (url.pathname.startsWith("/agent/")) {
       if (request.method !== "POST") return json({ error: "Method not allowed" }, 405);
       if (!env.DB) return json({ error: "قاعدة الأكواد المشتركة غير مربوطة بالسيرفر" }, 503);
       try {
