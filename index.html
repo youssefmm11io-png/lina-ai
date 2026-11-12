@@ -467,7 +467,10 @@ function speak(text){
  speechSynthesis.speak(u);
 }
 function replyTo(text){
- const answer='لينا واقفه حاليا يتم تجهيز السيرفر الخاص بيها وبعد التجهيز تقدر تتواصل معايا تاني شكرا لتفهمكم 💞';
+ const ownerQuestion=/(مين|من|ما اسم|اسم|who|what).{0,45}(صنع|طور|انشأ|أنشأ|عمل|برمج|مطور|المطور|صاحب|مالك|created|made|built|develop|developer|owner)|(صنعك|طورك|انشاك|أنشاك|عملك|برمجك|مطورك|المطور الخاص بيك|مين مالكك|مين صاحبك|who made you|who created you|who developed you|who is your developer|who is your owner)/i;
+ const answer=ownerQuestion.test(String(text||''))
+  ? 'المطور الخاص بي هوا 𝒀𝒐𝒖𝒔𝒔𝒆𝒇'
+  : 'لينا واقفه حاليا يتم تجهيز السيرفر الخاص بيها وبعد التجهيز تقدر تتواصل معايا تاني شكرا لتفهمكم 💞';
  addText(answer,'bot');
 }
 document.getElementById('form').addEventListener('submit',e=>{
