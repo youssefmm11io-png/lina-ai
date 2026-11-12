@@ -61,6 +61,18 @@ button:active{transform:scale(.97)}
 
 .auth-screen{max-width:430px;margin:7vh auto;padding:30px 23px;background:linear-gradient(155deg,#29121c 0%,#160d12 55%,#0e090c 100%);border:1px solid #8d304b;border-radius:30px;box-shadow:0 24px 70px #000b,0 0 35px #ed294d18;text-align:center;position:relative;overflow:hidden}.auth-screen:before{content:'';position:absolute;width:190px;height:190px;border-radius:50%;background:#ed294d18;filter:blur(45px);top:-90px;right:-60px;pointer-events:none}
 
+.auth-screen{max-height:calc(100dvh - 20px);margin:10px auto;overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin;scrollbar-color:#8d304b #160d12}
+.dev-signature{position:relative;text-align:center;color:#ff9caf;font-size:23px;font-weight:bold;letter-spacing:1px;margin:0 0 12px;text-shadow:0 0 16px #ed294d66}
+.site-rules{position:relative;text-align:right;background:linear-gradient(160deg,#1b1016,#100b0e);border:1px solid #713044;border-radius:18px;padding:14px 15px;margin:0 0 20px;box-shadow:inset 0 0 22px #ed294d0b}
+.site-rules h2{text-align:center;color:#fff;font-size:19px;margin:0 0 12px;padding-bottom:10px;border-bottom:1px solid #713044}
+.site-rule{padding:9px 0;border-bottom:1px solid #48202e;color:#d9c1ca;font-size:13px;line-height:1.75}
+.site-rule:last-of-type{border-bottom:0}
+.site-rule strong{display:block;color:#ffb0c0;font-size:14px;margin-bottom:3px}
+.site-rule p{margin:2px 0;color:#d2b8c2;font-size:13px;line-height:1.75}
+.site-rule ul{margin:4px 0;padding-right:21px}
+.site-rule li{padding:1px 0}
+.site-rule .rule-warning{color:#ff718b;font-weight:bold;margin-top:7px}
+.rules-footer{text-align:center;color:#ff9caf;font-weight:bold;font-size:13px;border-top:1px solid #713044;padding-top:12px;margin-top:5px}
 .auth-screen h1{font-size:29px;margin:8px 0 10px;letter-spacing:.2px}.auth-screen p{color:#d2b8c2;line-height:1.8;font-size:14px}
 .auth-screen form{display:block;background:none;border:0;padding:0}.auth-screen input{width:100%;background:#100b0e;border:1px solid #713044;border-radius:13px;color:#fff;padding:14px;font-size:16px;margin:12px 0;outline:none;text-align:right}
 .auth-primary,.google-btn{width:100%;border:0;border-radius:14px;padding:14px;font-size:16px;font-weight:bold;cursor:pointer;margin-top:8px}
@@ -206,6 +218,17 @@ button:active{transform:scale(.97)}
 </head>
 <body>
 <section class="auth-screen" id="authScreen">
+ <div class="dev-signature">𝑫𝒆𝒗. 𝒀𝒐𝒖𝒔𝒔𝒆𝒇</div>
+ <section class="site-rules" aria-label="قوانين وتعليمات الموقع">
+  <h2>📜 قوانين وتعليمات الموقع</h2>
+  <div class="site-rule"><strong>1. 🌍 الموقع للجميع</strong><p>الموقع متاح للجميع، ونرحب بكل المستخدمين دون استثناء.</p></div>
+  <div class="site-rule"><strong>2. 💰 العملات والرصيد</strong><p>العملات الموجودة داخل الموقع مرتبطة بعمليات دفع حقيقية، لذلك يُرجى التأكد قبل إجراء أي عملية شراء.</p></div>
+  <div class="site-rule"><strong>3. 🔐 قسم الهاك وكلمات المرور</strong><p>إذا كنت تحتاج إلى كلمة مرور خاصة أو صلاحية دخول للقسم، يُرجى التواصل مع المطور مباشرة.</p></div>
+  <div class="site-rule"><strong>4. ⚠️ التحذيرات والعقوبات</strong><p>يُمنع تمامًا:</p><ul><li>الغش أو التلاعب بنظام الموقع.</li><li>التلاعب بالرصيد أو العملات.</li><li>الحصول على العملات بطرق غير شرعية.</li><li>محاولة سرقة كلمات المرور أو استغلال الحسابات.</li></ul><p class="rule-warning">أي حساب يتم رصد مخالفته والتحقق من نشاطه سيتم حظره نهائيًا دون إمكانية استرجاعه.</p></div>
+  <div class="site-rule"><strong>5. 👁️ مراقبة الحسابات</strong><p>جميع الحسابات والأنشطة داخل الموقع خاضعة للرصد والمراجعة لضمان الأمان ومنع التلاعب.</p></div>
+  <div class="site-rule"><strong>6. 🛠️ الدعم الفني</strong><p>في حالة مواجهة أي مشكلة أو وجود استفسار، يُرجى التواصل مع الدعم الفني للحصول على المساعدة.</p></div>
+  <div class="rules-footer">❤️ احترام القوانين يضمن تجربة أفضل للجميع</div>
+ </section>
  <h1>أهلًا بيك في لينا ❤️</h1>
  <p>ادخل باسمك أو بالـ ID الخاص بملفك. لو أول مرة، اكتب اسم جديد.</p>
  <form id="profileForm">
