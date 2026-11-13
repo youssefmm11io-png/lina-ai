@@ -202,6 +202,40 @@ button:active{transform:scale(.97)}
 .secret-org .hacker-modal #hackerLogin{display:none!important}
 .secret-org .hacker-modal #hackerContent{display:block!important}
 .referral-box{margin:14px 0;padding:14px;background:#100b0e;border:1px solid #713044;border-radius:16px;text-align:right}.referral-box h4{margin:0 0 7px;color:#ffb6c6;font-size:17px}.ref-label{display:block;color:#d8b8c2;font-size:12px;margin:12px 0 5px}.ref-copy-row{display:flex;align-items:center;gap:7px;background:#080608;border:1px solid #572638;border-radius:11px;padding:6px;direction:ltr}.ref-copy-row code,.ref-copy-row input{flex:1;min-width:0;color:#ffe0e7;font-size:15px;letter-spacing:2px;text-align:center;background:transparent;border:0;padding:8px}.ref-copy-row button{border:1px solid #a13b59;background:#351522;color:#ffe1e8;border-radius:9px;padding:9px;font-weight:bold;white-space:nowrap}.referral-box .admin-note{margin:10px 0 0}.auth-screen #signupPromoCode{letter-spacing:2px;text-transform:uppercase}
+
+/* ترتيب مجموعة الرصيد والبروفايل والنقاط المجانية حسب التصميم المطلوب */
+.owner-stack{
+  width:100%;max-width:100%;margin:10px 0 0;padding:12px;
+  display:grid;grid-template-columns:repeat(2,minmax(0,1fr));
+  grid-template-areas:"balance profile" "free free";
+  gap:8px;background:#050505!important;border:1px solid #fff!important;
+  border-radius:20px!important;overflow:hidden;
+}
+.owner-line{display:contents}
+.owner-stack .balance-pill{grid-area:balance}
+.owner-stack>.profile-link{grid-area:profile}
+.owner-stack>.free-points-link{grid-area:free;width:100%}
+.owner-stack .balance-pill,.owner-stack>.profile-link,.owner-stack>.free-points-link{
+  min-width:0;width:100%;height:64px;min-height:64px;padding:10px 12px;
+  display:flex;align-items:center;justify-content:center;gap:10px;
+  background:#171717!important;color:#fff!important;
+  border:2px solid #444!important;border-radius:23px!important;
+  font-size:clamp(14px,4vw,19px)!important;font-weight:800;
+  letter-spacing:0!important;white-space:nowrap;box-shadow:none!important;
+}
+.owner-stack .balance-pill strong{font-size:inherit!important;color:#fff!important}
+.owner-stack>.free-points-link{
+  height:76px;min-height:76px;background:#050505!important;
+  border:2px solid #fff!important;border-radius:23px!important;
+  font-size:clamp(17px,4.5vw,22px)!important;
+}
+.owner-stack>.profile-link{border-right:2px solid #444!important}
+@media(max-width:420px){
+  .owner-stack{padding:12px;gap:8px}
+  .owner-stack .balance-pill,.owner-stack>.profile-link{height:64px;min-height:64px}
+  .owner-stack>.free-points-link{height:76px;min-height:76px}
+}
+
 </style>
 </head>
 <body>
@@ -220,7 +254,7 @@ button:active{transform:scale(.97)}
 <div class="app" id="chatApp" hidden>
 <div class="top-area" id="topArea"><header>
 <div class="lina-info"><h2>Lina ❤️</h2><button class="top-toggle" id="topToggle" type="button" aria-label="إخفاء اللوحة" aria-expanded="true">⌃</button><div class="status">● متوقفة مؤقتًا للتجهيز</div></div>
-<div class="owner-stack"><div class="owner-line"><button class="balance-pill" id="openBalance" type="button" aria-label="عرض الرصيد وشحن الرصيد">🪙 رصيدك: <strong id="balanceValue">3</strong> نقطة</button></div><button class="profile-link" type="button" id="openProfile">PROFILE</button><button class="free-points-link" type="button" id="openFreePoints">🎁 نقاط مجانية</button></div>
+<div class="owner-stack"><div class="owner-line"><button class="balance-pill" id="openBalance" type="button" aria-label="عرض الرصيد وشحن الرصيد">👛 رصيدك: <strong id="balanceValue">3</strong></button><button class="profile-link" type="button" id="openProfile">♙ بروفايل</button></div><button class="free-points-link" type="button" id="openFreePoints">🎁 نقاط مجانية</button></div>
 </header></div>
 <button class="compact-lina" id="compactLina" type="button" aria-label="إظهار لوحة لينا" aria-expanded="true"><span>Lina ❤️</span><span class="compact-arrow">⌄</span></button>
 <div id="profileLabel" hidden></div><section class="agent-modal" id="agentActivateModal" hidden><div class="agent-inner"><h3>🕶️ تفعيل العميل السري</h3><p class="agent-note">أدخل كود البطاقة المكوّن من 22 رقمًا. كل كود صالح للتفعيل مرة واحدة فقط.</p><input id="agentActivateCode" type="text" inputmode="numeric" maxlength="22" autocomplete="off" placeholder="الصق كود البطاقة هنا" style="width:100%;box-sizing:border-box;padding:15px;border-radius:12px;background:#090909;border:1px solid #b51d3c;color:white;text-align:center;font-size:18px;letter-spacing:2px"><button type="button" id="agentActivateSubmit" class="agent-close">تفعيل الكود</button><p id="agentActivateStatus" class="agent-note" aria-live="polite"></p><div class="secret-agent-actions"><button type="button" id="disableSecretAgent">تعطيل العميل السري</button><button type="button" id="enableSecretAgent" hidden>تفعيل العميل السري</button></div><p class="agent-note" id="secretAgentTime"></p><button type="button" id="closeAgentActivate" class="agent-close">إغلاق</button></div></section>
