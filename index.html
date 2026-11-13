@@ -298,6 +298,11 @@ button:active{transform:scale(.97)}
 .lucky-prize-extra{margin-top:10px;padding:10px;border-radius:10px;background:#2a0b10;color:#fff;font-weight:900;direction:ltr;overflow-wrap:anywhere}
 .lucky-prize-card button{width:100%;margin-top:17px;padding:13px;border:0;border-radius:12px;background:#b51f2d;color:#fff;font:inherit;font-weight:900}
 @keyframes luckyPopFade{from{opacity:0}to{opacity:1}}@keyframes luckyPopIn{from{transform:scale(.7) translateY(18px);opacity:0}to{transform:scale(1);opacity:1}}
+
+#freePointsHome .free-points-grid .free-point-tile{width:100%;min-height:76px;height:76px;padding:12px 15px!important;display:flex;flex-direction:column;align-items:flex-start;justify-content:center;gap:5px;border:1px solid #a51e2a!important;border-radius:14px!important;background:linear-gradient(120deg,#171717,#310d12)!important;color:#fff!important;text-align:right;font:inherit;box-shadow:0 3px 10px #0005;cursor:pointer}
+#freePointsHome .free-points-grid .free-point-tile strong{display:block;width:100%;font-size:16px!important;line-height:1.35;color:#fff!important}
+#freePointsHome .free-points-grid .free-point-tile small{display:block;width:100%;font-size:12px;line-height:1.4;color:#ddd!important;font-weight:400}
+#freePointsHome .free-points-grid .free-point-tile:active{transform:scale(.99)}
 </style>
 </head>
 <body>
@@ -327,28 +332,18 @@ button:active{transform:scale(.97)}
   <div id="freePointsHome">
    <h3 style="margin:0 0 6px">🎁 النقاط المجانية</h3>
    <p class="admin-note">اختار طريقة جمع العملات</p>
-   <div style="display:grid;gap:12px;margin-top:18px">
-    <button type="button" class="free-point-tile" id="openDailyRewardPage" style="padding:17px;border:1px solid #a51e2a;border-radius:14px;background:linear-gradient(120deg,#171717,#310d12);color:#fff;text-align:right;font:inherit">
-     <strong style="display:block;font-size:17px">🎁 المكافأة اليومية</strong><small style="color:#ccc">استلم 10 عملات كل 24 ساعة</small>
-    </button>
-    <button type="button" class="free-point-tile" id="openLuckyWheelPage" style="padding:17px;border:1px solid #a51e2a;border-radius:14px;background:linear-gradient(120deg,#171717,#310d12);color:#fff;text-align:right;font:inherit">
-     <strong style="display:block;font-size:17px">🎡 عجلة الحظ</strong><small style="color:#eee">جرّب حظك واكسب جوائز نادرة</small>
-    </button>
-   <button type="button" class="free-point-tile" id="openLotteryPage" style="padding:17px;border:1px solid #b51e2a;border-radius:14px;background:linear-gradient(120deg,#171717,#310d12);color:#fff;text-align:right;font:inherit"><strong style="display:block;font-size:17px">🎰 السحب العشوائي</strong><small style="color:#eee">ادخل الجولة مع 49 لاعبًا وشوف مين هيكسب</small></button>
-   <button type="button" class="free-point-tile" id="openLuckCardsPage" style="padding:17px;border:1px solid #a51e2a;border-radius:14px;background:linear-gradient(120deg,#171717,#310d12);color:#fff;text-align:right;font:inherit">
-     <strong style="display:block;font-size:17px">🍀 كرت الحظ</strong><small style="color:#eee">10 كروت مقلوبة · 3 محاولات يوميًا · السحب بـ3 عملات</small>
-    </button>
-   <button type="button" class="free-point-tile" id="openCipherGamePage" style="padding:17px;border:1px solid #a51e2a;border-radius:14px;background:linear-gradient(120deg,#080b0d,#251015);color:#fff;text-align:right;font:inherit">
-     <strong style="display:block;font-size:17px;color:#ff5268">🧩 شفرة الحظ</strong><small style="color:#eee">10 مراحل تشفير واختراق خيالي · حتى 1000 عملة</small>
-    </button>
-   <button type="button" class="free-point-tile" id="openDailyQuizPage" style="padding:17px;border:1px solid #a51e2a;border-radius:14px;background:linear-gradient(120deg,#171717,#310d12);color:#fff;text-align:right;font:inherit">
-     <strong style="display:block;font-size:17px">🧠 سؤال اليوم</strong><small style="color:#ccc">7 أسئلة يوميًا · 3 عملات لكل إجابة صحيحة</small>
-    </button>
+   <div class="free-points-grid" style="display:grid;grid-template-columns:1fr;gap:10px;margin-top:18px">
+    <button type="button" class="free-point-tile" id="openDailyRewardPage"><strong>🎁 المكافأة اليومية</strong><small>استلم 10 عملات كل 24 ساعة</small></button>
+    <button type="button" class="free-point-tile" id="openLuckyWheelPage"><strong>🎡 عجلة الحظ</strong><small>جرّب حظك واكسب جوائز نادرة</small></button>
+    <button type="button" class="free-point-tile" id="openLotteryPage"><strong>🎰 السحب العشوائي</strong><small>ادخل الجولة مع 49 لاعبًا وشوف مين هيكسب</small></button>
+    <button type="button" class="free-point-tile" id="openLuckCardsPage"><strong>🍀 كرت الحظ</strong><small>10 كروت مقلوبة · 3 محاولات يوميًا · السحب بـ3 عملات</small></button>
+    <button type="button" class="free-point-tile" id="openCipherGamePage"><strong>🧩 شفرة الحظ</strong><small>10 مراحل تشفير واختراق خيالي · حتى 1000 عملة</small></button>
+    <button type="button" class="free-point-tile" id="openDailyQuizPage"><strong>🧠 سؤال اليوم</strong><small>7 أسئلة يوميًا · 3 عملات لكل إجابة صحيحة</small></button>
+    <button type="button" class="free-point-tile" id="openNumberGamePage"><strong>💥 اختار رقمك قبل الانفجار</strong><small>خمن الرقم السري واكسب حسب قربك</small></button>
+    <button type="button" class="free-point-tile" id="openSlotGamePage"><strong>🎰 ماكينة المصادفات</strong><small>3 لفات مجانية كل يوم وجوائز مفاجئة</small></button>
+    <button type="button" class="free-point-tile" id="openBombGamePage"><strong>💣 القنبلة العشوائية</strong><small>اختبر توقيتك وأوقف العداد في اللحظة الصح</small></button>
+    <button type="button" class="free-point-tile" id="openVisitorGamePage"><strong>👤 الزائر الغريب</strong><small>شخصية مجهولة ومهمة سرية كل يوم</small></button>
    </div>
-   <button type="button" class="free-point-tile" id="openNumberGamePage" style="padding:15px;border:1px solid #a51e2a;border-radius:14px;background:linear-gradient(120deg,#171717,#310d12);color:#fff;text-align:right;font:inherit"><strong style="display:block;font-size:17px">💥 اختار رقمك قبل الانفجار</strong><small style="color:#eee">خمن الرقم السري واكسب حسب قربك</small></button>
-   <button type="button" class="free-point-tile" id="openSlotGamePage" style="padding:15px;border:1px solid #a51e2a;border-radius:14px;background:linear-gradient(120deg,#171717,#310d12);color:#fff;text-align:right;font:inherit"><strong style="display:block;font-size:17px">🎰 ماكينة المصادفات</strong><small style="color:#eee">3 لفات مجانية كل يوم وجوائز مفاجئة</small></button>
-   <button type="button" class="free-point-tile" id="openBombGamePage" style="padding:15px;border:1px solid #a51e2a;border-radius:14px;background:linear-gradient(120deg,#171717,#310d12);color:#fff;text-align:right;font:inherit"><strong style="display:block;font-size:17px">💣 القنبلة العشوائية</strong><small style="color:#eee">اختبر توقيتك وأوقف العداد في اللحظة الصح</small></button>
-   <button type="button" class="free-point-tile" id="openVisitorGamePage" style="padding:15px;border:1px solid #a51e2a;border-radius:14px;background:linear-gradient(120deg,#171717,#310d12);color:#fff;text-align:right;font:inherit"><strong style="display:block;font-size:17px">👤 الزائر الغريب</strong><small style="color:#eee">شخصية مجهولة ومهمة سرية كل يوم</small></button>
    <button type="button" class="admin-close" id="closeDailyReward" style="margin-top:16px">إغلاق</button>
   </div>
   <div id="dailyRewardPage" hidden>
