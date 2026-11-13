@@ -623,6 +623,9 @@ button:active{transform:scale(.97)}
  function showChat(){app.classList.remove('home-view','header-collapsed');app.classList.add('chat-view');home.style.setProperty('display','none','important');const top=document.getElementById('topArea'),chat=document.getElementById('chat'),footer=document.querySelector('#chatApp footer');if(top)top.style.setProperty('display','block','important');if(chat){chat.style.setProperty('display','flex','important');chat.style.setProperty('flex','1 1 auto');chat.style.setProperty('min-height','0');}if(footer)footer.style.setProperty('display','block','important');const m=document.getElementById('message');if(m)setTimeout(()=>m.focus(),80);}
  if(open)open.addEventListener('click',showChat);
  document.addEventListener('click',function(e){const trigger=e.target&&e.target.closest?e.target.closest('#openLinaChat'):null;if(trigger){e.preventDefault();showChat();}},true);
+ const avatarLaunchers=home.querySelectorAll('.home-avatar,.home-orbit');
+ avatarLaunchers.forEach(el=>{el.style.cursor='pointer';el.setAttribute('role','button');el.setAttribute('tabindex','0');el.setAttribute('aria-label','افتح شات لينا');el.addEventListener('click',function(e){e.preventDefault();e.stopPropagation();showChat();});el.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();showChat();}});});
+
  const back=document.createElement('button');back.type='button';back.id='backToLinaHome';back.className='chat-home-back';back.textContent='← الرئيسية';back.addEventListener('click',showHome);
  const header=document.querySelector('#topArea header');if(header)header.appendChild(back);
  const style=document.createElement('style');style.textContent='.chat-home-back{margin-top:8px;border:1px solid #713044;border-radius:11px;background:#21121a;color:#ffdce5;padding:8px 12px;font:inherit;font-size:12px;font-weight:800;cursor:pointer}.chat-view #topArea{max-height:210px}';document.head.appendChild(style);
