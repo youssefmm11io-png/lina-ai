@@ -742,14 +742,14 @@ document.querySelectorAll('[data-free-back]').forEach(btn=>btn.addEventListener(
 const CIPHER_STAGES=[
  {level:1,name:'مبتدئ',reward:100,mission:'وصلتنا رسالة قصيرة من عميل مجهول. فك الترميز واكتشف الكلمة.',payload:'U2VjcmV0',clue:'الرسالة مشفرة بـ Base64. حوّل النص إلى كلمات.',answer:'SECRET'},
  {level:2,name:'متوسط',reward:200,mission:'تم اعتراض كلمة مرور بإزاحة قيصر. أعد الحروف 3 خطوات للخلف.',payload:'KHOOR',clue:'كل حرف تحرك 3 أماكن للأمام عند التشفير.',answer:'HELLO'},
- {level:3,name:'متقدم',reward:300,mission:'نظام قديم استخدم عكس ترتيب الحروف. أعد الرسالة إلى أصلها.',payload:'TROPD',clue:'اقرأ الأحرف من اليمين إلى اليسار (بالترتيب العكسي).',answer:'DPORT'},
+ {level:3,name:'متقدم',reward:300,mission:'نظام قديم استخدم عكس ترتيب الحروف. أعد الرسالة إلى أصلها.',payload:'TERCES',clue:'اقرأ الأحرف من اليمين إلى اليسار (بالترتيب العكسي).',answer:'SECRET'},
  {level:4,name:'صعب',reward:400,mission:'مفتاح الإزاحة مخفي في اسم العملية: ROT13. استخرج النص الأصلي.',payload:'FRPERG',clue:'في ROT13 كل حرف يستبدل بالحرف المقابل له بعد 13 خطوة.',answer:'SECRET'},
  {level:5,name:'صعب جدًا',reward:500,mission:'تم تقسيم كلمة المرور إلى مقاطع. اجمعها بالترتيب الصحيح.',payload:'NE | T | WORK',clue:'احذف الفواصل والمسافات، واقرأ المقاطع كما تظهر.',answer:'NETWORK'},
  {level:6,name:'خبير',reward:600,mission:'شفرة قيصر متقدمة. المفتاح هذه المرة 5 خطوات للخلف.',payload:'YMJ XJHWJY',clue:'ارجع كل حرف إنجليزي 5 أماكن للخلف، والمسافة تظل كما هي.',answer:'THE SECRET'},
  {level:7,name:'محترف',reward:700,mission:'سجل النظام يقول: اقلب النص ثم خذ أول 4 أحرف من الناتج.',payload:'NOITCETORP',clue:'اعكس ترتيب الحروف بالكامل، ثم خذ أول أربعة أحرف.',answer:'PROT'},
  {level:8,name:'أسطوري',reward:800,mission:'مفتاح Vigenere مبسط: كل حرف في النص أزيح بمقدار الحرف المقابل من المفتاح KEY. فك الإزاحة.',payload:'RIJVS',clue:'استخدم A=0. اطرح KEY بشكل متكرر من الأحرف المشفرة.',answer:'HELLO'},
  {level:9,name:'نخبة حمراء',reward:900,mission:'الملف يستخدم ترميز Hex. حوّل الأزواج الست عشرية إلى ASCII.',payload:'4C 49 4E 41',clue:'كل زوج Hex يمثل قيمة حرف واحد في جدول ASCII.',answer:'LINA'},
- {level:10,name:'المستوى الأحمر الأخير',reward:1000,mission:'آخر طبقة حماية: فك Base64 أولًا ثم اعكس ترتيب الناتج لتحصل على كلمة المرور.',payload:'TklBTA==',clue:'فك Base64 ثم اعكس الأحرف الناتجة.',answer:'LANI'}
+ {level:10,name:'المستوى الأحمر الأخير',reward:1000,mission:'آخر طبقة حماية: فك Base64 أولًا ثم اعكس ترتيب الناتج لتحصل على كلمة المرور.',payload:'TklBTA==',clue:'فك Base64 ثم اعكس الأحرف الناتجة.',answer:'LAIN'}
 ];
 function cipherDayKey(){return dailyQuizDateKey()}
 function prepareCipherProfile(p){
