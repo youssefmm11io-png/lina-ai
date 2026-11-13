@@ -609,6 +609,8 @@ button:active{transform:scale(.97)}
  const mode=document.getElementById('linaModeBar');
  const panels=document.querySelector('.bottom-panels');
  if(owner)account.appendChild(owner);
+ const freePointsButton=document.getElementById('openFreePoints');
+ if(panels&&freePointsButton)panels.appendChild(freePointsButton);
  if(panels){services.appendChild(panels);panels.classList.add('home-service-grid');}
  const tileInfo={openStore:['🛍️','المتجر','الرصيد والاشتراكات وVIP','#ffb65d','#382719','#6c4827'],openGamesPage:['🎮','الألعاب','العب واختبر مهاراتك','#c18bff','#2b203b','#51406d'],openFreePoints:['🎁','النقاط المجانية','مكافآت وتحديات يومية','#ffcf70','#3b301b','#66512c'],openHacker:['⌘','وضع الهاكر','الأدوات والتجارب السرية','#62e6bf','#17352e','#2e6557']};
  Object.entries(tileInfo).forEach(([id,v])=>{const b=document.getElementById(id);if(!b)return;b.classList.add('home-service');b.style.setProperty('--tile-color',v[3]);b.style.setProperty('--tile-bg',v[4]);b.style.setProperty('--tile-border',v[5]);b.innerHTML='<span class="service-icon">'+v[0]+'</span><strong>'+v[1]+'</strong><small>'+v[2]+'</small><span class="service-arrow">←</span>';});
