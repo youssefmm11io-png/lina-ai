@@ -1083,7 +1083,7 @@ const personalitySelect=document.getElementById('linaPersonality');
 const personalityNote=document.getElementById('linaModeNote');
 const personalityLabels={friendly:'😂 لينا المرحة',caring:'❤️ لينا الحنونة',confident:'😎 لينا الجدعة',smart:'🧠 لينا الذكية',calm:'🌸 لينا الهادية'};
 personalitySelect.value=localStorage.getItem('lina_personality')||'friendly';
-personalityNote.textContent='الشخصية المختارة: '+personalityLabels[personalitySelect.value];
+personalityNote.textContent='الشخصية محفوظة: '+personalityLabels[personalitySelect.value]+' — هتتطبق على ردود الذكاء الاصطناعي بعد توصيل السيرفر.';
 personalitySelect.addEventListener('change',()=>{
  localStorage.setItem('lina_personality',personalitySelect.value);
  personalityNote.textContent='الشخصية المختارة: '+personalityLabels[personalitySelect.value];
@@ -1103,7 +1103,7 @@ voiceInputBtn.addEventListener('click',()=>{
 });
 function replyTo(text){
  const answer='لينا واقفه حاليا يتم تجهيز السيرفر الخاص بيها وبعد التجهيز تقدر تتواصل معايا تاني شكرا لتفهمكم 💞';
- addText(answer,'bot');
+ addText(answer,'bot');speak(answer);
 }
 document.getElementById('form').addEventListener('submit',e=>{
  e.preventDefault();
