@@ -335,6 +335,9 @@ button:active{transform:scale(.97)}
      <strong style="display:block;font-size:17px">🎡 عجلة الحظ</strong><small style="color:#eee">جرّب حظك واكسب جوائز نادرة</small>
     </button>
    <button type="button" class="free-point-tile" id="openLotteryPage" style="padding:17px;border:1px solid #b51e2a;border-radius:14px;background:linear-gradient(120deg,#171717,#310d12);color:#fff;text-align:right;font:inherit"><strong style="display:block;font-size:17px">🎰 السحب العشوائي</strong><small style="color:#eee">ادخل الجولة مع 49 لاعبًا وشوف مين هيكسب</small></button>
+   <button type="button" class="free-point-tile" id="openLuckCardsPage" style="padding:17px;border:1px solid #a51e2a;border-radius:14px;background:linear-gradient(120deg,#171717,#310d12);color:#fff;text-align:right;font:inherit">
+     <strong style="display:block;font-size:17px">🍀 كرت الحظ</strong><small style="color:#eee">10 كروت مقلوبة · 3 محاولات يوميًا · السحب بـ3 عملات</small>
+    </button>
    <button type="button" class="free-point-tile" id="openDailyQuizPage" style="padding:17px;border:1px solid #a51e2a;border-radius:14px;background:linear-gradient(120deg,#171717,#310d12);color:#fff;text-align:right;font:inherit">
      <strong style="display:block;font-size:17px">🧠 سؤال اليوم</strong><small style="color:#ccc">7 أسئلة يوميًا · 3 عملات لكل إجابة صحيحة</small>
     </button>
@@ -365,6 +368,24 @@ button:active{transform:scale(.97)}
    </div>
    <button type="button" id="startLotteryRound" class="agent-close" style="width:100%;margin-top:14px">ابدأ الجولة 🎰</button>
    <p class="admin-note" style="margin-top:8px">لو اسمك اتسحب تكسب ضعف مبلغ الدخول. لو فاز لاعب وهمي، تخسر مبلغ الدخول فقط.</p>
+  </div>
+  <div id="luckCardsPage" hidden>
+   <button type="button" class="admin-close free-points-back" data-free-back style="margin-bottom:10px">← رجوع للقائمة</button>
+   <h3 style="margin:4px 0;color:#fff;text-align:center">🍀 كرت الحظ</h3>
+   <p class="admin-note" style="text-align:center">اختار 3 كروت من أصل 10 · كل محاولة بـ3 عملات</p>
+   <div style="display:flex;justify-content:space-between;gap:8px;margin:12px 0;padding:12px;background:#171717;border:1px solid #a51e2a;border-radius:12px">
+    <strong id="luckCardsAttempts" style="color:#ffd76a">المحاولات: 3 / 3</strong>
+    <strong id="luckCardsBalance" style="color:#fff">رصيدك: — 🪙</strong>
+   </div>
+   <div id="luckCardsGrid" style="display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:9px"></div>
+   <p id="luckCardsStatus" class="admin-note" aria-live="polite" style="text-align:center;min-height:42px;margin-top:12px">3 كروت رابحة تحتها 1000 عملة، و7 كروت حظ أوفر!</p>
+   <style>
+    .luck-card{min-width:0;aspect-ratio:3/4;border:1px solid #d94a55;border-radius:12px;background:linear-gradient(145deg,#3a0d14,#111 70%);color:#fff;font:inherit;font-size:25px;font-weight:900;box-shadow:0 4px 12px #0008;cursor:pointer;transition:transform .35s,background .35s}
+    .luck-card:active{transform:scale(.94)}
+    .luck-card.revealed{background:linear-gradient(145deg,#222,#090909);border-color:#777;font-size:12px;cursor:default;padding:3px}
+    .luck-card.winner{background:linear-gradient(145deg,#5b4210,#171007);border-color:#ffd76a;color:#ffd76a}
+    .luck-card:disabled{opacity:1}
+   </style>
   </div>
   <div id="luckyWheelPage" hidden>
    <button type="button" class="admin-close free-points-back" data-free-back style="margin-bottom:10px">← رجوع للقائمة</button>
@@ -673,6 +694,7 @@ function showFreePointsPage(page){
  document.getElementById('dailyQuizPage').hidden=page!=='quiz';
  document.getElementById('luckyWheelPage').hidden=page!=='wheel';
  document.getElementById('lotteryPage').hidden=page!=='lottery';
+ document.getElementById('luckCardsPage').hidden=page!=='luckcards';
  if(page==='wheel')refreshLuckyWheel();
  if(page==='reward')refreshDailyReward();
  if(page==='quiz')refreshDailyQuiz();
@@ -681,8 +703,49 @@ document.getElementById('openDailyRewardPage').addEventListener('click',()=>show
 document.getElementById('openDailyQuizPage').addEventListener('click',()=>showFreePointsPage('quiz'));
 document.getElementById('openLuckyWheelPage').addEventListener('click',()=>showFreePointsPage('wheel'));
 document.getElementById('openLotteryPage').addEventListener('click',()=>{refreshLotteryPage();showFreePointsPage('lottery')});
+document.getElementById('openLuckCardsPage').addEventListener('click',()=>{refreshLuckCards();showFreePointsPage('luckcards')});
 document.querySelectorAll('[data-free-back]').forEach(btn=>btn.addEventListener('click',()=>showFreePointsPage('home')));
 
+
+const LUCK_CARDS_DAILY_LIMIT=3;
+function luckCardsDateKey(){return dailyQuizDateKey()}
+function prepareLuckCards(p){
+ const key=luckCardsDateKey();
+ if(p.luckCardsDate!==key||!Array.isArray(p.luckCardsLayout)||p.luckCardsLayout.length!==10){
+  const layout=Array(3).fill('win').concat(Array(7).fill('lose'));
+  for(let i=layout.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[layout[i],layout[j]]=[layout[j],layout[i]]}
+  p.luckCardsDate=key;p.luckCardsLayout=layout;p.luckCardsDraws=0;p.luckCardsOpened=[];
+  saveCurrentProfile(p);
+ }
+ if(!Array.isArray(p.luckCardsOpened))p.luckCardsOpened=[];
+ return p;
+}
+function refreshLuckCards(){
+ const p=prepareLuckCards(currentProfile()),draws=Math.min(LUCK_CARDS_DAILY_LIMIT,Math.max(0,Number(p.luckCardsDraws)||0));
+ document.getElementById('luckCardsAttempts').textContent='المحاولات: '+(LUCK_CARDS_DAILY_LIMIT-draws)+' / 3';
+ document.getElementById('luckCardsBalance').textContent='رصيدك: '+Math.max(0,Number(p.balance)||0)+' 🪙';
+ const grid=document.getElementById('luckCardsGrid');grid.innerHTML='';
+ p.luckCardsLayout.forEach((prize,index)=>{
+  const opened=p.luckCardsOpened.includes(index),card=document.createElement('button');
+  card.type='button';card.className='luck-card'+(opened?' revealed':'')+(opened&&prize==='win'?' winner':'');
+  card.disabled=opened||draws>=LUCK_CARDS_DAILY_LIMIT;
+  card.textContent=opened?(prize==='win'?'🎉 1000\nعملة':'💔 حظ أوفر'):'؟';
+  card.setAttribute('aria-label',opened?(prize==='win'?'ربحت 1000 عملة':'حظ أوفر'):'كرت مقلوب رقم '+(index+1));
+  if(!opened&&draws<LUCK_CARDS_DAILY_LIMIT)card.addEventListener('click',()=>drawLuckCard(index));
+  grid.appendChild(card);
+ });
+ if(draws>=3)document.getElementById('luckCardsStatus').textContent='خلصت محاولاتك النهارده ❤️ ارجع بكرة لثلاث محاولات جديدة.';
+}
+function drawLuckCard(index){
+ const p=prepareLuckCards(currentProfile()),draws=Math.min(3,Math.max(0,Number(p.luckCardsDraws)||0)),status=document.getElementById('luckCardsStatus');
+ if(draws>=3||p.luckCardsOpened.includes(index))return;
+ if(Number(p.balance||0)<3){status.textContent='رصيدك مش كافي! محتاج 3 عملات عشان تسحب كرت.';return}
+ p.balance=Math.max(0,Number(p.balance||0)-3);p.luckCardsDraws=draws+1;p.luckCardsOpened.push(index);
+ const won=p.luckCardsLayout[index]==='win';
+ if(won)p.balance+=1000;
+ saveCurrentProfile(p);syncCoinDisplays(p);refreshLuckCards();
+ status.textContent=won?'🎉 مبروك! كسبت 1000 عملة!':'💔 حظ أوفر المرة القادمة. جرّب كرت تاني!';
+}
 
 const lotteryDummyNames=['آدم','ليلى','عمر','نور','سيف','ملك','زياد','جنى','كريم','ريم','مريم','علي','تاليا','حمزة','سلمى','مازن','لارا','آسر','ياسين','هنا','فارس','دانا','مالك','رنا','حسن','جود','إياد','بسملة','رامي','شهد','أنس','فرح','طارق','مي','بلال','ندى','خالد','يارا','مصطفى','لوجي','أدهم','سارة','حازم','رؤى','عمرو','ليان','يوسف','نوران','زياد'];
 let lotteryBusy=false;
