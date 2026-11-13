@@ -310,6 +310,15 @@ button:active{transform:scale(.97)}
   <button type="button" class="agent-close" id="claimDailyReward">استلام 10 عملات 🎁</button>
   <button type="button" class="admin-close" id="closeDailyReward" style="margin-top:9px">إغلاق</button>
  </div>
+
+ <div id="dailyQuiz" style="margin-top:18px;padding-top:16px;border-top:1px solid #713044;text-align:right">
+  <h3 style="text-align:center;margin:0 0 8px">🧠 سؤال اليوم</h3>
+  <p id="dailyQuizProgress" class="admin-note" style="text-align:center">السؤال 1 من 7</p>
+  <p id="dailyQuizQuestion" style="font-size:17px;color:#fff;line-height:1.7"></p>
+  <div id="dailyQuizOptions" style="display:grid;gap:8px"></div>
+  <p id="dailyQuizFeedback" class="admin-note" aria-live="polite" style="text-align:center;min-height:24px"></p>
+  <p id="dailyQuizScore" style="text-align:center;color:#ffd76a;font-weight:bold">كل إجابة صحيحة = 3 عملات 🪙</p>
+ </div>
 </section>
 <section class="vip-modal" id="vipStoreModal" hidden><div class="vip-card"><h3>👑 ترقية لينا VIP</h3><p style="color:#d8c28e">اختار مدة العضوية واستمتع بالمظهر الذهبي ومميزات VIP</p><div class="vip-plan"><strong>⚡ VIP لمدة ساعة</strong><span>100 🪙</span><button type="button" class="vip-features-btn" data-vip-features>✨ مميزات VIP</button><button type="button" data-vip-plan="hour">شراء الباقة</button><button type="button" class="vip-trial-btn" data-vip-trial>🎁 تجربة مجانية 5 دقائق</button></div><div class="vip-plan"><strong>🌟 VIP لمدة 6 شهور</strong><span>1000 🪙</span><button type="button" class="vip-features-btn" data-vip-features>✨ مميزات VIP</button><button type="button" data-vip-plan="sixMonths">شراء الباقة</button><button type="button" class="vip-trial-btn" data-vip-trial>🎁 تجربة مجانية 5 دقائق</button></div><div class="vip-plan"><strong>♾️ VIP مدى الحياة</strong><span>6000 🪙</span><button type="button" class="vip-features-btn" data-vip-features>✨ مميزات VIP</button><button type="button" data-vip-plan="lifetime">شراء الباقة</button><button type="button" class="vip-trial-btn" data-vip-trial>🎁 تجربة مجانية 5 دقائق</button></div><div class="vip-plan" style="background:linear-gradient(145deg,#171717,#303030);border:1px solid #f28a24;color:#fff"><div style="display:flex;justify-content:space-between;align-items:center;gap:8px"><strong>🟠 بطاقة تغيير الاسم</strong><span style="color:#ffad52;font-weight:bold">300 🪙</span></div><div style="margin:12px 0;padding:15px 10px;text-align:center;border:1px solid #f28a24;border-radius:12px;background:linear-gradient(135deg,#292929,#111)"><div style="font-size:30px;color:#f28a24">✎ 👑</div><strong style="color:#fff;font-size:18px">بطاقة تغيير الاسم</strong><div style="font-size:11px;color:#f4a34b;letter-spacing:1px;margin-top:4px">NAME CHANGE CARD</div><p style="font-size:12px;color:#ddd;margin:10px 0 0">تغيير اسمك مرة واحدة فقط</p></div><div id="nameChangeCardCount" class="admin-note" style="color:#f5a044">بطاقاتك المتاحة: 0</div><button type="button" id="buyNameChangeCard" style="background:#f28a24;color:#111;border:0;border-radius:10px;font-weight:bold">شراء البطاقة — 300 عملة 🪙</button></div><div class="vip-plan agent-card-plan"><strong>🕶️ بطاقة العميل السري</strong><span class="agent-price">10,000 🪙</span><div class="admin-note">بطاقة مشفّرة بصريًا • كود 22 رقم • صلاحية 24 ساعة</div><button type="button" class="agent-buy" id="buyAgentCard">🔴 شراء البطاقة</button></div><p id="vipStoreStatus" class="admin-note"></p><p id="vipTrialTimer" class="admin-note" style="color:#ffe7a6;font-weight:bold" hidden></p><div id="vipFeaturesPanel" class="vip-plan" hidden><strong>👑 كل مميزات Lina VIP</strong><div class="admin-note">✨ واجهة شات ذهبية وسوداء لامعة<br>✨ إطار ذهبي لصورة البروفايل وشارة VIP<br>✨ تغيير اسم لينا<br>✨ اختيار خلفية الشات من صور جهازك<br>✨ عضوية عميل مميز طوال مدة الباقة<br>✨ اختيار باقة ساعة أو 6 شهور أو مدى الحياة</div></div><p class="admin-note" style="color:#d7b96d">تنبيه: تفعيل وخصم VIP حاليًا تجريبي ومحفوظ على نفس الجهاز فقط، لحد ربط قاعدة البيانات المشتركة بالسيرفر.</p><button type="button" id="closeVipStore">إغلاق</button></div></section>
 <section class="agent-modal" id="agentCardModal" hidden><div class="agent-inner"><h3>🕶️ بطاقة العميل السري</h3><div class="agent-art"></div><div class="agent-note" id="agentCardState">ملف سري — اكشط الطبقة الحمراء لكشف الرمز</div><div class="agent-scratch-wrap" id="agentScratchWrap"><div class="agent-code" id="agentSecretCode">••••••••••••••••••••••</div><canvas id="agentScratchCanvas"></canvas></div><div class="agent-note" id="agentExpiry"></div><div class="agent-note">اسحب بإصبعك أو الماوس على الطبقة الحمراء. البطاقة محفوظة على هذا الجهاز فقط في النسخة الحالية.</div><button type="button" class="agent-close" id="closeAgentCard">إغلاق</button></div></section>\n<section class="profile-modal" id="profileModal" hidden><div class="profile-card"><button type="button" class="profile-close-top" id="closeProfileTop">✕ إغلاق</button><img class="profile-photo" id="profilePhotoPreview" alt="صورتك الشخصية"><h3>ملفي الشخصي</h3><div id="profileVipBadge" class="vip-badge" hidden>👑 VIP — عميل مميز</div><input id="editProfileName" type="text" maxlength="30" placeholder="اسمك"><p id="nameChangeHint" class="admin-note" style="color:#f2a04a">🔒 تغيير الاسم يحتاج بطاقة تغيير الاسم من المتجر (300 عملة).</p><div class="id-copy"><code id="profileIdValue"></code><button type="button" id="copyProfileId">📋 نسخ</button></div><div class="profile-actions"><button type="button" id="chooseProfilePhoto">📷 تغيير الصورة</button><button type="button" id="removeProfilePhoto">حذف الصورة</button><input id="profilePhotoInput" type="file" accept="image/*" hidden></div><div class="profile-vip-actions"><button type="button" id="changeLinaName">✨ اسم لينا</button><button type="button" id="changeChatBg">🖼️ خلفية الشات</button></div><input id="chatBgInput" type="file" accept="image/*" hidden><div class="profile-actions"><button class="report-btn" type="button" id="reportUser">🚩 إبلاغ عن مشكلة</button></div><div class="profile-actions"><button class="save-profile" type="button" id="saveProfile">حفظ التعديلات</button><button type="button" id="switchProfile">تغيير المستخدم</button></div><p class="auth-hint">ملفك وصورتك والـ ID محفوظين على هذا الجهاز فقط.</p></div></section>
@@ -497,6 +506,71 @@ const dailyRewardModal=document.getElementById('dailyRewardModal');
 const dailyRewardStatus=document.getElementById('dailyRewardStatus');
 const claimDailyReward=document.getElementById('claimDailyReward');
 const DAILY_REWARD_AMOUNT=10,DAILY_REWARD_COOLDOWN=24*60*60*1000;
+const DAILY_QUIZ_REWARD=3,DAILY_QUIZ_COUNT=7;
+const DAILY_QUIZ_BANK=[
+ {q:'ما عاصمة مصر؟',o:['القاهرة','الإسكندرية','الأقصر','أسوان'],a:0},
+ {q:'كم عدد أيام الأسبوع؟',o:['5','6','7','8'],a:2},
+ {q:'ما الكوكب المعروف بالكوكب الأحمر؟',o:['الزهرة','المريخ','زحل','عطارد'],a:1},
+ {q:'ما أكبر محيط في العالم؟',o:['الأطلسي','الهندي','المتجمد','الهادئ'],a:3},
+ {q:'كم ضلعًا للمثلث؟',o:['2','3','4','5'],a:1},
+ {q:'ما اللغة الرسمية في البرازيل؟',o:['الإسبانية','البرتغالية','الإنجليزية','الفرنسية'],a:1},
+ {q:'ما الحيوان الملقب بسفينة الصحراء؟',o:['الحصان','الجمل','الفيل','الغزال'],a:1},
+ {q:'كم دقيقة في الساعة؟',o:['30',' आध','60','90'],a:2},
+ {q:'ما ناتج 9 × 7؟',o:['56','63','72','69'],a:1},
+ {q:'أي عضو يضخ الدم في الجسم؟',o:['الرئة','المخ','القلب','الكبد'],a:2},
+ {q:'ما عاصمة السعودية؟',o:['جدة','مكة','الرياض','الدمام'],a:2},
+ {q:'كم عدد حروف اللغة الإنجليزية؟',o:['24','25','26','28'],a:2},
+ {q:'ما أقرب كوكب إلى الشمس؟',o:['الأرض','عطارد','المريخ','نبتون'],a:1},
+ {q:'ما اسم صغير الأسد؟',o:['شبل','مهر','جرو','حمل'],a:0},
+ {q:'ما ناتج 15 + ч؟',o:['18','19','20','21'],a:2},
+ {q:'في أي قارة تقع مصر؟',o:['أوروبا','آسيا فقط','أفريقيا','أمريكا'],a:2},
+ {q:'ما الغاز الذي يحتاجه الإنسان للتنفس؟',o:['الأكسجين','الهيليوم','النيتروجين','الهيدروجين'],a:0},
+ {q:'كم عدد ألوان قوس قزح؟',o:['5','6','7','8'],a:2},
+ {q:'ما أكبر حيوان على الأرض؟',o:['الفيل الأفريقي','الحوت الأزرق','الزرافة','القرش الأبيض'],a:1},
+ {q:'ما عاصمة فرنسا؟',o:['روما','مدريد','باريس','برلين'],a:2},
+ {q:'ما ناتج 100 ÷ 4؟',o:['20','25','30','40'],a:1}
+];
+function dailyQuizDateKey(){const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')}
+function todaysQuiz(){
+ const seed=dailyQuizDateKey().split('-').join('').split('').reduce((n,c)=>n*31+Number(c),7);
+ let x=seed>>>0;const arr=DAILY_QUIZ_BANK.map((q,i)=>i);
+ for(let i=arr.length-1;i>0;i--){x=(x*1664525+1013904223)>>>0;const j=x%(i+1);[arr[i],arr[j]]=[arr[j],arr[i]]}
+ return arr.slice(0,DAILY_QUIZ_COUNT).map(i=>DAILY_QUIZ_BANK[i]);
+}
+function syncCoinDisplays(p){
+ document.getElementById('balanceValue').textContent=p.balance;
+ const m=document.getElementById('modalBalanceValue');if(m)m.textContent=p.balance;
+ const b=document.getElementById('profileBalanceValue');if(b)b.textContent=p.balance;
+}
+function refreshDailyQuiz(){
+ const p=currentProfile(),key=dailyQuizDateKey();
+ if(p.dailyQuizDate!==key){p.dailyQuizDate=key;p.dailyQuizAnswers=[];saveCurrentProfile(p)}
+ const answers=Array.isArray(p.dailyQuizAnswers)?p.dailyQuizAnswers:[];
+ const questions=todaysQuiz(),next=answers.length;
+ const progress=document.getElementById('dailyQuizProgress'),question=document.getElementById('dailyQuizQuestion'),options=document.getElementById('dailyQuizOptions'),feedback=document.getElementById('dailyQuizFeedback'),score=document.getElementById('dailyQuizScore');
+ const earned=answers.filter(a=>a&&a.correct).length*DAILY_QUIZ_REWARD;
+ score.textContent='إجابات صحيحة: '+answers.filter(a=>a&&a.correct).length+' من 7 · كسبت '+earned+' عملة';
+ options.innerHTML='';
+ if(next>=DAILY_QUIZ_COUNT){progress.textContent='خلصت أسئلة النهارده ✓';question.textContent='أحسنت! جاوبت على الأسئلة السبعة. ارجع بكرة لأسئلة جديدة.';feedback.textContent='إجمالي مكسبك من الأسئلة النهارده: '+earned+' عملة 🪙';return}
+ progress.textContent='السؤال '+(next+1)+' من 7';
+ question.textContent=questions[next].q;
+ questions[next].o.forEach((choice,index)=>{const btn=document.createElement('button');btn.type='button';btn.textContent=choice;btn.style.cssText='padding:12px;border:1px solid #713044;border-radius:12px;background:#171014;color:#fff;font:inherit;text-align:center;cursor:pointer';btn.addEventListener('click',()=>answerDailyQuiz(index));options.appendChild(btn)});
+ feedback.textContent='اختار إجابة واحدة. كل إجابة صحيحة تكسبك 3 عملات.';
+}
+function answerDailyQuiz(choice){
+ const p=currentProfile(),key=dailyQuizDateKey();
+ if(p.dailyQuizDate!==key){p.dailyQuizDate=key;p.dailyQuizAnswers=[]}
+ const answers=Array.isArray(p.dailyQuizAnswers)?p.dailyQuizAnswers:[];
+ if(answers.length>=DAILY_QUIZ_COUNT)return;
+ const q=todaysQuiz()[answers.length],correct=choice===q.a;
+ answers.push({correct,at:Date.now()});p.dailyQuizAnswers=answers;
+ if(correct)p.balance=Math.max(0,Math.floor(Number(p.balance)||0))+DAILY_QUIZ_REWARD;
+ saveCurrentProfile(p);syncCoinDisplays(p);
+ const feedback=document.getElementById('dailyQuizFeedback');
+ feedback.textContent=correct?'إجابة صحيحة! اتضافت 3 عملات لرصيدك 🎉':'للأسف إجابة غلط، جرّب السؤال اللي بعده بكرة ❤️';
+ refreshDailyQuiz();
+}
+
 function refreshDailyReward(){
  const p=currentProfile(),last=Number(p.lastDailyRewardAt||0),remaining=DAILY_REWARD_COOLDOWN-(Date.now()-last);
  const ready=remaining<=0;
@@ -506,7 +580,7 @@ function refreshDailyReward(){
  if(ready)dailyRewardStatus.textContent='مكافأتك اليومية جاهزة! اضغط استلام لتحصل على 10 عملات.';
  else {const hours=Math.floor(remaining/3600000),minutes=Math.ceil((remaining%3600000)/60000);dailyRewardStatus.textContent='استلمت مكافأتك بالفعل. ارجع بعد '+hours+' ساعة و'+minutes+' دقيقة.';}
 }
-document.getElementById('openFreePoints').addEventListener('click',()=>{refreshDailyReward();dailyRewardModal.hidden=false});
+document.getElementById('openFreePoints').addEventListener('click',()=>{refreshDailyReward();refreshDailyQuiz();dailyRewardModal.hidden=false});
 document.getElementById('closeDailyReward').addEventListener('click',()=>dailyRewardModal.hidden=true);
 dailyRewardModal.addEventListener('click',e=>{if(e.target===dailyRewardModal)dailyRewardModal.hidden=true});
 claimDailyReward.addEventListener('click',()=>{
