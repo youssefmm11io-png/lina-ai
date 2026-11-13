@@ -383,9 +383,11 @@ button:active{transform:scale(.97)}
     <button type="button" class="free-point-tile" id="openSlotGamePage"><strong>🎰 ماكينة المصادفات</strong><small>3 لفات مجانية كل يوم وجوائز مفاجئة</small></button>
     <button type="button" class="free-point-tile" id="openBombGamePage"><strong>💣 القنبلة العشوائية</strong><small>اختبر توقيتك وأوقف العداد في اللحظة الصح</small></button>
     <button type="button" class="free-point-tile" id="openVisitorGamePage"><strong>👤 الزائر الغريب</strong><small>شخصية مجهولة ومهمة سرية كل يوم</small></button>
+    <button type="button" class="free-point-tile" id="openVipRiddlePage" style="border:1px solid #d6ad52;box-shadow:0 0 12px #d6ad5266"><strong>👑 لغز النخبة VIP</strong><small>تحدي حصري وجائزة ذهبية مضاعفة</small></button>
    </div>
    <button type="button" class="admin-close" id="closeDailyReward" style="margin-top:16px">إغلاق</button>
   </div>
+  <div id="vipRiddlePage" hidden><button type="button" class="admin-close free-points-back" data-free-back style="margin-bottom:12px">← رجوع للقائمة</button><h3>👑 لغز النخبة VIP</h3><p class="admin-note">ما الشيء الذي كلما أخذت منه كبر؟</p><input id="vipRiddleAnswer" type="text" placeholder="اكتب إجابتك" style="width:100%;background:#111;border:1px solid #b68b35;border-radius:12px;padding:13px;color:white"><p id="vipRiddleStatus" class="admin-note" aria-live="polite"></p><button type="button" class="agent-close" id="vipRiddleSubmit">تحقق من الإجابة 👑</button></div>
   <div id="dailyRewardPage" hidden>
    <button type="button" class="admin-close free-points-back" data-free-back style="margin-bottom:12px">← رجوع للقائمة</button>
    <h3>🎁 المكافأة اليومية</h3>
@@ -820,6 +822,7 @@ showFreePointsPage('home');
 function showFreePointsPage(page){
  document.getElementById('freePointsHome').hidden=page!=='home';
  document.getElementById('dailyRewardPage').hidden=page!=='reward';
+ const vipRiddlePage=document.getElementById('vipRiddlePage');if(vipRiddlePage)vipRiddlePage.hidden=page!=='vipRiddle';
  document.getElementById('dailyQuizPage').hidden=page!=='quiz';
  document.getElementById('luckyWheelPage').hidden=page!=='wheel';
  document.getElementById('lotteryPage').hidden=page!=='lottery';
@@ -1062,6 +1065,8 @@ document.getElementById('spinLuckyWheel').addEventListener('click',()=>{
 });
 
 
+document.getElementById('openVipRiddlePage').addEventListener('click',()=>{const p=currentProfile();if(!vipActive(p)){showAdminMessage('لغز النخبة متاح لأعضاء VIP فقط 👑');return}const key=new Date().toLocaleDateString('en-CA');document.getElementById('vipRiddleAnswer').value='';document.getElementById('vipRiddleStatus').textContent=p.vipRiddleDate===key?'أنهيت تحدي النهارده. ارجع بكرة للغز جديد.':'جاوب صح واكسب 250 عملة أساسية، ومكافأتك تتضاعف مع VIP!';document.getElementById('vipRiddleSubmit').disabled=p.vipRiddleDate===key;showFreePointsPage('vipRiddle')});
+document.getElementById('vipRiddleSubmit').addEventListener('click',()=>{const p=currentProfile(),key=new Date().toLocaleDateString('en-CA');if(!vipActive(p)){showAdminMessage('الميزة لأعضاء VIP فقط.');return}if(p.vipRiddleDate===key)return;const answer=document.getElementById('vipRiddleAnswer').value.trim();if(!['الحفرة','حفره'].includes(answer)){document.getElementById('vipRiddleStatus').textContent='مش دي الإجابة، فكر تاني وجرب!';return}const reward=vipReward(p,250);p.balance=Math.max(0,Number(p.balance)||0)+reward;p.vipRiddleDate=key;saveCurrentProfile(p);syncCoinDisplays(p);document.getElementById('vipRiddleStatus').textContent='إجابة صحيحة! كسبت '+reward+' عملة ذهبية 👑';document.getElementById('vipRiddleSubmit').disabled=true});
 document.getElementById('closeDailyReward').addEventListener('click',()=>dailyRewardModal.hidden=true);
 dailyRewardModal.addEventListener('click',e=>{if(e.target===dailyRewardModal)dailyRewardModal.hidden=true});
 claimDailyReward.addEventListener('click',()=>{
