@@ -338,6 +338,9 @@ button:active{transform:scale(.97)}
    <button type="button" class="free-point-tile" id="openLuckCardsPage" style="padding:17px;border:1px solid #a51e2a;border-radius:14px;background:linear-gradient(120deg,#171717,#310d12);color:#fff;text-align:right;font:inherit">
      <strong style="display:block;font-size:17px">🍀 كرت الحظ</strong><small style="color:#eee">10 كروت مقلوبة · 3 محاولات يوميًا · السحب بـ3 عملات</small>
     </button>
+   <button type="button" class="free-point-tile" id="openCipherGamePage" style="padding:17px;border:1px solid #a51e2a;border-radius:14px;background:linear-gradient(120deg,#080b0d,#251015);color:#fff;text-align:right;font:inherit">
+     <strong style="display:block;font-size:17px;color:#ff5268">🧩 شفرة الحظ</strong><small style="color:#eee">10 مراحل تشفير واختراق خيالي · حتى 1000 عملة</small>
+    </button>
    <button type="button" class="free-point-tile" id="openDailyQuizPage" style="padding:17px;border:1px solid #a51e2a;border-radius:14px;background:linear-gradient(120deg,#171717,#310d12);color:#fff;text-align:right;font:inherit">
      <strong style="display:block;font-size:17px">🧠 سؤال اليوم</strong><small style="color:#ccc">7 أسئلة يوميًا · 3 عملات لكل إجابة صحيحة</small>
     </button>
@@ -410,6 +413,29 @@ button:active{transform:scale(.97)}
      <div id="luckyPrizeExtra" class="lucky-prize-extra" hidden></div>
      <button type="button" id="closeLuckyPrize">استمرار ❤️</button>
     </div>
+   </div>
+  </div>
+  <div id="cipherGamePage" hidden>
+   <button type="button" class="admin-close free-points-back" data-free-back style="margin-bottom:10px">← رجوع للقائمة</button>
+   <div id="cipherTerminal" style="background:radial-gradient(ellipse at top,#18251e,#080b0d 65%);border:1px solid #315c42;border-radius:15px;padding:14px;color:#d8ffe3;text-align:right;box-shadow:inset 0 0 24px #07150d">
+    <div style="display:flex;justify-content:space-between;gap:8px;align-items:center;border-bottom:1px solid #315c42;padding-bottom:10px">
+     <strong style="color:#68ff9b;letter-spacing:1px">⌘ LINA // CIPHER LAB</strong><span id="cipherLevelTag" style="font-size:12px;color:#ff6478">LEVEL 01 / 10</span>
+    </div>
+    <h3 style="text-align:center;color:#ff5268;margin:14px 0 4px">🧩 شفرة الحظ</h3>
+    <p id="cipherDifficulty" style="text-align:center;color:#ffc1c9;margin:4px 0 12px">مبتدئ · مكافأة 100 عملة</p>
+    <div style="display:flex;justify-content:space-between;gap:8px;background:#101a15;border:1px solid #294a36;border-radius:10px;padding:10px;font-size:13px">
+     <strong id="cipherAttempts">المحاولات: 2</strong><strong id="cipherBalance">رصيدك: — 🪙</strong>
+    </div>
+    <p id="cipherMission" style="line-height:1.8;color:#e8fff0;margin:14px 0 8px">تم اعتراض ملف مشفر. فك الشفرة واكتب الكلمة السرية.</p>
+    <div style="background:#030706;border:1px solid #28583b;border-radius:10px;padding:16px;text-align:center;margin:10px 0">
+     <small style="display:block;color:#6da985;margin-bottom:8px">ENCRYPTED PAYLOAD</small>
+     <code id="cipherPayload" dir="ltr" style="font-size:22px;font-weight:900;letter-spacing:2px;color:#68ff9b;overflow-wrap:anywhere">U2VjcmV0</code>
+    </div>
+    <p id="cipherClue" style="font-size:13px;color:#a8cbb4;line-height:1.7">تلميح: فك ترميز Base64.</p>
+    <input id="cipherAnswer" type="text" autocomplete="off" placeholder="اكتب الكلمة بعد فك التشفير" style="width:100%;padding:13px;border-radius:9px;border:1px solid #3b7650;background:#07100b;color:#fff;font-size:16px;text-align:center;direction:ltr">
+    <button type="button" id="cipherSubmit" class="agent-close" style="width:100%;margin-top:10px;background:linear-gradient(120deg,#155b35,#102d20);border:1px solid #55d987">تحقق من الشفرة ⌁</button>
+    <p id="cipherFeedback" aria-live="polite" style="min-height:42px;text-align:center;color:#b9f6ca;line-height:1.7;margin:12px 0 0">لديك محاولتان لكل مرحلة. الخطأ الثاني يقفل المختبر حتى بكرة.</p>
+    <div id="cipherProgress" style="display:grid;grid-template-columns:repeat(10,minmax(0,1fr));gap:5px;margin-top:12px"></div>
    </div>
   </div>
   <div id="dailyQuizPage" hidden>
@@ -695,6 +721,8 @@ function showFreePointsPage(page){
  document.getElementById('luckyWheelPage').hidden=page!=='wheel';
  document.getElementById('lotteryPage').hidden=page!=='lottery';
  document.getElementById('luckCardsPage').hidden=page!=='luckcards';
+ document.getElementById('cipherGamePage').hidden=page!=='cipher';
+ if(page==='cipher')refreshCipherGame();
  if(page==='wheel')refreshLuckyWheel();
  if(page==='reward')refreshDailyReward();
  if(page==='quiz')refreshDailyQuiz();
@@ -704,8 +732,76 @@ document.getElementById('openDailyQuizPage').addEventListener('click',()=>showFr
 document.getElementById('openLuckyWheelPage').addEventListener('click',()=>showFreePointsPage('wheel'));
 document.getElementById('openLotteryPage').addEventListener('click',()=>{refreshLotteryPage();showFreePointsPage('lottery')});
 document.getElementById('openLuckCardsPage').addEventListener('click',()=>{refreshLuckCards();showFreePointsPage('luckcards')});
+document.getElementById('openCipherGamePage').addEventListener('click',()=>showFreePointsPage('cipher'));
+
 document.querySelectorAll('[data-free-back]').forEach(btn=>btn.addEventListener('click',()=>showFreePointsPage('home')));
 
+
+
+/* LINA CIPHER LAB — fictional, text-based cipher puzzles */
+const CIPHER_STAGES=[
+ {level:1,name:'مبتدئ',reward:100,mission:'وصلتنا رسالة قصيرة من عميل مجهول. فك الترميز واكتشف الكلمة.',payload:'U2VjcmV0',clue:'الرسالة مشفرة بـ Base64. حوّل النص إلى كلمات.',answer:'SECRET'},
+ {level:2,name:'متوسط',reward:200,mission:'تم اعتراض كلمة مرور بإزاحة قيصر. أعد الحروف 3 خطوات للخلف.',payload:'KHOOR',clue:'كل حرف تحرك 3 أماكن للأمام عند التشفير.',answer:'HELLO'},
+ {level:3,name:'متقدم',reward:300,mission:'نظام قديم استخدم عكس ترتيب الحروف. أعد الرسالة إلى أصلها.',payload:'TROPD',clue:'اقرأ الأحرف من اليمين إلى اليسار (بالترتيب العكسي).',answer:'DPORT'},
+ {level:4,name:'صعب',reward:400,mission:'مفتاح الإزاحة مخفي في اسم العملية: ROT13. استخرج النص الأصلي.',payload:'FRPERG',clue:'في ROT13 كل حرف يستبدل بالحرف المقابل له بعد 13 خطوة.',answer:'SECRET'},
+ {level:5,name:'صعب جدًا',reward:500,mission:'تم تقسيم كلمة المرور إلى مقاطع. اجمعها بالترتيب الصحيح.',payload:'NE | T | WORK',clue:'احذف الفواصل والمسافات، واقرأ المقاطع كما تظهر.',answer:'NETWORK'},
+ {level:6,name:'خبير',reward:600,mission:'شفرة قيصر متقدمة. المفتاح هذه المرة 5 خطوات للخلف.',payload:'YMJ XJHWJY',clue:'ارجع كل حرف إنجليزي 5 أماكن للخلف، والمسافة تظل كما هي.',answer:'THE SECRET'},
+ {level:7,name:'محترف',reward:700,mission:'سجل النظام يقول: اقلب النص ثم خذ أول 4 أحرف من الناتج.',payload:'NOITCETORP',clue:'اعكس ترتيب الحروف بالكامل، ثم خذ أول أربعة أحرف.',answer:'PROT'},
+ {level:8,name:'أسطوري',reward:800,mission:'مفتاح Vigenere مبسط: كل حرف في النص أزيح بمقدار الحرف المقابل من المفتاح KEY. فك الإزاحة.',payload:'RIJVS',clue:'استخدم A=0. اطرح KEY بشكل متكرر من الأحرف المشفرة.',answer:'HELLO'},
+ {level:9,name:'نخبة حمراء',reward:900,mission:'الملف يستخدم ترميز Hex. حوّل الأزواج الست عشرية إلى ASCII.',payload:'4C 49 4E 41',clue:'كل زوج Hex يمثل قيمة حرف واحد في جدول ASCII.',answer:'LINA'},
+ {level:10,name:'المستوى الأحمر الأخير',reward:1000,mission:'آخر طبقة حماية: فك Base64 أولًا ثم اعكس ترتيب الناتج لتحصل على كلمة المرور.',payload:'TklBTA==',clue:'فك Base64 ثم اعكس الأحرف الناتجة.',answer:'LANI'}
+];
+function cipherDayKey(){return dailyQuizDateKey()}
+function prepareCipherProfile(p){
+ const key=cipherDayKey();
+ if(p.cipherDay!==key){p.cipherDay=key;p.cipherAttempts=0;p.cipherLocked=false;saveCurrentProfile(p)}
+ if(!Number.isInteger(p.cipherLevel)||p.cipherLevel<1)p.cipherLevel=1;
+ if(!Array.isArray(p.cipherSolved))p.cipherSolved=[];
+}
+function refreshCipherGame(){
+ const p=currentProfile();prepareCipherProfile(p);
+ const level=Math.min(10,Number(p.cipherLevel)||1),stage=CIPHER_STAGES[level-1],attempts=Number(p.cipherAttempts)||0,locked=!!p.cipherLocked,solved=level>10;
+ const terminal=document.getElementById('cipherTerminal');
+ terminal.style.borderColor=level>=8?'#a71932':level>=5?'#74402c':'#315c42';
+ terminal.style.background=level>=8?'radial-gradient(ellipse at top,#3a1019,#090607 68%)':'radial-gradient(ellipse at top,#18251e,#080b0d 65%)';
+ document.getElementById('cipherLevelTag').textContent=solved?'ALL CLEARED':'LEVEL '+String(level).padStart(2,'0')+' / 10';
+ document.getElementById('cipherDifficulty').textContent=solved?'تم اختراق كل المراحل!':stage.name+' · مكافأة '+stage.reward+' عملة';
+ document.getElementById('cipherAttempts').textContent=locked?'المختبر مقفول لبكرة':'المحاولات المتبقية: '+(2-attempts);
+ document.getElementById('cipherBalance').textContent='رصيدك: '+(Number(p.balance)||0)+' 🪙';
+ document.getElementById('cipherMission').textContent=solved?'أحسنت! أنهيت مختبر الشفرات بالكامل. عد غدًا لجولة جديدة.':stage.mission;
+ document.getElementById('cipherPayload').textContent=solved?'ACCESS GRANTED':stage.payload;
+ document.getElementById('cipherClue').textContent=solved?'حصلت على جميع مكافآت المختبر.':stage.clue;
+ const input=document.getElementById('cipherAnswer'),submit=document.getElementById('cipherSubmit');
+ input.disabled=locked||solved;submit.disabled=locked||solved;
+ input.value='';
+ document.getElementById('cipherFeedback').textContent=locked?'❌ انتهت محاولاتك. ارجع بكرة عشان تفتح المراحل من جديد.':solved?'🏆 كل المراحل مكتملة!':'فك الشفرة واكتب الناتج بدقة.';
+ const progress=document.getElementById('cipherProgress');progress.innerHTML='';
+ CIPHER_STAGES.forEach((st,i)=>{const el=document.createElement('div');el.textContent=p.cipherSolved.includes(i+1)?'✓':String(i+1);el.style.cssText='padding:7px 0;text-align:center;border-radius:6px;font-size:12px;font-weight:bold;background:'+(p.cipherSolved.includes(i+1)?'#174d2d':i+1===level?'#762033':'#171717')+';border:1px solid '+(i+1>=8?'#a52c43':'#315c42')+';color:#fff';progress.appendChild(el)});
+}
+document.getElementById('cipherSubmit').addEventListener('click',()=>{
+ const p=currentProfile();prepareCipherProfile(p);
+ if(p.cipherLocked||p.cipherLevel>10)return;
+ const stage=CIPHER_STAGES[p.cipherLevel-1],answer=document.getElementById('cipherAnswer').value.trim().toUpperCase().replace(/\s+/g,' ');
+ const feedback=document.getElementById('cipherFeedback');
+ if(!answer){feedback.textContent='اكتب الحل الأول.';return}
+ if(answer===stage.answer){
+  p.balance=(Number(p.balance)||0)+stage.reward;
+  if(!Array.isArray(p.cipherSolved))p.cipherSolved=[];
+  if(!p.cipherSolved.includes(stage.level))p.cipherSolved.push(stage.level);
+  p.cipherLevel=stage.level+1;p.cipherAttempts=0;
+  saveCurrentProfile(p);syncCoinDisplays(p);
+  feedback.textContent='✅ شفرة صحيحة! أضيفت '+stage.reward+' عملة لرصيدك. جاري فتح المستوى التالي...';
+  refreshCipherGame();
+  document.getElementById('cipherFeedback').textContent='🎉 إجابة صحيحة! كسبت '+stage.reward+' عملة، والمستوى التالي اتفتح.';
+ }else{
+  p.cipherAttempts=(Number(p.cipherAttempts)||0)+1;
+  if(p.cipherAttempts>=2){p.cipherLocked=true;feedback.textContent='🚨 تم رصد محاولتين فاشلتين. تم قفل المختبر حتى اليوم التالي.'}
+  else feedback.textContent='❌ الشفرة غير صحيحة. فاضلك محاولة واحدة فقط!';
+  saveCurrentProfile(p);refreshCipherGame();
+  document.getElementById('cipherFeedback').textContent=p.cipherLocked?'🚨 تم قفل المختبر حتى بكرة بعد نفاد المحاولتين.':'❌ إجابة غير صحيحة. فاضلك محاولة واحدة فقط!';
+ }
+});
+document.getElementById('cipherAnswer').addEventListener('keydown',e=>{if(e.key==='Enter')document.getElementById('cipherSubmit').click()});
 
 const LUCK_CARDS_DAILY_LIMIT=3;
 function luckCardsDateKey(){return dailyQuizDateKey()}
