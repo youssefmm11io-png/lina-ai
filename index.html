@@ -1086,7 +1086,7 @@ personalitySelect.value=localStorage.getItem('lina_personality')||'friendly';
 personalityNote.textContent='الشخصية محفوظة: '+personalityLabels[personalitySelect.value]+' — هتتطبق على ردود الذكاء الاصطناعي بعد توصيل السيرفر.';
 personalitySelect.addEventListener('change',()=>{
  localStorage.setItem('lina_personality',personalitySelect.value);
- personalityNote.textContent='الشخصية المختارة: '+personalityLabels[personalitySelect.value];
+ personalityNote.textContent='الشخصية محفوظة: '+personalityLabels[personalitySelect.value]+' — هتتطبق على ردود الذكاء الاصطناعي بعد توصيل السيرفر.';
 });
 const voiceInputBtn=document.getElementById('voiceInputBtn');
 let speechRecognition=null;
