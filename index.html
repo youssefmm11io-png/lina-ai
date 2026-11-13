@@ -345,6 +345,10 @@ button:active{transform:scale(.97)}
      <strong style="display:block;font-size:17px">🧠 سؤال اليوم</strong><small style="color:#ccc">7 أسئلة يوميًا · 3 عملات لكل إجابة صحيحة</small>
     </button>
    </div>
+   <button type="button" class="free-point-tile" id="openNumberGamePage" style="padding:15px;border:1px solid #a51e2a;border-radius:14px;background:linear-gradient(120deg,#171717,#310d12);color:#fff;text-align:right;font:inherit"><strong style="display:block;font-size:17px">💥 اختار رقمك قبل الانفجار</strong><small style="color:#eee">خمن الرقم السري واكسب حسب قربك</small></button>
+   <button type="button" class="free-point-tile" id="openSlotGamePage" style="padding:15px;border:1px solid #a51e2a;border-radius:14px;background:linear-gradient(120deg,#171717,#310d12);color:#fff;text-align:right;font:inherit"><strong style="display:block;font-size:17px">🎰 ماكينة المصادفات</strong><small style="color:#eee">3 لفات مجانية كل يوم وجوائز مفاجئة</small></button>
+   <button type="button" class="free-point-tile" id="openBombGamePage" style="padding:15px;border:1px solid #a51e2a;border-radius:14px;background:linear-gradient(120deg,#171717,#310d12);color:#fff;text-align:right;font:inherit"><strong style="display:block;font-size:17px">💣 القنبلة العشوائية</strong><small style="color:#eee">اختبر توقيتك وأوقف العداد في اللحظة الصح</small></button>
+   <button type="button" class="free-point-tile" id="openVisitorGamePage" style="padding:15px;border:1px solid #a51e2a;border-radius:14px;background:linear-gradient(120deg,#171717,#310d12);color:#fff;text-align:right;font:inherit"><strong style="display:block;font-size:17px">👤 الزائر الغريب</strong><small style="color:#eee">شخصية مجهولة ومهمة سرية كل يوم</small></button>
    <button type="button" class="admin-close" id="closeDailyReward" style="margin-top:16px">إغلاق</button>
   </div>
   <div id="dailyRewardPage" hidden>
@@ -436,6 +440,34 @@ button:active{transform:scale(.97)}
     <button type="button" id="cipherSubmit" class="agent-close" style="width:100%;margin-top:10px;background:linear-gradient(120deg,#155b35,#102d20);border:1px solid #55d987">تحقق من الشفرة ⌁</button>
     <p id="cipherFeedback" aria-live="polite" style="min-height:42px;text-align:center;color:#b9f6ca;line-height:1.7;margin:12px 0 0">لديك محاولتان لكل مرحلة. الخطأ الثاني يقفل المختبر حتى بكرة.</p>
     <div id="cipherProgress" style="display:grid;grid-template-columns:repeat(10,minmax(0,1fr));gap:5px;margin-top:12px"></div>
+   </div>
+  </div>
+  <div id="numberGamePage" hidden>
+   <button type="button" class="admin-close free-points-back" data-free-back style="margin-bottom:12px">← رجوع للقائمة</button>
+   <h3 style="text-align:center">💥 اختار رقمك قبل الانفجار</h3><p class="admin-note">اختار رقمًا من 1 إلى 100. الرقم السري بيتحدد عشوائيًا؛ كل ما تقرب تكسب أكتر. محاولة واحدة يوميًا.</p>
+   <input id="numberGuessInput" type="number" min="1" max="100" placeholder="رقمك من 1 لـ100" style="width:100%;padding:14px;border-radius:10px;background:#090909;color:#fff;border:1px solid #a51e2a;font-size:20px;text-align:center">
+   <button id="numberGuessButton" type="button" class="agent-close" style="width:100%;margin-top:10px">اكشف الرقم 🎯</button><p id="numberGuessStatus" class="admin-note" aria-live="polite" style="text-align:center;min-height:44px"></p>
+  </div>
+  <div id="slotGamePage" hidden>
+   <button type="button" class="admin-close free-points-back" data-free-back style="margin-bottom:12px">← رجوع للقائمة</button>
+   <h3 style="text-align:center">🎰 ماكينة المصادفات</h3><p id="slotGameAttempts" class="admin-note" style="text-align:center">3 لفات مجانية اليوم</p>
+   <div id="slotGameReels" dir="ltr" style="display:flex;justify-content:center;gap:10px;margin:24px 0;font-size:48px"><span>❔</span><span>❔</span><span>❔</span></div>
+   <button id="slotGameSpin" type="button" class="agent-close" style="width:100%">لف الماكينة 🎰</button><p id="slotGameStatus" class="admin-note" aria-live="polite" style="text-align:center;min-height:44px"></p>
+  </div>
+  <div id="bombGamePage" hidden>
+   <button type="button" class="admin-close free-points-back" data-free-back style="margin-bottom:12px">← رجوع للقائمة</button>
+   <h3 style="text-align:center">💣 القنبلة العشوائية</h3><p class="admin-note">ابدأ العداد واضغط إيقاف لما تحس إنك وصلت للتوقيت الصح. كل يوم محاولة واحدة.</p>
+   <div id="bombGameClock" style="font-size:48px;text-align:center;padding:24px;color:#ff5268;font-weight:900">00.00</div>
+   <button id="bombGameButton" type="button" class="agent-close" style="width:100%">ابدأ التحدي 💣</button><p id="bombGameStatus" class="admin-note" aria-live="polite" style="text-align:center;min-height:44px"></p>
+  </div>
+  <div id="visitorGamePage" hidden>
+   <button type="button" class="admin-close free-points-back" data-free-back style="margin-bottom:12px">← رجوع للقائمة</button>
+   <h3 style="text-align:center">👤 الزائر الغريب</h3>
+   <div style="border:1px solid #a51e2a;border-radius:14px;padding:15px;background:linear-gradient(145deg,#250d15,#090909)">
+    <div style="font-size:42px;text-align:center">🕵️</div><p id="visitorGameMessage" style="text-align:center;line-height:1.8">فيه زائر مجهول مستنيك...</p>
+    <input id="visitorGameAnswer" type="text" placeholder="اكتب إجابتك هنا" style="width:100%;padding:13px;border-radius:10px;background:#090909;color:#fff;border:1px solid #713044;text-align:center">
+    <button id="visitorGameSubmit" type="button" class="agent-close" style="width:100%;margin-top:10px">إرسال الإجابة</button>
+    <p id="visitorGameStatus" class="admin-note" aria-live="polite" style="text-align:center;min-height:40px"></p>
    </div>
   </div>
   <div id="dailyQuizPage" hidden>
@@ -722,6 +754,14 @@ function showFreePointsPage(page){
  document.getElementById('lotteryPage').hidden=page!=='lottery';
  document.getElementById('luckCardsPage').hidden=page!=='luckcards';
  document.getElementById('cipherGamePage').hidden=page!=='cipher';
+ document.getElementById('numberGamePage').hidden=page!=='number';
+ document.getElementById('slotGamePage').hidden=page!=='slot';
+ document.getElementById('bombGamePage').hidden=page!=='bomb';
+ document.getElementById('visitorGamePage').hidden=page!=='visitor';
+ if(page==='number')refreshNumberGame();
+ if(page==='slot')refreshSlotGame();
+ if(page==='bomb')refreshBombGame();
+ if(page==='visitor')refreshVisitorGame();
  if(page==='cipher')refreshCipherGame();
  if(page==='wheel')refreshLuckyWheel();
  if(page==='reward')refreshDailyReward();
@@ -733,8 +773,27 @@ document.getElementById('openLuckyWheelPage').addEventListener('click',()=>showF
 document.getElementById('openLotteryPage').addEventListener('click',()=>{refreshLotteryPage();showFreePointsPage('lottery')});
 document.getElementById('openLuckCardsPage').addEventListener('click',()=>{refreshLuckCards();showFreePointsPage('luckcards')});
 document.getElementById('openCipherGamePage').addEventListener('click',()=>showFreePointsPage('cipher'));
+document.getElementById('openNumberGamePage').addEventListener('click',()=>showFreePointsPage('number'));
+document.getElementById('openSlotGamePage').addEventListener('click',()=>showFreePointsPage('slot'));
+document.getElementById('openBombGamePage').addEventListener('click',()=>showFreePointsPage('bomb'));
+document.getElementById('openVisitorGamePage').addEventListener('click',()=>showFreePointsPage('visitor'));
 
 document.querySelectorAll('[data-free-back]').forEach(btn=>btn.addEventListener('click',()=>showFreePointsPage('home')));
+
+/* Four surprise mini-games — local profile rewards, no entry fee */
+const surpriseDate=()=>new Date().toLocaleDateString('en-CA');
+function surpriseReward(amount,label){const p=currentProfile();p.balance=Math.max(0,Math.floor(Number(p.balance)||0))+amount;saveCurrentProfile(p);syncCoinDisplays(p);return label+' اتضاف لرصيدك '+amount+' 🪙';}
+function refreshNumberGame(){const p=currentProfile(),key=surpriseDate();const used=p.numberGameDate===key;document.getElementById('numberGuessInput').disabled=used;document.getElementById('numberGuessButton').disabled=used;document.getElementById('numberGuessStatus').textContent=used?'خلصت محاولتك النهارده. ارجع بكرة!':'اختار رقمك، ولو قربت من الرقم السري تكسب حتى 100 عملة.'}
+document.getElementById('numberGuessButton').addEventListener('click',()=>{const input=document.getElementById('numberGuessInput'),n=Number(input.value);if(!Number.isInteger(n)||n<1||n>100){document.getElementById('numberGuessStatus').textContent='اكتب رقم صحيح من 1 إلى 100.';return}const p=currentProfile(),key=surpriseDate();if(p.numberGameDate===key)return;const target=1+Math.floor(Math.random()*100),diff=Math.abs(n-target),reward=diff===0?100:diff<=2?60:diff<=5?30:diff<=10?10:0;p.numberGameDate=key;p.numberGameResult={guess:n,target,at:Date.now()};saveCurrentProfile(p);if(reward)document.getElementById('numberGuessStatus').textContent='الرقم السري كان '+target+'! '+surpriseReward(reward,'مبروك!');else document.getElementById('numberGuessStatus').textContent='الرقم السري كان '+target+'. حظ أوفر بكرة!';refreshNumberGame()});
+function refreshSlotGame(){const p=currentProfile(),key=surpriseDate();if(p.slotGameDate!==key){p.slotGameDate=key;p.slotGamePlays=0;saveCurrentProfile(p)}document.getElementById('slotGameAttempts').textContent='اللفات المتبقية اليوم: '+Math.max(0,3-(p.slotGamePlays||0))+' / 3';document.getElementById('slotGameSpin').disabled=(p.slotGamePlays||0)>=3}
+document.getElementById('slotGameSpin').addEventListener('click',()=>{const p=currentProfile(),key=surpriseDate();if(p.slotGameDate!==key){p.slotGameDate=key;p.slotGamePlays=0}if((p.slotGamePlays||0)>=3)return;p.slotGamePlays++;const symbols=['🍒','🍋','⭐','💎','👑','7️⃣'],a=Array.from({length:3},()=>symbols[Math.floor(Math.random()*symbols.length)]);document.getElementById('slotGameReels').innerHTML=a.map(x=>'<span>'+x+'</span>').join('');const counts=a.filter(x=>x===a[0]).length,reward=counts===3?200:counts===2?25:0;saveCurrentProfile(p);document.getElementById('slotGameStatus').textContent=reward?surpriseReward(reward,counts===3?'جاااكبو! 3 رموز متطابقة!':'رمزين متطابقين!'):'مفيش تطابق المرة دي، جرّب لفة تانية.';refreshSlotGame()});
+let bombStartedAt=0,bombTarget=0,bombTimer=null;
+function refreshBombGame(){const p=currentProfile(),used=p.bombGameDate===surpriseDate();document.getElementById('bombGameButton').disabled=used;document.getElementById('bombGameButton').textContent=used?'خلصت محاولة اليوم':'ابدأ التحدي 💣';document.getElementById('bombGameClock').textContent='00.00';document.getElementById('bombGameStatus').textContent=used?'ارجع بكرة لتحدي جديد.':'حاول توقف العداد قريب من التوقيت السري!'}
+document.getElementById('bombGameButton').addEventListener('click',()=>{const btn=document.getElementById('bombGameButton'),clock=document.getElementById('bombGameClock'),status=document.getElementById('bombGameStatus');if(!bombStartedAt){bombStartedAt=performance.now();bombTarget=1800+Math.random()*2700;btn.textContent='أوقف القنبلة الآن!';status.textContent='العداد شغال... اضغط لما تحس إن الوقت صح!';bombTimer=setInterval(()=>clock.textContent=((performance.now()-bombStartedAt)/1000).toFixed(2),30);return}clearInterval(bombTimer);const elapsed=performance.now()-bombStartedAt,diff=Math.abs(elapsed-bombTarget),reward=diff<180?150:diff<400?75:diff<700?25:0;const p=currentProfile();p.bombGameDate=surpriseDate();p.bombGameTime=Math.round(elapsed);saveCurrentProfile(p);bombStartedAt=0;clock.textContent=(elapsed/1000).toFixed(2)+' ث';status.textContent=reward?surpriseReward(reward,'انفجار ناجح! توقيتك ممتاز!'):'انفجرت القنبلة 😂 التوقيت السري كان '+(bombTarget/1000).toFixed(2)+' ثانية. حظ أوفر!';refreshBombGame()});
+const visitorMissions=[{q:'الزائر بيقول: أنا عدد زوجي بين 10 و14. مين أنا؟',a:['12']},{q:'رسالة الزائر: كم حرف في كلمة LINA؟',a:['4','أربعة']},{q:'لغز الزائر: شيء له أسنان ولا يعض، ما هو؟',a:['المشط','مشط']}];
+function refreshVisitorGame(){const p=currentProfile(),used=p.visitorGameDate===surpriseDate(),mission=visitorMissions[p.visitorMissionIndex||0];document.getElementById('visitorGameMessage').textContent=used?'الزائر مشي النهارده... ارجع بكرة لمهمة جديدة.':mission.q;document.getElementById('visitorGameAnswer').disabled=used;document.getElementById('visitorGameSubmit').disabled=used;document.getElementById('visitorGameStatus').textContent=used?'تم إنهاء مهمة اليوم.':'جاوب صح وخد 75 عملة.'}
+document.getElementById('visitorGameSubmit').addEventListener('click',()=>{const p=currentProfile();if(p.visitorGameDate===surpriseDate())return;const mission=visitorMissions[p.visitorMissionIndex||0],answer=document.getElementById('visitorGameAnswer').value.trim().toLocaleLowerCase('ar');if(!answer){document.getElementById('visitorGameStatus').textContent='اكتب إجابتك الأول.';return}p.visitorGameDate=surpriseDate();p.visitorMissionIndex=(Math.floor(Math.random()*visitorMissions.length));saveCurrentProfile(p);if(mission.a.some(x=>x.toLocaleLowerCase('ar')===answer))document.getElementById('visitorGameStatus').textContent=surpriseReward(75,'الزائر مبسوط بإجابتك!');else document.getElementById('visitorGameStatus').textContent='إجابة مش صحيحة. الزائر اختفى! الإجابة: '+mission.a[0];refreshVisitorGame()});
+
 
 
 
