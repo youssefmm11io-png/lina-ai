@@ -766,7 +766,7 @@ function refreshCipherGame(){
  terminal.style.background=level>=8?'radial-gradient(ellipse at top,#3a1019,#090607 68%)':'radial-gradient(ellipse at top,#18251e,#080b0d 65%)';
  document.getElementById('cipherLevelTag').textContent=solved?'ALL CLEARED':'LEVEL '+String(level).padStart(2,'0')+' / 10';
  document.getElementById('cipherDifficulty').textContent=solved?'تم اختراق كل المراحل!':stage.name+' · مكافأة '+stage.reward+' عملة';
- document.getElementById('cipherAttempts').textContent=locked?'المختبر مقفول لبكرة':'المحاولات المتبقية: '+(2-attempts);
+ document.getElementById('cipherAttempts').textContent=locked?'المختبر مقفول لبكرة':(level<=7?'المحاولات: مفتوحة':'المحاولات المتبقية: '+(2-attempts));
  document.getElementById('cipherBalance').textContent='رصيدك: '+(Number(p.balance)||0)+' 🪙';
  document.getElementById('cipherMission').textContent=solved?'أحسنت! أنهيت مختبر الشفرات بالكامل. عد غدًا لجولة جديدة.':stage.mission;
  document.getElementById('cipherPayload').textContent=solved?'ACCESS GRANTED':stage.payload;
@@ -794,11 +794,15 @@ document.getElementById('cipherSubmit').addEventListener('click',()=>{
   refreshCipherGame();
   document.getElementById('cipherFeedback').textContent='🎉 إجابة صحيحة! كسبت '+stage.reward+' عملة، والمستوى التالي اتفتح.';
  }else{
-  p.cipherAttempts=(Number(p.cipherAttempts)||0)+1;
-  if(p.cipherAttempts>=2){p.cipherLocked=true;feedback.textContent='🚨 تم رصد محاولتين فاشلتين. تم قفل المختبر حتى اليوم التالي.'}
-  else feedback.textContent='❌ الشفرة غير صحيحة. فاضلك محاولة واحدة فقط!';
-  saveCurrentProfile(p);refreshCipherGame();
-  document.getElementById('cipherFeedback').textContent=p.cipherLocked?'🚨 تم قفل المختبر حتى بكرة بعد نفاد المحاولتين.':'❌ إجابة غير صحيحة. فاضلك محاولة واحدة فقط!';
+  if(stage.level>=8){
+   p.cipherAttempts=(Number(p.cipherAttempts)||0)+1;
+   if(p.cipherAttempts>=2)p.cipherLocked=true;
+   saveCurrentProfile(p);refreshCipherGame();
+   document.getElementById('cipherFeedback').textContent=p.cipherLocked?'🚨 تم قفل المختبر حتى بكرة بعد نفاد المحاولتين.':'❌ إجابة غير صحيحة. فاضلك محاولة واحدة فقط!';
+  }else{
+   saveCurrentProfile(p);
+   feedback.textContent='❌ الإجابة مش صحيحة، حاول تاني براحتك. مفيش قفل في المراحل من 1 إلى 7.';
+  }
  }
 });
 document.getElementById('cipherAnswer').addEventListener('keydown',e=>{if(e.key==='Enter')document.getElementById('cipherSubmit').click()});
