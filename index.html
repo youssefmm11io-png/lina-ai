@@ -203,39 +203,53 @@ button:active{transform:scale(.97)}
 .secret-org .hacker-modal #hackerContent{display:block!important}
 .referral-box{margin:14px 0;padding:14px;background:#100b0e;border:1px solid #713044;border-radius:16px;text-align:right}.referral-box h4{margin:0 0 7px;color:#ffb6c6;font-size:17px}.ref-label{display:block;color:#d8b8c2;font-size:12px;margin:12px 0 5px}.ref-copy-row{display:flex;align-items:center;gap:7px;background:#080608;border:1px solid #572638;border-radius:11px;padding:6px;direction:ltr}.ref-copy-row code,.ref-copy-row input{flex:1;min-width:0;color:#ffe0e7;font-size:15px;letter-spacing:2px;text-align:center;background:transparent;border:0;padding:8px}.ref-copy-row button{border:1px solid #a13b59;background:#351522;color:#ffe1e8;border-radius:9px;padding:9px;font-weight:bold;white-space:nowrap}.referral-box .admin-note{margin:10px 0 0}.auth-screen #signupPromoCode{letter-spacing:2px;text-transform:uppercase}
 
-/* ترتيب مجموعة الرصيد والبروفايل والنقاط المجانية حسب التصميم المطلوب */
+/* ضبط الهيدر ومجموعة الأزرار: ترتيب عمودي وحجم متناسق على الموبايل */
+.top-area header{
+  display:flex!important;flex-direction:column!important;align-items:stretch!important;
+  gap:12px!important;padding:12px!important;min-height:0!important;
+}
+.top-area .lina-info{
+  order:0;width:100%;display:flex;flex-direction:row;align-items:center;
+  justify-content:flex-start;gap:10px;
+}
+.top-area .lina-info h2{font-size:17px}
+.top-area .lina-info .status{font-size:11px}
 .owner-stack{
-  width:100%;max-width:100%;margin:10px 0 0;padding:12px;
-  display:grid;grid-template-columns:repeat(2,minmax(0,1fr));
-  grid-template-areas:"balance profile" "free free";
-  gap:8px;background:#050505!important;border:1px solid #fff!important;
+  order:1;width:100%;max-width:none;margin:0!important;padding:10px!important;
+  display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr));
+  grid-template-areas:"balance profile" "free free";gap:8px!important;
+  background:#050505!important;border:1px solid #fff!important;
   border-radius:20px!important;overflow:hidden;
 }
-.owner-line{display:contents}
+.owner-line{display:contents!important}
 .owner-stack .balance-pill{grid-area:balance}
-.owner-stack>.profile-link{grid-area:profile}
-.owner-stack>.free-points-link{grid-area:free;width:100%}
-.owner-stack .balance-pill,.owner-stack>.profile-link,.owner-stack>.free-points-link{
-  min-width:0;width:100%;height:64px;min-height:64px;padding:10px 12px;
-  display:flex;align-items:center;justify-content:center;gap:10px;
+.owner-stack .profile-link{grid-area:profile}
+.owner-stack .free-points-link{grid-area:free;width:100%}
+.owner-stack .balance-pill,
+.owner-stack .profile-link,
+.owner-stack .free-points-link{
+  box-sizing:border-box;min-width:0;width:100%;height:64px;min-height:64px;
+  margin:0!important;padding:8px 10px!important;display:flex!important;
+  align-items:center;justify-content:center;gap:8px;
   background:#171717!important;color:#fff!important;
-  border:2px solid #444!important;border-radius:23px!important;
-  font-size:clamp(14px,4vw,19px)!important;font-weight:800;
-  letter-spacing:0!important;white-space:nowrap;box-shadow:none!important;
+  border:2px solid #444!important;border-radius:22px!important;
+  font-family:inherit;font-size:clamp(14px,4vw,18px)!important;
+  font-weight:800!important;letter-spacing:0!important;white-space:nowrap;
+  box-shadow:none!important;text-shadow:none!important;
 }
 .owner-stack .balance-pill strong{font-size:inherit!important;color:#fff!important}
-.owner-stack>.free-points-link{
+.owner-stack .free-points-link{
   height:76px;min-height:76px;background:#050505!important;
-  border:2px solid #fff!important;border-radius:23px!important;
-  font-size:clamp(17px,4.5vw,22px)!important;
+  border:2px solid #fff!important;border-radius:22px!important;
+  font-size:clamp(17px,4.5vw,21px)!important;
 }
-.owner-stack>.profile-link{border-right:2px solid #444!important}
+.owner-stack .profile-link{border-right:2px solid #444!important}
 @media(max-width:420px){
-  .owner-stack{padding:12px;gap:8px}
-  .owner-stack .balance-pill,.owner-stack>.profile-link{height:64px;min-height:64px}
-  .owner-stack>.free-points-link{height:76px;min-height:76px}
+  .top-area header{padding:10px!important;gap:10px!important}
+  .owner-stack{padding:10px!important;gap:8px!important}
+  .owner-stack .balance-pill,.owner-stack .profile-link{height:62px;min-height:62px}
+  .owner-stack .free-points-link{height:72px;min-height:72px}
 }
-
 </style>
 </head>
 <body>
