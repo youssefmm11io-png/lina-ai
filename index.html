@@ -340,7 +340,7 @@ button:active{transform:scale(.97)}
 </section>
 <div class="app" id="chatApp" hidden>
 <div class="lina-home-screen" id="linaHomeScreen">
- <div class="home-topline"><div><div class="home-brand">LINA <span>AI</span></div><div class="home-tagline">YOUR PERSONAL AI COMPANION</div></div><div class="home-live"><i></i> ONLINE</div></div>
+ <div class="home-topline"><div><div class="home-brand">LINA <span>AI</span></div><div class="home-tagline">YOUR PERSONAL AI COMPANION</div></div><div class="home-live"><i></i> ONLINE <span id="homeVipBadge" class="home-vip-badge" hidden>👑 VIP</span></div></div>
  <section class="home-hero">
   <div class="home-orbit"><div class="home-avatar">L</div><span class="orbit-dot"></span></div>
   <div class="home-hello">أهلًا بيك ❤️</div><h1>أنا لينا، مساعدتك الذكية</h1>
@@ -427,7 +427,10 @@ button:active{transform:scale(.97)}
     .luck-card.revealed{background:linear-gradient(145deg,#222,#090909);border-color:#777;font-size:12px;cursor:default;padding:3px}
     .luck-card.winner{background:linear-gradient(145deg,#5b4210,#171007);border-color:#ffd76a;color:#ffd76a}
     .luck-card:disabled{opacity:1}
-   </style>
+   
+/* VIP DARK GOLD COMPLETE EXPERIENCE */
+.vip-theme{--vip-gold:#f6d477;background:radial-gradient(ellipse at 50% -15%,#493817 0,#17130b 43%,#050505 100%)!important}.vip-theme button:not(.profile-close-top),.vip-theme .home-service,.vip-theme .bottom-panel,.vip-theme .send,.vip-theme .plus-btn,.vip-theme .menu-option,.vip-theme #profileBar button{background:linear-gradient(110deg,#3b2b0d 0%,#f4d477 18%,#9a7020 38%,#ffe9a2 52%,#765217 72%,#e9c45f 100%)!important;background-size:240% 100%!important;color:#160f04!important;border:1px solid #ffe7a0!important;box-shadow:0 0 8px #d7ad4d88,0 0 19px #d7ad4d44,inset 0 1px 2px #fff8!important;text-shadow:0 1px 1px #fff6!important;animation:vipButtonShine 4s linear infinite}.vip-theme button:disabled{filter:saturate(.4) brightness(.65)}.vip-theme .home-service small{color:#382708!important}.vip-theme .home-service .service-icon{background:linear-gradient(135deg,#fff0b3,#9a7020)!important;border-color:#fff0ad!important}.vip-theme .home-hero h1,.vip-theme .home-section-heading h2{color:#ffe7a5}.vip-theme .home-chat-button{background:linear-gradient(110deg,#3b2b0d,#f4d477,#9a7020,#ffe9a2)!important;color:#160f04!important;border-color:#ffe7a0!important}.vip-theme .home-orbit{border-color:#f6d477;box-shadow:0 0 0 7px #f6d47722,0 0 35px #e9bd4b99}.vip-theme .home-avatar,.vip-theme .avatar{border:2px solid #ffe7a0;box-shadow:0 0 0 4px #d6ad5233,0 0 25px #d6ad52aa}.vip-live{color:#ffe7a0}.vip-live i{background:#f6d477!important;box-shadow:0 0 12px #f6d477!important}.home-vip-badge{margin-right:5px;padding:3px 7px;border-radius:20px;background:linear-gradient(110deg,#fff0ad,#d6ad52,#a87820);color:#171006;font-size:10px;font-weight:900;box-shadow:0 0 12px #d6ad5280;animation:goldShine 2.8s linear infinite}.vip-theme .profile-photo{animation:vipPhotoGlow 3s ease-in-out infinite alternate}.vip-welcome-toast{position:fixed;z-index:99998;top:18px;left:50%;transform:translate(-50%,-18px);opacity:0;width:min(92vw,420px);padding:15px 18px;border:1px solid #ffe7a0;border-radius:16px;background:linear-gradient(110deg,#171107,#9a7020,#f6d477,#493817);color:#160f04;text-align:center;font-weight:900;box-shadow:0 0 25px #d6ad52aa;transition:.35s;pointer-events:none}.vip-welcome-toast.show{opacity:1;transform:translate(-50%,0)}@keyframes vipButtonShine{0%{background-position:100% 0}100%{background-position:-140% 0}}@keyframes vipPhotoGlow{from{filter:brightness(.95);box-shadow:0 0 10px #d6ad52}to{filter:brightness(1.12);box-shadow:0 0 28px #ffe7a0}}@media(prefers-reduced-motion:reduce){.vip-theme button,.vip-theme .home-service,.vip-theme .profile-photo,.vip-welcome-toast{animation:none!important;transition:none!important}}
+</style>
   </div>
   <div id="luckyWheelPage" hidden>
    <button type="button" class="admin-close free-points-back" data-free-back style="margin-bottom:10px">← رجوع للقائمة</button>
@@ -635,9 +638,11 @@ button:active{transform:scale(.97)}
 const authScreen=document.getElementById('authScreen'),chatApp=document.getElementById('chatApp');
 const profileForm=document.getElementById('profileForm'),profileNameInput=document.getElementById('profileName');
 const PROFILES_KEY='lina_profiles_v2',ACTIVE_PROFILE_KEY='lina_active_profile_v2',PROFILE_KEY='lina_profile_v1';
-function vipActive(p){return !!(p&&p.vip&&(p.vip.plan==='lifetime'||Number(p.vip.expiresAt)>Date.now()))}
+function vipActive(p){return !!(p&&((p.vip&&(p.vip.plan==='lifetime'||Number(p.vip.expiresAt)>Date.now()))||Number(p.luckyVipUntil)>Date.now()))}
+function vipReward(p,amount){return Math.max(0,Math.floor(Number(amount)||0))*(vipActive(p)?2:1)}
+function vipWelcome(message){const old=document.getElementById('vipWelcomeToast');if(old)old.remove();const el=document.createElement('div');el.id='vipWelcomeToast';el.className='vip-welcome-toast';el.textContent=message||'👑 أهلاً بيك في عالم VIP — حسابك بقى ملكي!';document.getElementById('chatApp').appendChild(el);setTimeout(()=>el.classList.add('show'),30);setTimeout(()=>{el.classList.remove('show');setTimeout(()=>el.remove(),400)},4200)}
 function saveCurrentProfile(p){const list=getProfiles(),i=list.findIndex(x=>x.id===p.id);if(i>=0)list[i]=p;else list.push(p);saveProfiles(list);localStorage.setItem(PROFILE_KEY,JSON.stringify(p))}
-function applyVipLook(p){const active=vipActive(p);document.getElementById('chatApp').classList.toggle('vip-theme',active);document.getElementById('profileModal').classList.toggle('vip-member',active);document.querySelector('.lina-info h2').textContent=(p.linaName||'Lina')+(active?' ✨':' ❤️');document.getElementById('profileVipBadge').hidden=!active;document.getElementById('profilePhotoPreview').style.borderColor=active?'#d6ad52':'';document.getElementById('profilePhotoPreview').style.boxShadow=active?'0 0 24px #d6ad5270':'';if(p.chatBackground&&active){document.getElementById('chat').style.backgroundImage='linear-gradient(#080808bb,#080808bb),url('+p.chatBackground+')';document.getElementById('chat').style.backgroundSize='cover';document.getElementById('chat').style.backgroundPosition='center'}else{document.getElementById('chat').style.backgroundImage='none'}}
+function applyVipLook(p){const active=vipActive(p);document.getElementById('chatApp').classList.toggle('vip-theme',active);document.getElementById('profileModal').classList.toggle('vip-member',active);document.querySelector('.lina-info h2').textContent=(p.linaName||'Lina')+(active?' ✨':' ❤️');document.getElementById('profileVipBadge').hidden=!active;document.getElementById('profilePhotoPreview').style.borderColor=active?'#d6ad52':'';document.getElementById('profilePhotoPreview').style.boxShadow=active?'0 0 24px #d6ad5270':'';const hb=document.getElementById('homeVipBadge');if(hb)hb.hidden=!active;const hl=document.querySelector('.home-live');if(hl)hl.classList.toggle('vip-live',active);document.getElementById('profilePhotoPreview').classList.toggle('vip-photo-ring',active);if(p.chatBackground&&active){document.getElementById('chat').style.backgroundImage='linear-gradient(#080808bb,#080808bb),url('+p.chatBackground+')';document.getElementById('chat').style.backgroundSize='cover';document.getElementById('chat').style.backgroundPosition='center'}else{document.getElementById('chat').style.backgroundImage='none'}}
 function makeLocalId(){const a=new Uint32Array(2);crypto.getRandomValues(a);return (String(a[0]).padStart(10,'0')+String(a[1]).padStart(10,'0')).slice(0,12)}
 function getProfiles(){try{const list=JSON.parse(localStorage.getItem(PROFILES_KEY)||'[]');return Array.isArray(list)?list:[]}catch{return []}}
 function saveProfiles(list){localStorage.setItem(PROFILES_KEY,JSON.stringify(list))}
@@ -793,7 +798,7 @@ function answerDailyQuiz(choice){
  if(answers.length>=DAILY_QUIZ_COUNT)return;
  const q=todaysQuiz()[answers.length],correct=choice===q.a;
  answers.push({correct,at:Date.now()});p.dailyQuizAnswers=answers;
- if(correct)p.balance=Math.max(0,Math.floor(Number(p.balance)||0))+DAILY_QUIZ_REWARD;
+ if(correct)p.balance=Math.max(0,Math.floor(Number(p.balance)||0))+vipReward(p,DAILY_QUIZ_REWARD);
  saveCurrentProfile(p);syncCoinDisplays(p);
  const feedback=document.getElementById('dailyQuizFeedback');
  feedback.textContent=correct?'إجابة صحيحة! اتضافت 3 عملات لرصيدك 🎉':'للأسف إجابة غلط، جرّب السؤال اللي بعده بكرة ❤️';
@@ -848,7 +853,7 @@ document.querySelectorAll('[data-free-back]').forEach(btn=>btn.addEventListener(
 
 /* Four surprise mini-games — local profile rewards, no entry fee */
 const surpriseDate=()=>new Date().toLocaleDateString('en-CA');
-function surpriseReward(amount,label){const p=currentProfile();p.balance=Math.max(0,Math.floor(Number(p.balance)||0))+amount;saveCurrentProfile(p);syncCoinDisplays(p);return label+' اتضاف لرصيدك '+amount+' 🪙';}
+function surpriseReward(amount,label){const p=currentProfile();amount=vipReward(p,amount);p.balance=Math.max(0,Math.floor(Number(p.balance)||0))+amount;saveCurrentProfile(p);syncCoinDisplays(p);return label+' اتضاف لرصيدك '+amount+' 🪙';}
 function refreshNumberGame(){const p=currentProfile(),key=surpriseDate();const used=p.numberGameDate===key;document.getElementById('numberGuessInput').disabled=used;document.getElementById('numberGuessButton').disabled=used;document.getElementById('numberGuessStatus').textContent=used?'خلصت محاولتك النهارده. ارجع بكرة!':'اختار رقمك، ولو قربت من الرقم السري تكسب حتى 100 عملة.'}
 document.getElementById('numberGuessButton').addEventListener('click',()=>{const input=document.getElementById('numberGuessInput'),n=Number(input.value);if(!Number.isInteger(n)||n<1||n>100){document.getElementById('numberGuessStatus').textContent='اكتب رقم صحيح من 1 إلى 100.';return}const p=currentProfile(),key=surpriseDate();if(p.numberGameDate===key)return;const target=1+Math.floor(Math.random()*100),diff=Math.abs(n-target),reward=diff===0?100:diff<=2?60:diff<=5?30:diff<=10?10:0;p.numberGameDate=key;p.numberGameResult={guess:n,target,at:Date.now()};saveCurrentProfile(p);if(reward)document.getElementById('numberGuessStatus').textContent='الرقم السري كان '+target+'! '+surpriseReward(reward,'مبروك!');else document.getElementById('numberGuessStatus').textContent='الرقم السري كان '+target+'. حظ أوفر بكرة!';refreshNumberGame()});
 function refreshSlotGame(){const p=currentProfile(),key=surpriseDate();if(p.slotGameDate!==key){p.slotGameDate=key;p.slotGamePlays=0;saveCurrentProfile(p)}document.getElementById('slotGameAttempts').textContent='اللفات المتبقية اليوم: '+Math.max(0,3-(p.slotGamePlays||0))+' / 3';document.getElementById('slotGameSpin').disabled=(p.slotGamePlays||0)>=3}
@@ -967,7 +972,7 @@ function drawLuckCard(index){
  if(Number(p.balance||0)<3){status.textContent='رصيدك مش كافي! محتاج 3 عملات عشان تسحب كرت.';return}
  p.balance=Math.max(0,Number(p.balance||0)-3);p.luckCardsDraws=draws+1;p.luckCardsOpened.push(index);
  const won=p.luckCardsLayout[index]==='win';
- if(won)p.balance+=1000;
+ if(won)p.balance+=vipReward(p,1000);
  saveCurrentProfile(p);syncCoinDisplays(p);refreshLuckCards();
  status.textContent=won?'🎉 مبروك! كسبت 1000 عملة!':'💔 حظ أوفر المرة القادمة. جرّب كرت تاني!';
 }
@@ -996,7 +1001,7 @@ document.getElementById('startLotteryRound').addEventListener('click',()=>{
  lotteryBusy=true;btn.disabled=true;btn.textContent='السحب شغال...';document.getElementById('lotteryBalanceHint').textContent='تم خصم '+amount+' عملة · المتبقي '+p.balance+' 🪙';
  let ticks=0;const timer=setInterval(()=>{const pick=Math.floor(Math.random()*50);renderLotteryPlayers(players,pick);current.textContent=players[pick].name+' 🎲';ticks++;
   if(ticks>=28){clearInterval(timer);renderLotteryPlayers(players,winner);current.textContent=players[winner].name+(players[winner].isUser?' 👑':' 🏆');
-   if(players[winner].isUser){p.balance+=amount*2;saveCurrentProfile(p);syncCoinDisplays(p);result.textContent='مبروك! اسمك اتسحب وكسبت '+(amount*2)+' عملة (ضعف دخولك) 🎉';}
+   if(players[winner].isUser){p.balance+=vipReward(p,amount*2);saveCurrentProfile(p);syncCoinDisplays(p);result.textContent='مبروك! اسمك اتسحب وكسبت '+(amount*2)+' عملة (ضعف دخولك) 🎉';}
    else result.textContent='الفائز: '+players[winner].name+' · الجولة راحت للاعب وهمي. مفيش مكسب المرة دي.';
    lotteryBusy=false;btn.disabled=false;btn.textContent='ابدأ جولة جديدة 🎰';document.getElementById('lotteryBalanceHint').textContent='رصيدك الحالي: '+p.balance+' 🪙';
   }
@@ -1036,7 +1041,7 @@ document.getElementById('spinLuckyWheel').addEventListener('click',()=>{
  const wheel=document.getElementById('luckyWheel'),current=(Number(wheel.dataset.turn)||0),target=current+1800+(360-index*30-15);
  wheel.dataset.turn=target;wheel.style.transform='rotate('+target+'deg)';
  p.lastLuckyWheelAt=Date.now();
- if(chosen.type==='coins')p.balance=Math.max(0,Math.floor(Number(p.balance)||0))+chosen.value;
+ if(chosen.type==='coins')p.balance=Math.max(0,Math.floor(Number(p.balance)||0))+vipReward(p,chosen.value);
  if(chosen.type==='retry')p.luckyWheelRetries=(Number(p.luckyWheelRetries)||0)+chosen.value;
  if(chosen.type==='name')p.nameChangeCards=(Number(p.nameChangeCards)||0)+1;
  if(chosen.type==='agent')p.luckyAgentCards=(Number(p.luckyAgentCards)||0)+1;
@@ -1062,7 +1067,7 @@ dailyRewardModal.addEventListener('click',e=>{if(e.target===dailyRewardModal)dai
 claimDailyReward.addEventListener('click',()=>{
  const p=currentProfile(),now=Date.now(),last=Number(p.lastDailyRewardAt||0);
  if(now-last<DAILY_REWARD_COOLDOWN){refreshDailyReward();return}
- p.balance=Math.max(0,Math.floor(Number(p.balance)||0))+DAILY_REWARD_AMOUNT;
+ p.balance=Math.max(0,Math.floor(Number(p.balance)||0))+vipReward(p,DAILY_REWARD_AMOUNT);
  p.lastDailyRewardAt=now;saveCurrentProfile(p);
  document.getElementById('balanceValue').textContent=p.balance;
  const modalBalance=document.getElementById('modalBalanceValue');if(modalBalance)modalBalance.textContent=p.balance;
@@ -1102,12 +1107,12 @@ document.querySelectorAll('[data-vip-trial]').forEach(btn=>btn.addEventListener(
  p.vipTrialUsed=true;
  p.vip={plan:'trial',isTrial:true,purchasedAt:Date.now(),expiresAt:Date.now()+5*60*1000};
  saveCurrentProfile(p);showProfile(p);applyVipLook(p);
- document.getElementById('vipStoreStatus').textContent='🎉 بدأت تجربتك المجانية لمدة 5 دقائق!';
+ document.getElementById('vipStoreStatus').textContent='🎉 بدأت تجربتك المجانية لمدة 5 دقائق!';vipWelcome();
  updateVipTrialTimer();
  if(vipTrialInterval)clearInterval(vipTrialInterval);
  vipTrialInterval=setInterval(updateVipTrialTimer,1000);
 }));
-document.querySelectorAll('[data-vip-plan]').forEach(btn=>btn.addEventListener('click',()=>{const plans={hour:{cost:100,label:'ساعة',duration:3600000},sixMonths:{cost:1000,label:'6 شهور',duration:180*24*60*60*1000},lifetime:{cost:6000,label:'مدى الحياة',duration:0}};const plan=plans[btn.dataset.vipPlan],p=currentProfile();if(vipActive(p)){showAdminMessage('عضوية VIP مفعلة بالفعل على حسابك.');return}if(Number(p.balance||0)<plan.cost){showAdminMessage('رصيدك غير كافٍ. تحتاج '+plan.cost+' نقطة لشراء الباقة.');return}if(!confirm('تأكيد شراء VIP لمدة '+plan.label+' مقابل '+plan.cost+' نقطة؟'))return;p.balance=Number(p.balance)-plan.cost;p.vip={plan:btn.dataset.vipPlan,purchasedAt:Date.now(),expiresAt:plan.duration?Date.now()+plan.duration:null};saveCurrentProfile(p);showProfile(p);applyVipLook(p);document.getElementById('vipStoreStatus').textContent='تم تفعيل VIP على هذا الجهاز. رصيدك المتبقي: '+p.balance;document.getElementById('balanceValue').textContent=p.balance;if(document.getElementById('profileBalanceValue'))document.getElementById('profileBalanceValue').textContent=p.balance;showAdminMessage('مبروك! لينا VIP اتفعلت 👑');vipStore.hidden=true}));
+document.querySelectorAll('[data-vip-plan]').forEach(btn=>btn.addEventListener('click',()=>{const plans={hour:{cost:100,label:'ساعة',duration:3600000},sixMonths:{cost:1000,label:'6 شهور',duration:180*24*60*60*1000},lifetime:{cost:6000,label:'مدى الحياة',duration:0}};const plan=plans[btn.dataset.vipPlan],p=currentProfile();if(vipActive(p)){showAdminMessage('عضوية VIP مفعلة بالفعل على حسابك.');return}if(Number(p.balance||0)<plan.cost){showAdminMessage('رصيدك غير كافٍ. تحتاج '+plan.cost+' نقطة لشراء الباقة.');return}if(!confirm('تأكيد شراء VIP لمدة '+plan.label+' مقابل '+plan.cost+' نقطة؟'))return;p.balance=Number(p.balance)-plan.cost;p.vip={plan:btn.dataset.vipPlan,purchasedAt:Date.now(),expiresAt:plan.duration?Date.now()+plan.duration:null};saveCurrentProfile(p);showProfile(p);applyVipLook(p);document.getElementById('vipStoreStatus').textContent='تم تفعيل VIP على هذا الجهاز. رصيدك المتبقي: '+p.balance;document.getElementById('balanceValue').textContent=p.balance;if(document.getElementById('profileBalanceValue'))document.getElementById('profileBalanceValue').textContent=p.balance;showAdminMessage('مبروك! لينا VIP اتفعلت 👑');vipWelcome('👑 مبروك! أهلاً بيك في عالم VIP الذهبي');vipStore.hidden=true}));
 document.getElementById('changeLinaName').addEventListener('click',()=>{const p=currentProfile();if(!vipActive(p)){showAdminMessage('الميزة متاحة لأعضاء VIP فقط.');return}const name=prompt('اكتب الاسم الجديد للينا',p.linaName||'Lina');if(!name||!name.trim())return;p.linaName=name.trim().slice(0,24);saveCurrentProfile(p);applyVipLook(p)});
 document.getElementById('changeChatBg').addEventListener('click',()=>{const p=currentProfile();if(!vipActive(p)){showAdminMessage('الميزة متاحة لأعضاء VIP فقط.');return}document.getElementById('chatBgInput').click()});
 document.getElementById('chatBgInput').addEventListener('change',()=>{const file=document.getElementById('chatBgInput').files[0];if(!file)return;const p=currentProfile(),reader=new FileReader();reader.onload=()=>{const img=new Image();img.onload=()=>{const canvas=document.createElement('canvas'),max=1000,scale=Math.min(1,max/Math.max(img.width,img.height));canvas.width=Math.round(img.width*scale);canvas.height=Math.round(img.height*scale);canvas.getContext('2d').drawImage(img,0,0,canvas.width,canvas.height);p.chatBackground=canvas.toDataURL('image/jpeg',.65);try{saveCurrentProfile(p);applyVipLook(p)}catch(e){showAdminMessage('الصورة كبيرة، اختار صورة أصغر.')}};img.src=reader.result};reader.readAsDataURL(file);document.getElementById('chatBgInput').value=''});
@@ -1270,7 +1275,7 @@ document.getElementById("hackerBotForm").addEventListener("submit",async e=>{e.p
   const reward=rewards[entered];
   let message='';
   if(reward==='points'){
-   p.balance=Math.max(0,Math.floor(Number(p.balance)||0))+100;
+   p.balance=Math.max(0,Math.floor(Number(p.balance)||0))+vipReward(p,100);
    saveCurrentProfile(p);showProfile(p);
    message='مبروك! كسبت 100 نقطة 🎉';
   }else if(reward==='vip'){
