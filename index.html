@@ -302,22 +302,39 @@ button:active{transform:scale(.97)}
 <section class="profile-modal" id="ownerAdminModal" hidden><div class="owner-admin-card"><h3>👑 لوحة المالك</h3><p class="admin-note">إدارة حسابات لينا عبر السيرفر وقاعدة البيانات</p><input class="admin-search" id="adminUserId" type="text" inputmode="numeric" placeholder="اكتب ID المستخدم"><div class="admin-grid"><button type="button" data-admin="lookup">🔎 بيانات الحساب</button><button type="button" data-admin="credit">➕ إرسال رصيد</button><button type="button" data-admin="debit">➖ سحب رصيد</button><button type="button" data-admin="warn">⚠️ إرسال تحذير</button><button type="button" data-admin="ban">⛔ حظر / فك الحظر</button><button type="button" data-admin="close">🔒 إغلاق / فتح الحساب</button><button type="button" data-admin="reports">📩 البلاغات</button><button type="button" data-admin="users">👥 كل المستخدمين</button></div><div id="adminResults" class="admin-results"></div><button class="admin-close" type="button" id="closeOwnerAdmin">إغلاق</button></div></section>
 <section class="vip-modal" id="balanceModal" hidden><div class="vip-card balance-card"><h3>🪙 رصيدك في لينا</h3><div class="balance-total"><strong id="modalBalanceValue">3</strong><span>نقطة</span></div><p class="admin-note">تقدر تراجع رصيدك من هنا وتشحنه لما طرق الدفع تتفعل.</p><h4 class="payment-heading">💳 شحن رصيد</h4><div class="payment-methods"><button type="button" class="payment-method" disabled><span>📱 فودافون كاش</span><small>متوقف حاليًا</small></button><button type="button" class="payment-method" disabled><span>💳 Visa</span><small>متوقف حاليًا</small></button><button type="button" class="payment-method" disabled><span>💳 Mastercard</span><small>متوقف حاليًا</small></button><button type="button" class="payment-method" disabled><span>📲 محافظ إلكترونية</span><small>متوقف حاليًا</small></button><button type="button" class="payment-method" disabled><span>🏦 InstaPay</span><small>متوقف حاليًا</small></button></div><p class="admin-note">كل طرق الدفع ظاهرة، لكنها غير متاحة حاليًا. لن يتم خصم أي مبلغ الآن.</p><div class="referral-box"><h4>🎁 دعوة الأشخاص</h4><p class="admin-note">ادعُ أصحابك واكسبوا نقاط لما يسجلوا بكودك.</p><label class="ref-label">كود الدعوة الخاص بي</label><div class="ref-copy-row"><code id="myPromoCode">•••••••</code><button type="button" id="copyPromoCode" aria-label="نسخ البرومو كود">📋 نسخ</button></div><label class="ref-label">رابط الدعوة الخاص بي</label><div class="ref-copy-row"><input id="myInviteLink" type="text" readonly value=""><button type="button" id="copyInviteLink">🔗 نسخ</button></div><p class="admin-note">صاحب الدعوة يحصل على 10 نقاط، واللاعب الجديد يحصل على 3 نقاط بعد التسجيل بكود صحيح. المكافآت المشتركة هتتفعل بعد ربط السيرفر.</p></div><button type="button" id="closeBalanceModal">إغلاق</button></div></section>
 <section class="vip-modal" id="dailyRewardModal" hidden>
- <div class="vip-card" style="text-align:center">
-  <h3>🎁 المكافأة اليومية</h3>
-  <div style="font-size:52px;margin:12px 0">🪙</div>
-  <p style="font-size:18px;color:#fff;margin:8px 0">استلم <strong style="color:#ffd76a">10 عملات</strong> هدية كل 24 ساعة</p>
-  <p class="admin-note" id="dailyRewardStatus">مكافأتك اليومية جاهزة!</p>
-  <button type="button" class="agent-close" id="claimDailyReward">استلام 10 عملات 🎁</button>
-  <button type="button" class="admin-close" id="closeDailyReward" style="margin-top:9px">إغلاق</button>
- </div>
-
- <div id="dailyQuiz" style="margin-top:18px;padding-top:16px;border-top:1px solid #713044;text-align:right">
-  <h3 style="text-align:center;margin:0 0 8px">🧠 سؤال اليوم</h3>
-  <p id="dailyQuizProgress" class="admin-note" style="text-align:center">السؤال 1 من 7</p>
-  <p id="dailyQuizQuestion" style="font-size:17px;color:#fff;line-height:1.7"></p>
-  <div id="dailyQuizOptions" style="display:grid;gap:8px"></div>
-  <p id="dailyQuizFeedback" class="admin-note" aria-live="polite" style="text-align:center;min-height:24px"></p>
-  <p id="dailyQuizScore" style="text-align:center;color:#ffd76a;font-weight:bold">كل إجابة صحيحة = 3 عملات 🪙</p>
+ <div class="vip-card" style="text-align:center;max-width:440px">
+  <div id="freePointsHome">
+   <h3 style="margin:0 0 6px">🎁 النقاط المجانية</h3>
+   <p class="admin-note">اختار طريقة جمع العملات</p>
+   <div style="display:grid;gap:12px;margin-top:18px">
+    <button type="button" class="free-point-tile" id="openDailyRewardPage" style="padding:17px;border:1px solid #777;border-radius:14px;background:#101010;color:#fff;text-align:right;font:inherit">
+     <strong style="display:block;font-size:17px">🎁 المكافأة اليومية</strong><small style="color:#ccc">استلم 10 عملات كل 24 ساعة</small>
+    </button>
+    <button type="button" class="free-point-tile" id="openDailyQuizPage" style="padding:17px;border:1px solid #777;border-radius:14px;background:#101010;color:#fff;text-align:right;font:inherit">
+     <strong style="display:block;font-size:17px">🧠 سؤال اليوم</strong><small style="color:#ccc">7 أسئلة يوميًا · 3 عملات لكل إجابة صحيحة</small>
+    </button>
+   </div>
+   <button type="button" class="admin-close" id="closeDailyReward" style="margin-top:16px">إغلاق</button>
+  </div>
+  <div id="dailyRewardPage" hidden>
+   <button type="button" class="admin-close free-points-back" data-free-back style="margin-bottom:12px">← رجوع للقائمة</button>
+   <h3>🎁 المكافأة اليومية</h3>
+   <div style="font-size:48px;margin:12px 0">🪙</div>
+   <p style="font-size:18px;color:#fff;margin:8px 0">استلم <strong style="color:#ffd76a">10 عملات</strong> هدية كل 24 ساعة</p>
+   <p class="admin-note" id="dailyRewardStatus">مكافأتك اليومية جاهزة!</p>
+   <button type="button" class="agent-close" id="claimDailyReward">استلام 10 عملات 🎁</button>
+  </div>
+  <div id="dailyQuizPage" hidden>
+   <button type="button" class="admin-close free-points-back" data-free-back style="margin-bottom:12px">← رجوع للقائمة</button>
+   <div id="dailyQuiz" style="text-align:right">
+    <h3 style="text-align:center;margin:0 0 8px">🧠 سؤال اليوم</h3>
+    <p id="dailyQuizProgress" class="admin-note" style="text-align:center">السؤال 1 من 7</p>
+    <p id="dailyQuizQuestion" style="font-size:17px;color:#fff;line-height:1.7"></p>
+    <div id="dailyQuizOptions" style="display:grid;gap:8px"></div>
+    <p id="dailyQuizFeedback" class="admin-note" aria-live="polite" style="text-align:center;min-height:24px"></p>
+    <p id="dailyQuizScore" style="text-align:center;color:#ffd76a;font-weight:bold">كل إجابة صحيحة = 3 عملات 🪙</p>
+   </div>
+  </div>
  </div>
 </section>
 <section class="vip-modal" id="vipStoreModal" hidden><div class="vip-card"><h3>👑 ترقية لينا VIP</h3><p style="color:#d8c28e">اختار مدة العضوية واستمتع بالمظهر الذهبي ومميزات VIP</p><div class="vip-plan"><strong>⚡ VIP لمدة ساعة</strong><span>100 🪙</span><button type="button" class="vip-features-btn" data-vip-features>✨ مميزات VIP</button><button type="button" data-vip-plan="hour">شراء الباقة</button><button type="button" class="vip-trial-btn" data-vip-trial>🎁 تجربة مجانية 5 دقائق</button></div><div class="vip-plan"><strong>🌟 VIP لمدة 6 شهور</strong><span>1000 🪙</span><button type="button" class="vip-features-btn" data-vip-features>✨ مميزات VIP</button><button type="button" data-vip-plan="sixMonths">شراء الباقة</button><button type="button" class="vip-trial-btn" data-vip-trial>🎁 تجربة مجانية 5 دقائق</button></div><div class="vip-plan"><strong>♾️ VIP مدى الحياة</strong><span>6000 🪙</span><button type="button" class="vip-features-btn" data-vip-features>✨ مميزات VIP</button><button type="button" data-vip-plan="lifetime">شراء الباقة</button><button type="button" class="vip-trial-btn" data-vip-trial>🎁 تجربة مجانية 5 دقائق</button></div><div class="vip-plan" style="background:linear-gradient(145deg,#171717,#303030);border:1px solid #f28a24;color:#fff"><div style="display:flex;justify-content:space-between;align-items:center;gap:8px"><strong>🟠 بطاقة تغيير الاسم</strong><span style="color:#ffad52;font-weight:bold">300 🪙</span></div><div style="margin:12px 0;padding:15px 10px;text-align:center;border:1px solid #f28a24;border-radius:12px;background:linear-gradient(135deg,#292929,#111)"><div style="font-size:30px;color:#f28a24">✎ 👑</div><strong style="color:#fff;font-size:18px">بطاقة تغيير الاسم</strong><div style="font-size:11px;color:#f4a34b;letter-spacing:1px;margin-top:4px">NAME CHANGE CARD</div><p style="font-size:12px;color:#ddd;margin:10px 0 0">تغيير اسمك مرة واحدة فقط</p></div><div id="nameChangeCardCount" class="admin-note" style="color:#f5a044">بطاقاتك المتاحة: 0</div><button type="button" id="buyNameChangeCard" style="background:#f28a24;color:#111;border:0;border-radius:10px;font-weight:bold">شراء البطاقة — 300 عملة 🪙</button></div><div class="vip-plan agent-card-plan"><strong>🕶️ بطاقة العميل السري</strong><span class="agent-price">10,000 🪙</span><div class="admin-note">بطاقة مشفّرة بصريًا • كود 22 رقم • صلاحية 24 ساعة</div><button type="button" class="agent-buy" id="buyAgentCard">🔴 شراء البطاقة</button></div><p id="vipStoreStatus" class="admin-note"></p><p id="vipTrialTimer" class="admin-note" style="color:#ffe7a6;font-weight:bold" hidden></p><div id="vipFeaturesPanel" class="vip-plan" hidden><strong>👑 كل مميزات Lina VIP</strong><div class="admin-note">✨ واجهة شات ذهبية وسوداء لامعة<br>✨ إطار ذهبي لصورة البروفايل وشارة VIP<br>✨ تغيير اسم لينا<br>✨ اختيار خلفية الشات من صور جهازك<br>✨ عضوية عميل مميز طوال مدة الباقة<br>✨ اختيار باقة ساعة أو 6 شهور أو مدى الحياة</div></div><p class="admin-note" style="color:#d7b96d">تنبيه: تفعيل وخصم VIP حاليًا تجريبي ومحفوظ على نفس الجهاز فقط، لحد ربط قاعدة البيانات المشتركة بالسيرفر.</p><button type="button" id="closeVipStore">إغلاق</button></div></section>
@@ -581,6 +598,19 @@ function refreshDailyReward(){
  else {const hours=Math.floor(remaining/3600000),minutes=Math.ceil((remaining%3600000)/60000);dailyRewardStatus.textContent='استلمت مكافأتك بالفعل. ارجع بعد '+hours+' ساعة و'+minutes+' دقيقة.';}
 }
 document.getElementById('openFreePoints').addEventListener('click',()=>{refreshDailyReward();refreshDailyQuiz();dailyRewardModal.hidden=false});
+showFreePointsPage('home');
+
+function showFreePointsPage(page){
+ document.getElementById('freePointsHome').hidden=page!=='home';
+ document.getElementById('dailyRewardPage').hidden=page!=='reward';
+ document.getElementById('dailyQuizPage').hidden=page!=='quiz';
+ if(page==='reward')refreshDailyReward();
+ if(page==='quiz')refreshDailyQuiz();
+}
+document.getElementById('openDailyRewardPage').addEventListener('click',()=>showFreePointsPage('reward'));
+document.getElementById('openDailyQuizPage').addEventListener('click',()=>showFreePointsPage('quiz'));
+document.querySelectorAll('[data-free-back]').forEach(btn=>btn.addEventListener('click',()=>showFreePointsPage('home')));
+
 document.getElementById('closeDailyReward').addEventListener('click',()=>dailyRewardModal.hidden=true);
 dailyRewardModal.addEventListener('click',e=>{if(e.target===dailyRewardModal)dailyRewardModal.hidden=true});
 claimDailyReward.addEventListener('click',()=>{
