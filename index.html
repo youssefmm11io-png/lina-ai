@@ -277,6 +277,17 @@ button:active{transform:scale(.97)}
   .owner-stack .free-points-link{height:47px!important;min-height:47px!important;font-size:15px!important}
 }
 
+
+/* عجلة الحظ — تصميم أبيض وأسود وأحمر */
+.lucky-wheel-shell{position:relative;width:min(310px,84vw);aspect-ratio:1;margin:18px auto 8px;padding:8px;border-radius:50%;background:#f5f5f5;box-shadow:0 0 0 4px #b51f2d,0 10px 30px #0009}
+.lucky-wheel{position:relative;width:100%;height:100%;border-radius:50%;border:4px solid #fff;background:conic-gradient(from -15deg,#b51f2d 0deg 30deg,#f5f5f5 30deg 60deg,#171717 60deg 90deg,#b51f2d 90deg 120deg,#f5f5f5 120deg 150deg,#171717 150deg 180deg,#b51f2d 180deg 210deg,#f5f5f5 210deg 240deg,#171717 240deg 270deg,#b51f2d 270deg 300deg,#f5f5f5 300deg 330deg,#171717 330deg 360deg);transition:transform 5s cubic-bezier(.12,.72,.12,1);box-shadow:inset 0 0 0 2px #fff}
+.lucky-wheel:before{content:"";position:absolute;inset:0;border-radius:50%;background:repeating-conic-gradient(from -15deg,transparent 0deg 29.5deg,#fff 29.5deg 30deg);pointer-events:none}
+.lucky-wheel span{position:absolute;left:50%;top:50%;width:76px;margin-left:-38px;margin-top:-11px;text-align:center;font-size:10px;line-height:1.2;font-weight:900;color:#fff;text-shadow:0 1px 3px #000;transform:rotate(var(--a)) translateY(-111px) rotate(calc(-1 * var(--a)));z-index:1}
+.lucky-wheel span:nth-child(3n+2){color:#111;text-shadow:none}
+.lucky-wheel span:nth-child(1){--a:0deg}.lucky-wheel span:nth-child(2){--a:30deg}.lucky-wheel span:nth-child(3){--a:60deg}.lucky-wheel span:nth-child(4){--a:90deg}.lucky-wheel span:nth-child(5){--a:120deg}.lucky-wheel span:nth-child(6){--a:150deg}.lucky-wheel span:nth-child(7){--a:180deg}.lucky-wheel span:nth-child(8){--a:210deg}.lucky-wheel span:nth-child(9){--a:240deg}.lucky-wheel span:nth-child(10){--a:270deg}.lucky-wheel span:nth-child(11){--a:300deg}.lucky-wheel span:nth-child(12){--a:330deg}
+.lucky-wheel-center{position:absolute;z-index:3;left:50%;top:50%;transform:translate(-50%,-50%);width:62px;height:62px;border-radius:50%;display:grid;place-items:center;background:#fff;border:5px solid #b51f2d;color:#111;font-size:13px;font-weight:1000;box-shadow:0 2px 10px #0008}
+.lucky-wheel-pointer{position:absolute;z-index:5;top:-4px;left:50%;transform:translateX(-50%);width:0;height:0;border-left:15px solid transparent;border-right:15px solid transparent;border-top:30px solid #b51f2d;filter:drop-shadow(0 2px 2px #000)}
+#spinLuckyWheel:disabled{opacity:.5;cursor:not-allowed}
 </style>
 </head>
 <body>
@@ -310,7 +321,10 @@ button:active{transform:scale(.97)}
     <button type="button" class="free-point-tile" id="openDailyRewardPage" style="padding:17px;border:1px solid #777;border-radius:14px;background:#101010;color:#fff;text-align:right;font:inherit">
      <strong style="display:block;font-size:17px">🎁 المكافأة اليومية</strong><small style="color:#ccc">استلم 10 عملات كل 24 ساعة</small>
     </button>
-    <button type="button" class="free-point-tile" id="openDailyQuizPage" style="padding:17px;border:1px solid #777;border-radius:14px;background:#101010;color:#fff;text-align:right;font:inherit">
+    <button type="button" class="free-point-tile" id="openLuckyWheelPage" style="padding:17px;border:1px solid #a51e2a;border-radius:14px;background:linear-gradient(120deg,#171717,#310d12);color:#fff;text-align:right;font:inherit">
+     <strong style="display:block;font-size:17px">🎡 عجلة الحظ</strong><small style="color:#eee">جرّب حظك واكسب جوائز نادرة</small>
+    </button>
+   <button type="button" class="free-point-tile" id="openDailyQuizPage" style="padding:17px;border:1px solid #777;border-radius:14px;background:#101010;color:#fff;text-align:right;font:inherit">
      <strong style="display:block;font-size:17px">🧠 سؤال اليوم</strong><small style="color:#ccc">7 أسئلة يوميًا · 3 عملات لكل إجابة صحيحة</small>
     </button>
    </div>
@@ -323,6 +337,20 @@ button:active{transform:scale(.97)}
    <p style="font-size:18px;color:#fff;margin:8px 0">استلم <strong style="color:#ffd76a">10 عملات</strong> هدية كل 24 ساعة</p>
    <p class="admin-note" id="dailyRewardStatus">مكافأتك اليومية جاهزة!</p>
    <button type="button" class="agent-close" id="claimDailyReward">استلام 10 عملات 🎁</button>
+  </div>
+  <div id="luckyWheelPage" hidden>
+   <button type="button" class="admin-close free-points-back" data-free-back style="margin-bottom:10px">← رجوع للقائمة</button>
+   <h3 style="margin:4px 0;color:#fff">🎡 عجلة الحظ</h3>
+   <p class="admin-note" style="margin:4px 0 12px">لفة مجانية واحدة كل 24 ساعة</p>
+   <div class="lucky-wheel-shell">
+    <div class="lucky-wheel-pointer"></div>
+    <div class="lucky-wheel" id="luckyWheel">
+     <span>10 عملات</span><span>100 عملة</span><span>1000 عملة</span><span>إعادة المحاولة</span><span>VIP ساعة</span><span>تغيير الاسم</span><span>العميل السري</span><span>حظ أوفر</span><span>10000 عملة</span><span>3 محاولات</span><span>كلمة السر</span><span>حظ أوفر</span>
+     <div class="lucky-wheel-center">LINA</div>
+    </div>
+   </div>
+   <button type="button" id="spinLuckyWheel" class="agent-close" style="width:100%;margin-top:14px">لف العجلة 🎡</button>
+   <p id="luckyWheelStatus" class="admin-note" aria-live="polite" style="min-height:42px;margin-top:10px">حظ سعيد! الجوائز النادرة فرصتها أقل ❤️</p>
   </div>
   <div id="dailyQuizPage" hidden>
    <button type="button" class="admin-close free-points-back" data-free-back style="margin-bottom:12px">← رجوع للقائمة</button>
@@ -604,12 +632,58 @@ function showFreePointsPage(page){
  document.getElementById('freePointsHome').hidden=page!=='home';
  document.getElementById('dailyRewardPage').hidden=page!=='reward';
  document.getElementById('dailyQuizPage').hidden=page!=='quiz';
+ document.getElementById('luckyWheelPage').hidden=page!=='wheel';
+ if(page==='wheel')refreshLuckyWheel();
  if(page==='reward')refreshDailyReward();
  if(page==='quiz')refreshDailyQuiz();
 }
 document.getElementById('openDailyRewardPage').addEventListener('click',()=>showFreePointsPage('reward'));
 document.getElementById('openDailyQuizPage').addEventListener('click',()=>showFreePointsPage('quiz'));
+document.getElementById('openLuckyWheelPage').addEventListener('click',()=>showFreePointsPage('wheel'));
 document.querySelectorAll('[data-free-back]').forEach(btn=>btn.addEventListener('click',()=>showFreePointsPage('home')));
+
+const LUCKY_WHEEL_COOLDOWN=24*60*60*1000;
+const luckyWheelPrizes=[
+ {name:'10 عملات',weight:34,type:'coins',value:10},
+ {name:'100 عملة',weight:22,type:'coins',value:100},
+ {name:'1000 عملة',weight:8,type:'coins',value:1000},
+ {name:'بطاقة إعادة المحاولة',weight:8,type:'retry',value:1},
+ {name:'VIP لمدة ساعة',weight:2,type:'vip',value:1},
+ {name:'بطاقة تغيير الاسم',weight:5,type:'name',value:1},
+ {name:'بطاقة العميل السري',weight:3,type:'agent',value:1},
+ {name:'حظ أوفر المرة القادمة',weight:6,type:'none',value:0},
+ {name:'10000 عملة',weight:0.5,type:'coins',value:10000},
+ {name:'بطاقة إعادة المحاولة 3 مرات',weight:4,type:'retry',value:3},
+ {name:'كلمة سر الموقع السري',weight:1.5,type:'password',value:0},
+ {name:'حظ أوفر المرة القادمة',weight:6,type:'none',value:0}
+];
+function refreshLuckyWheel(){
+ const p=currentProfile(),last=Number(p.lastLuckyWheelAt||0),left=LUCKY_WHEEL_COOLDOWN-(Date.now()-last),btn=document.getElementById('spinLuckyWheel');
+ if(left<=0){btn.disabled=false;btn.textContent='لف العجلة 🎡';document.getElementById('luckyWheelStatus').textContent='لفتك اليومية جاهزة! حظ سعيد ❤️';}
+ else{btn.disabled=true;btn.textContent='اللفة اليومية مستخدمة';const h=Math.floor(left/3600000),m=Math.ceil(left%3600000/60000);document.getElementById('luckyWheelStatus').textContent='تقدر تلف تاني بعد '+h+' ساعة و'+m+' دقيقة.';}
+}
+document.getElementById('spinLuckyWheel').addEventListener('click',()=>{
+ const p=currentProfile(),btn=document.getElementById('spinLuckyWheel'),status=document.getElementById('luckyWheelStatus');
+ if(Date.now()-Number(p.lastLuckyWheelAt||0)<LUCKY_WHEEL_COOLDOWN){refreshLuckyWheel();return}
+ btn.disabled=true;status.textContent='العجلة بتلف... 🍀';
+ const total=luckyWheelPrizes.reduce((n,x)=>n+x.weight,0);let roll=Math.random()*total,chosen=luckyWheelPrizes[0],index=0;
+ for(let i=0;i<luckyWheelPrizes.length;i++){roll-=luckyWheelPrizes[i].weight;if(roll<=0){chosen=luckyWheelPrizes[i];index=i;break}}
+ const wheel=document.getElementById('luckyWheel'),current=(Number(wheel.dataset.turn)||0),target=current+1800+(360-index*30-15);
+ wheel.dataset.turn=target;wheel.style.transform='rotate('+target+'deg)';
+ p.lastLuckyWheelAt=Date.now();
+ if(chosen.type==='coins')p.balance=Math.max(0,Math.floor(Number(p.balance)||0))+chosen.value;
+ if(chosen.type==='retry')p.luckyWheelRetries=(Number(p.luckyWheelRetries)||0)+chosen.value;
+ if(chosen.type==='name')p.nameChangeCards=(Number(p.nameChangeCards)||0)+1;
+ if(chosen.type==='agent')p.luckyAgentCards=(Number(p.luckyAgentCards)||0)+1;
+ if(chosen.type==='vip')p.luckyVipUntil=Math.max(Date.now(),Number(p.luckyVipUntil)||0)+60*60*1000;
+ saveCurrentProfile(p);syncCoinDisplays(p);
+ setTimeout(()=>{
+  if(chosen.type==='password')status.innerHTML='🎉 مبروك! كلمة سر الموقع السري:<br><strong style="color:#e33">Youssef.200.12345</strong>';
+  else status.textContent=chosen.type==='none'?'🍀 حظ أوفر المرة القادمة!':'🎉 مبروك! كسبت: '+chosen.name;
+  refreshLuckyWheel();
+ },5100);
+});
+
 
 document.getElementById('closeDailyReward').addEventListener('click',()=>dailyRewardModal.hidden=true);
 dailyRewardModal.addEventListener('click',e=>{if(e.target===dailyRewardModal)dailyRewardModal.hidden=true});
