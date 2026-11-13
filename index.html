@@ -311,6 +311,15 @@ button:active{transform:scale(.97)}
 .lina-mode-note{width:100%;font-size:11px;color:#cdaeb8}
 .mic-input-btn{width:44px;height:44px;flex:none;border:1px solid #a52a48;border-radius:13px;background:#28121b;color:#fff;font-size:19px;cursor:pointer}
 .mic-input-btn.listening{background:#b3133c;box-shadow:0 0 0 4px #b3133c33}
+
+/* Modern separate home dashboard */
+.lina-home-screen{display:flex;flex-direction:column;gap:17px;flex:1;min-height:0;overflow-y:auto;padding:8px 3px 18px;scrollbar-width:thin;scrollbar-color:#68243a transparent}
+.home-topline{display:flex;align-items:center;justify-content:space-between;padding:5px 4px 2px}.home-brand{font-size:25px;font-weight:1000;letter-spacing:2px;color:#fff}.home-brand span{color:#ff456d}.home-tagline{font-size:9px;letter-spacing:2px;color:#817780;margin-top:2px}.home-live{font-size:10px;letter-spacing:1px;color:#b6e9ca;border:1px solid #28553d;background:#10271b;border-radius:30px;padding:7px 10px}.home-live i{display:inline-block;width:6px;height:6px;border-radius:50%;background:#48e28c;margin-left:5px;box-shadow:0 0 9px #48e28c}
+.home-hero{position:relative;overflow:hidden;text-align:center;padding:20px 17px 18px;border:1px solid #542337;border-radius:25px;background:radial-gradient(ellipse at 50% 0%,#542033 0%,#21121d 48%,#111016 100%);box-shadow:0 12px 35px #0007}.home-hero:before{content:'';position:absolute;width:190px;height:190px;border:1px solid #ff527522;border-radius:50%;top:-120px;left:calc(50% - 95px)}.home-orbit{width:88px;height:88px;margin:0 auto 10px;position:relative;display:grid;place-items:center;border:1px solid #e94b70;border-radius:50%;box-shadow:0 0 0 7px #f34a7110,0 0 30px #e52b5b38}.home-avatar{width:70px;height:70px;border-radius:50%;display:grid;place-items:center;background:radial-gradient(circle at 35% 25%,#ffb1c3,#d42d5c 48%,#4b1023);border:2px solid #ff9bb1;color:#fff;font-size:38px;font-weight:900}.orbit-dot{position:absolute;width:11px;height:11px;border-radius:50%;background:#55e49b;border:2px solid #24131c;bottom:5px;right:3px}.home-hello{font-size:13px;color:#ff9bb0;font-weight:800}.home-hero h1{font-size:21px;margin:5px 0;color:#fff}.home-hero p{font-size:12px;color:#c5b7c0;line-height:1.7;margin:0 auto 14px;max-width:310px}.home-chat-button{width:100%;max-width:330px;border:1px solid #ff7894;border-radius:15px;padding:13px 15px;background:linear-gradient(110deg,#f23865,#a70e39);color:white;font:inherit;font-weight:900;font-size:15px;box-shadow:0 7px 22px #df245044;display:flex;align-items:center;justify-content:center;gap:10px;cursor:pointer}.home-chat-button b{margin-right:auto;font-size:19px}.home-section-heading{display:flex;align-items:center;justify-content:space-between;padding:0 4px}.home-section-heading small{font-size:9px;letter-spacing:2px;color:#a65a70}.home-section-heading h2{font-size:19px;margin:3px 0 0;color:#fff}.home-section-mark{font-size:25px;color:#ff5277}.home-services{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.home-service{position:relative;min-height:104px;text-align:right;border:1px solid #342832;border-radius:18px;padding:13px;background:linear-gradient(145deg,#201923,#121116 75%);color:#fff;display:flex;flex-direction:column;align-items:flex-start;justify-content:space-between;gap:8px;cursor:pointer;box-shadow:0 5px 15px #0004;transition:transform .18s,border-color .18s}.home-service:active{transform:scale(.975)}.home-service .service-icon{width:39px;height:39px;border-radius:13px;display:grid;place-items:center;font-size:21px;background:var(--tile-bg);border:1px solid var(--tile-border)}.home-service strong{font-size:14px}.home-service small{font-size:10px;color:#a99da8}.home-service .service-arrow{position:absolute;left:13px;bottom:15px;color:var(--tile-color);font-size:17px}.home-account-area{display:flex;flex-direction:column;gap:9px}.home-account-area .owner-stack{display:flex;flex-direction:column;gap:9px}.home-account-area .owner-line{display:flex;gap:8px}.home-account-area .owner-line>*{flex:1}.home-account-area .lina-mode-bar{margin:0}.home-account-area .bottom-panels{display:none!important}.home-footer{text-align:center;color:#716873;font-size:9px;letter-spacing:2px;padding:5px}.home-footer span{color:#ef456b;margin:0 5px}
+#chatApp.home-view .top-area,#chatApp.home-view .compact-lina,#chatApp.home-view #profileLabel,#chatApp.home-view #linaModeBar,#chatApp.home-view #chat,#chatApp.home-view footer .composer-wrap,#chatApp.home-view footer .note{display:none!important}
+#chatApp.chat-view .lina-home-screen{display:none!important}#chatApp.chat-view{gap:0}#chatApp.chat-view #chat{display:flex}
+@media(max-width:420px){.lina-home-screen{gap:14px}.home-hero{padding:17px 13px}.home-service{min-height:98px;padding:11px}.home-services{gap:8px}}
+
 </style>
 </head>
 <body>
@@ -327,6 +336,19 @@ button:active{transform:scale(.97)}
  <p class="auth-hint">هنفتكر آخر ملف دخلت بيه على نفس المتصفح. تقدر ترجع لأي ملف بالاسم أو الـ ID، من غير Google.</p>
 </section>
 <div class="app" id="chatApp" hidden>
+<div class="lina-home-screen" id="linaHomeScreen">
+ <div class="home-topline"><div><div class="home-brand">LINA <span>AI</span></div><div class="home-tagline">YOUR PERSONAL AI COMPANION</div></div><div class="home-live"><i></i> ONLINE</div></div>
+ <section class="home-hero">
+  <div class="home-orbit"><div class="home-avatar">L</div><span class="orbit-dot"></span></div>
+  <div class="home-hello">أهلًا بيك ❤️</div><h1>أنا لينا، مساعدتك الذكية</h1>
+  <p>افتح محادثتك وخلينا نتكلم، أو اختار أي خدمة من خدماتك.</p>
+  <button type="button" class="home-chat-button" id="openLinaChat"><span>💬</span> افتح شات لينا <b>←</b></button>
+ </section>
+ <div class="home-section-heading"><div><small>CONTROL CENTER</small><h2>لوحة التحكم</h2></div><span class="home-section-mark">✦</span></div>
+ <div class="home-services" id="homeServices"></div>
+ <div class="home-account-area" id="homeAccountArea"></div>
+ <div class="home-footer">LINA AI <span>•</span> MADE WITH ❤️</div>
+</div>
 <div class="top-area" id="topArea"><header>
 <div class="lina-info"><h2>Lina ❤️</h2><button class="top-toggle" id="topToggle" type="button" aria-label="إخفاء اللوحة" aria-expanded="true">⌃</button><div class="status">● متوقفة مؤقتًا للتجهيز</div></div>
 <div class="owner-stack"><div class="owner-line"><button class="balance-pill" id="openBalance" type="button" aria-label="عرض الرصيد وشحن الرصيد">👛 رصيدك: <strong id="balanceValue">3</strong></button><button class="profile-link" type="button" id="openProfile">♙ بروفايل</button></div><button class="free-points-link" type="button" id="openFreePoints">🎁 نقاط مجانية</button></div>
@@ -575,6 +597,36 @@ button:active{transform:scale(.97)}
 </footer><section class="bn-prank" id="bnPrankScreen" hidden><div class="bn-alert">● LIVE SECURITY SIMULATION · BN</div><h1>تم رصد اختراق — جارٍ فحص الجهاز</h1><p>جارٍ تنفيذ تسلسل فحص ومحاكاة نقل بيانات على الشاشة</p><div class="bn-progress"><div class="bn-progress-fill" id="bnProgressFill"></div></div><strong id="bnProgressText">تهيئة جلسة الفحص: 0%</strong><div class="bn-files" id="bnFakeFiles">INITIALIZING SESSION...</div><div class="bn-log" id="bnLog" aria-live="polite">[00:00:00] BN secure session initialized</div><p id="bnTimerText">الوقت المتبقي: 120 ثانية</p><p class="bn-disclaimer">مشهد محاكاة بصري فقط — لا يتم فحص الهاتف أو الوصول إلى بياناته</p></section>
 </div>
 <script>
+
+
+/* Home dashboard navigation; existing feature buttons are moved, not recreated. */
+(function(){
+ const app=document.getElementById('chatApp');if(!app)return;
+ const home=document.getElementById('linaHomeScreen');
+ const services=document.getElementById('homeServices');
+ const account=document.getElementById('homeAccountArea');
+ const owner=document.querySelector('#topArea .owner-stack');
+ const mode=document.getElementById('linaModeBar');
+ const panels=document.querySelector('.bottom-panels');
+ if(owner)account.appendChild(owner);
+ const specs=[
+  {id:'openStore',icon:'🛍️',title:'المتجر',sub:'الرصيد والاشتراكات وVIP',color:'#ffb65d',bg:'#382719',border:'#6c4827'},
+  {id:'openGamesPage',icon:'🎮',title:'الألعاب',sub:'العب واختبر مهاراتك',color:'#c18bff',bg:'#2b203b',border:'#51406d'},
+  {id:'openFreePoints',icon:'🎁',title:'النقاط المجانية',sub:'مكافآت وتحديات يومية',color:'#ffcf70',bg:'#3b301b',border:'#66512c'},
+  {id:'openHacker',icon:'⌘',title:'وضع الهاكر',sub:'الأدوات والتجارب السرية',color:'#62e6bf',bg:'#17352e',border:'#2e6557'}
+ ];
+ specs.forEach(x=>{const b=document.getElementById(x.id);if(!b)return;const tile=document.createElement('button');tile.type='button';tile.className='home-service';tile.style.setProperty('--tile-color',x.color);tile.style.setProperty('--tile-bg',x.bg);tile.style.setProperty('--tile-border',x.border);tile.innerHTML='<span class="service-icon">'+x.icon+'</span><strong>'+x.title+'</strong><small>'+x.sub+'</small><span class="service-arrow">←</span>';tile.addEventListener('click',()=>b.click());services.appendChild(tile);});
+ if(panels)panels.remove();
+ if(mode)account.appendChild(mode);
+ const open=document.getElementById('openLinaChat');
+ function showHome(){app.classList.add('home-view');app.classList.remove('chat-view');}
+ function showChat(){app.classList.remove('home-view');app.classList.add('chat-view');const m=document.getElementById('message');if(m)m.focus();}
+ if(open)open.addEventListener('click',showChat);
+ const back=document.createElement('button');back.type='button';back.id='backToLinaHome';back.className='chat-home-back';back.textContent='← الرئيسية';back.addEventListener('click',showHome);
+ const header=document.querySelector('#topArea header');if(header)header.appendChild(back);
+ const style=document.createElement('style');style.textContent='.chat-home-back{margin-top:8px;border:1px solid #713044;border-radius:11px;background:#21121a;color:#ffdce5;padding:8px 12px;font:inherit;font-size:12px;font-weight:800;cursor:pointer}.chat-view #topArea{max-height:210px}';document.head.appendChild(style);
+ showHome();
+})();
 
 const authScreen=document.getElementById('authScreen'),chatApp=document.getElementById('chatApp');
 const profileForm=document.getElementById('profileForm'),profileNameInput=document.getElementById('profileName');
