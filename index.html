@@ -334,6 +334,7 @@ button:active{transform:scale(.97)}
     <button type="button" class="free-point-tile" id="openLuckyWheelPage" style="padding:17px;border:1px solid #a51e2a;border-radius:14px;background:linear-gradient(120deg,#171717,#310d12);color:#fff;text-align:right;font:inherit">
      <strong style="display:block;font-size:17px">🎡 عجلة الحظ</strong><small style="color:#eee">جرّب حظك واكسب جوائز نادرة</small>
     </button>
+   <button type="button" class="free-point-tile" id="openLotteryPage" style="padding:17px;border:1px solid #b51e2a;border-radius:14px;background:linear-gradient(120deg,#171717,#310d12);color:#fff;text-align:right;font:inherit"><strong style="display:block;font-size:17px">🎰 السحب العشوائي</strong><small style="color:#eee">ادخل الجولة مع 49 لاعبًا وشوف مين هيكسب</small></button>
    <button type="button" class="free-point-tile" id="openDailyQuizPage" style="padding:17px;border:1px solid #777;border-radius:14px;background:#101010;color:#fff;text-align:right;font:inherit">
      <strong style="display:block;font-size:17px">🧠 سؤال اليوم</strong><small style="color:#ccc">7 أسئلة يوميًا · 3 عملات لكل إجابة صحيحة</small>
     </button>
@@ -347,6 +348,23 @@ button:active{transform:scale(.97)}
    <p style="font-size:18px;color:#fff;margin:8px 0">استلم <strong style="color:#ffd76a">10 عملات</strong> هدية كل 24 ساعة</p>
    <p class="admin-note" id="dailyRewardStatus">مكافأتك اليومية جاهزة!</p>
    <button type="button" class="agent-close" id="claimDailyReward">استلام 10 عملات 🎁</button>
+  </div>
+  <div id="lotteryPage" hidden>
+   <button type="button" class="admin-close free-points-back" data-free-back style="margin-bottom:10px">← رجوع للقائمة</button>
+   <h3 style="margin:4px 0;color:#fff">🎰 السحب العشوائي</h3>
+   <p class="admin-note">50 مشاركًا · اسمك و49 لاعبًا وهميًا · فرصة فوزك 1 من 50</p>
+   <div style="background:#171717;border:1px solid #a51e2a;border-radius:14px;padding:13px;margin:12px 0">
+    <label for="lotteryEntryAmount" style="display:block;color:#fff;font-weight:800;margin-bottom:8px">حدد عملات دخول الجولة</label>
+    <input id="lotteryEntryAmount" type="number" min="1" step="1" value="10" inputmode="numeric" style="box-sizing:border-box;width:100%;padding:13px;border-radius:10px;border:1px solid #777;background:#090909;color:#fff;font-size:20px;text-align:center">
+    <p id="lotteryBalanceHint" class="admin-note" style="margin:8px 0 0"></p>
+   </div>
+   <div id="lotteryPlayers" style="display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px;max-height:260px;overflow:auto;padding:4px"></div>
+   <div style="margin-top:12px;padding:16px;border-radius:14px;background:#211014;border:1px solid #a51e2a;text-align:center">
+    <div style="font-size:13px;color:#ddd">🎯 نتيجة السحب</div><div id="lotteryCurrentName" style="font-size:25px;font-weight:1000;color:#fff;margin:10px 0">مستنيين بداية الجولة...</div>
+    <div id="lotteryResult" class="admin-note" aria-live="polite">هتشوف الأسماء وهي بتتغير قدامك لحد اختيار الفائز.</div>
+   </div>
+   <button type="button" id="startLotteryRound" class="agent-close" style="width:100%;margin-top:14px">ابدأ الجولة 🎰</button>
+   <p class="admin-note" style="margin-top:8px">لو اسمك اتسحب تكسب ضعف مبلغ الدخول. لو فاز لاعب وهمي، تخسر مبلغ الدخول فقط.</p>
   </div>
   <div id="luckyWheelPage" hidden>
    <button type="button" class="admin-close free-points-back" data-free-back style="margin-bottom:10px">← رجوع للقائمة</button>
@@ -654,6 +672,7 @@ function showFreePointsPage(page){
  document.getElementById('dailyRewardPage').hidden=page!=='reward';
  document.getElementById('dailyQuizPage').hidden=page!=='quiz';
  document.getElementById('luckyWheelPage').hidden=page!=='wheel';
+ document.getElementById('lotteryPage').hidden=page!=='lottery';
  if(page==='wheel')refreshLuckyWheel();
  if(page==='reward')refreshDailyReward();
  if(page==='quiz')refreshDailyQuiz();
@@ -661,7 +680,40 @@ function showFreePointsPage(page){
 document.getElementById('openDailyRewardPage').addEventListener('click',()=>showFreePointsPage('reward'));
 document.getElementById('openDailyQuizPage').addEventListener('click',()=>showFreePointsPage('quiz'));
 document.getElementById('openLuckyWheelPage').addEventListener('click',()=>showFreePointsPage('wheel'));
+document.getElementById('openLotteryPage').addEventListener('click',()=>{refreshLotteryPage();showFreePointsPage('lottery')});
 document.querySelectorAll('[data-free-back]').forEach(btn=>btn.addEventListener('click',()=>showFreePointsPage('home')));
+
+
+const lotteryDummyNames=['آدم','ليلى','عمر','نور','سيف','ملك','زياد','جنى','كريم','ريم','مريم','علي','تاليا','حمزة','سلمى','مازن','لارا','آسر','ياسين','هنا','فارس','دانا','مالك','رنا','حسن','جود','إياد','بسملة','رامي','شهد','أنس','فرح','طارق','مي','بلال','ندى','خالد','يارا','مصطفى','لوجي','أدهم','سارة','حازم','رؤى','عمرو','ليان','يوسف','نوران','زياد'];
+let lotteryBusy=false;
+function shuffledLotteryNames(userName){
+ const names=lotteryDummyNames.slice();for(let i=names.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[names[i],names[j]]=[names[j],names[i]]}
+ const players=[{name:userName||'أنت',isUser:true},...names.map((name,i)=>({name:name+' '+(i+1),isUser:false}))];
+ for(let i=players.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[players[i],players[j]]=[players[j],players[i]]}return players;
+}
+function renderLotteryPlayers(players,highlight=-1){
+ const grid=document.getElementById('lotteryPlayers');grid.innerHTML='';
+ players.forEach((p,i)=>{const el=document.createElement('div');el.textContent=p.name;el.style.cssText='padding:8px 3px;border-radius:8px;text-align:center;font-size:11px;font-weight:800;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;background:'+(highlight===i?'#b51e2a':p.isUser?'#512027':'#25252a')+';color:#fff;border:'+(p.isUser?'1px solid #ff6974':'1px solid #444');grid.appendChild(el)});
+}
+function refreshLotteryPage(){
+ const p=currentProfile();document.getElementById('lotteryBalanceHint').textContent='رصيدك الحالي: '+Math.max(0,Number(p.balance)||0)+' 🪙';
+ if(!lotteryBusy){renderLotteryPlayers(shuffledLotteryNames(p.name));document.getElementById('lotteryCurrentName').textContent='مستنيين بداية الجولة...';document.getElementById('lotteryResult').textContent='الأسماء بتتغير عشوائيًا في كل جولة.';}
+}
+document.getElementById('startLotteryRound').addEventListener('click',()=>{
+ if(lotteryBusy)return;const p=currentProfile(),amount=Math.floor(Number(document.getElementById('lotteryEntryAmount').value));
+ if(!Number.isSafeInteger(amount)||amount<1){document.getElementById('lotteryResult').textContent='اكتب مبلغ صحيح يبدأ من عملة واحدة.';return}
+ if(amount>Number(p.balance||0)){document.getElementById('lotteryResult').textContent='رصيدك مش كافي لدخول الجولة.';return}
+ p.balance=Math.max(0,Number(p.balance||0)-amount);saveCurrentProfile(p);syncCoinDisplays(p);
+ const players=shuffledLotteryNames(p.name),winner=Math.floor(Math.random()*50),btn=document.getElementById('startLotteryRound'),current=document.getElementById('lotteryCurrentName'),result=document.getElementById('lotteryResult');
+ lotteryBusy=true;btn.disabled=true;btn.textContent='السحب شغال...';document.getElementById('lotteryBalanceHint').textContent='تم خصم '+amount+' عملة · المتبقي '+p.balance+' 🪙';
+ let ticks=0;const timer=setInterval(()=>{const pick=Math.floor(Math.random()*50);renderLotteryPlayers(players,pick);current.textContent=players[pick].name+' 🎲';ticks++;
+  if(ticks>=28){clearInterval(timer);renderLotteryPlayers(players,winner);current.textContent=players[winner].name+(players[winner].isUser?' 👑':' 🏆');
+   if(players[winner].isUser){p.balance+=amount*2;saveCurrentProfile(p);syncCoinDisplays(p);result.textContent='مبروك! اسمك اتسحب وكسبت '+(amount*2)+' عملة (ضعف دخولك) 🎉';}
+   else result.textContent='الفائز: '+players[winner].name+' · الجولة راحت للاعب وهمي. مفيش مكسب المرة دي.';
+   lotteryBusy=false;btn.disabled=false;btn.textContent='ابدأ جولة جديدة 🎰';document.getElementById('lotteryBalanceHint').textContent='رصيدك الحالي: '+p.balance+' 🪙';
+  }
+ },130);
+});
 
 const LUCKY_WHEEL_COOLDOWN=24*60*60*1000;
 const luckyWheelPrizes=[
