@@ -303,6 +303,14 @@ button:active{transform:scale(.97)}
 #freePointsHome .free-points-grid .free-point-tile strong{display:block;width:100%;font-size:16px!important;line-height:1.35;color:#fff!important}
 #freePointsHome .free-points-grid .free-point-tile small{display:block;width:100%;font-size:12px;line-height:1.4;color:#ddd!important;font-weight:400}
 #freePointsHome .free-points-grid .free-point-tile:active{transform:scale(.99)}
+
+/* Lina voice and personality controls */
+.lina-mode-bar{display:flex;gap:9px;align-items:center;flex-wrap:wrap;padding:9px 11px;margin:8px 0;background:linear-gradient(120deg,#1b1116,#300d17);border:1px solid #713044;border-radius:14px}
+.lina-mode-bar label{color:#ffdce4;font-size:13px;font-weight:700}
+.lina-mode-bar select{flex:1;min-width:145px;background:#100b0e;color:#fff;border:1px solid #8d304b;border-radius:10px;padding:10px;font:inherit}
+.lina-mode-note{width:100%;font-size:11px;color:#cdaeb8}
+.mic-input-btn{width:44px;height:44px;flex:none;border:1px solid #a52a48;border-radius:13px;background:#28121b;color:#fff;font-size:19px;cursor:pointer}
+.mic-input-btn.listening{background:#b3133c;box-shadow:0 0 0 4px #b3133c33}
 </style>
 </head>
 <body>
@@ -324,7 +332,14 @@ button:active{transform:scale(.97)}
 <div class="owner-stack"><div class="owner-line"><button class="balance-pill" id="openBalance" type="button" aria-label="عرض الرصيد وشحن الرصيد">👛 رصيدك: <strong id="balanceValue">3</strong></button><button class="profile-link" type="button" id="openProfile">♙ بروفايل</button></div><button class="free-points-link" type="button" id="openFreePoints">🎁 نقاط مجانية</button></div>
 </header></div>
 <button class="compact-lina" id="compactLina" type="button" aria-label="إظهار لوحة لينا" aria-expanded="true"><span>Lina ❤️</span><span class="compact-arrow">⌄</span></button>
-<div id="profileLabel" hidden></div><section class="agent-modal" id="agentActivateModal" hidden><div class="agent-inner"><h3>🕶️ تفعيل العميل السري</h3><p class="agent-note">أدخل كود البطاقة المكوّن من 22 رقمًا. كل كود صالح للتفعيل مرة واحدة فقط.</p><input id="agentActivateCode" type="text" inputmode="numeric" maxlength="22" autocomplete="off" placeholder="الصق كود البطاقة هنا" style="width:100%;box-sizing:border-box;padding:15px;border-radius:12px;background:#090909;border:1px solid #b51d3c;color:white;text-align:center;font-size:18px;letter-spacing:2px"><button type="button" id="agentActivateSubmit" class="agent-close">تفعيل الكود</button><p id="agentActivateStatus" class="agent-note" aria-live="polite"></p><div class="secret-agent-actions"><button type="button" id="disableSecretAgent">تعطيل العميل السري</button><button type="button" id="enableSecretAgent" hidden>تفعيل العميل السري</button></div><p class="agent-note" id="secretAgentTime"></p><button type="button" id="closeAgentActivate" class="agent-close">إغلاق</button></div></section>
+<div id="profileLabel" hidden></div>
+<div class="lina-mode-bar" id="linaModeBar">
+ <label for="linaPersonality">🎭 شخصية لينا</label>
+ <select id="linaPersonality" aria-label="اختار شخصية لينا">
+  <option value="friendly">😂 مرحة</option><option value="caring">❤️ حنونة</option><option value="confident">😎 جدعة</option><option value="smart">🧠 ذكية</option><option value="calm">🌸 هادية</option>
+ </select>
+ <span class="lina-mode-note" id="linaModeNote">اختار الأسلوب اللي تحب لينا تتكلم بيه.</span>
+</div><section class="agent-modal" id="agentActivateModal" hidden><div class="agent-inner"><h3>🕶️ تفعيل العميل السري</h3><p class="agent-note">أدخل كود البطاقة المكوّن من 22 رقمًا. كل كود صالح للتفعيل مرة واحدة فقط.</p><input id="agentActivateCode" type="text" inputmode="numeric" maxlength="22" autocomplete="off" placeholder="الصق كود البطاقة هنا" style="width:100%;box-sizing:border-box;padding:15px;border-radius:12px;background:#090909;border:1px solid #b51d3c;color:white;text-align:center;font-size:18px;letter-spacing:2px"><button type="button" id="agentActivateSubmit" class="agent-close">تفعيل الكود</button><p id="agentActivateStatus" class="agent-note" aria-live="polite"></p><div class="secret-agent-actions"><button type="button" id="disableSecretAgent">تعطيل العميل السري</button><button type="button" id="enableSecretAgent" hidden>تفعيل العميل السري</button></div><p class="agent-note" id="secretAgentTime"></p><button type="button" id="closeAgentActivate" class="agent-close">إغلاق</button></div></section>
 <section class="profile-modal" id="ownerAdminModal" hidden><div class="owner-admin-card"><h3>👑 لوحة المالك</h3><p class="admin-note">إدارة حسابات لينا عبر السيرفر وقاعدة البيانات</p><input class="admin-search" id="adminUserId" type="text" inputmode="numeric" placeholder="اكتب ID المستخدم"><div class="admin-grid"><button type="button" data-admin="lookup">🔎 بيانات الحساب</button><button type="button" data-admin="credit">➕ إرسال رصيد</button><button type="button" data-admin="debit">➖ سحب رصيد</button><button type="button" data-admin="warn">⚠️ إرسال تحذير</button><button type="button" data-admin="ban">⛔ حظر / فك الحظر</button><button type="button" data-admin="close">🔒 إغلاق / فتح الحساب</button><button type="button" data-admin="reports">📩 البلاغات</button><button type="button" data-admin="users">👥 كل المستخدمين</button></div><div id="adminResults" class="admin-results"></div><button class="admin-close" type="button" id="closeOwnerAdmin">إغلاق</button></div></section>
 <section class="vip-modal" id="balanceModal" hidden><div class="vip-card balance-card"><h3>🪙 رصيدك في لينا</h3><div class="balance-total"><strong id="modalBalanceValue">3</strong><span>نقطة</span></div><p class="admin-note">تقدر تراجع رصيدك من هنا وتشحنه لما طرق الدفع تتفعل.</p><h4 class="payment-heading">💳 شحن رصيد</h4><div class="payment-methods"><button type="button" class="payment-method" disabled><span>📱 فودافون كاش</span><small>متوقف حاليًا</small></button><button type="button" class="payment-method" disabled><span>💳 Visa</span><small>متوقف حاليًا</small></button><button type="button" class="payment-method" disabled><span>💳 Mastercard</span><small>متوقف حاليًا</small></button><button type="button" class="payment-method" disabled><span>📲 محافظ إلكترونية</span><small>متوقف حاليًا</small></button><button type="button" class="payment-method" disabled><span>🏦 InstaPay</span><small>متوقف حاليًا</small></button></div><p class="admin-note">كل طرق الدفع ظاهرة، لكنها غير متاحة حاليًا. لن يتم خصم أي مبلغ الآن.</p><div class="referral-box"><h4>🎁 دعوة الأشخاص</h4><p class="admin-note">ادعُ أصحابك واكسبوا نقاط لما يسجلوا بكودك.</p><label class="ref-label">كود الدعوة الخاص بي</label><div class="ref-copy-row"><code id="myPromoCode">•••••••</code><button type="button" id="copyPromoCode" aria-label="نسخ البرومو كود">📋 نسخ</button></div><label class="ref-label">رابط الدعوة الخاص بي</label><div class="ref-copy-row"><input id="myInviteLink" type="text" readonly value=""><button type="button" id="copyInviteLink">🔗 نسخ</button></div><p class="admin-note">صاحب الدعوة يحصل على 10 نقاط، واللاعب الجديد يحصل على 3 نقاط بعد التسجيل بكود صحيح. المكافآت المشتركة هتتفعل بعد ربط السيرفر.</p></div><button type="button" id="closeBalanceModal">إغلاق</button></div></section>
 <section class="vip-modal" id="dailyRewardModal" hidden>
@@ -493,7 +508,7 @@ button:active{transform:scale(.97)}
 <button class="menu-option" type="button" id="speakBtn"><span>🔊</span><span>تشغيل الصوت</span></button>
 </div>
 <input id="fileInput" type="file" accept="*/*" hidden>
-<form id="form"><button class="plus-btn" type="button" id="plusBtn" aria-label="إضافة مرفق" aria-expanded="false">+</button><input id="message" type="text" placeholder="اكتب رسالتك هنا..." autocomplete="off"><button class="send" type="submit" aria-label="إرسال">➤</button></form>
+<form id="form"><button class="plus-btn" type="button" id="plusBtn" aria-label="إضافة مرفق" aria-expanded="false">+</button><button class="mic-input-btn" id="voiceInputBtn" type="button" aria-label="تحدث إلى لينا" title="تحدث إلى لينا">🎙️</button><input id="message" type="text" placeholder="اكتب رسالتك هنا..." autocomplete="off"><button class="send" type="submit" aria-label="إرسال">➤</button></form>
 </div>
 <div class="note">لينا AI · المالك: 𝒀𝒐𝒖𝒔𝒔𝒆𝒇 ❤️</div>
 <div class="bottom-panels" aria-label="الأقسام"><button class="bottom-panel" id="openStore" type="button">🛍️ متجر</button><button class="bottom-panel hacker-panel" id="openHacker" type="button">هكـــر</button><button class="bottom-panel" id="openGamesPage" type="button">🎮 لعب</button></div>
@@ -1056,10 +1071,36 @@ function addFile(file,kind='user'){
 }
 function speak(text){
  if(!voiceEnabled||!('speechSynthesis' in window))return;
- speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(text);u.lang='ar-EG';u.rate=1;u.pitch=1.12;
- const voices=speechSynthesis.getVoices();const v=voices.find(x=>x.lang.toLowerCase().startsWith('ar-eg'))||voices.find(x=>x.lang.toLowerCase().startsWith('ar'));if(v)u.voice=v;
+ speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(text);u.lang='ar-EG';u.rate=0.96;u.pitch=1.18;
+ const voices=speechSynthesis.getVoices();
+ const arabic=voices.filter(x=>x.lang.toLowerCase().startsWith('ar-eg'));
+ const pool=arabic.length?arabic:voices.filter(x=>x.lang.toLowerCase().startsWith('ar'));
+ const female=pool.find(x=>/female|woman|zira|sara|laila|lina|hoda|mona|salma/i.test(x.name));
+ if(female||pool[0])u.voice=female||pool[0];
  speechSynthesis.speak(u);
 }
+const personalitySelect=document.getElementById('linaPersonality');
+const personalityNote=document.getElementById('linaModeNote');
+const personalityLabels={friendly:'😂 لينا المرحة',caring:'❤️ لينا الحنونة',confident:'😎 لينا الجدعة',smart:'🧠 لينا الذكية',calm:'🌸 لينا الهادية'};
+personalitySelect.value=localStorage.getItem('lina_personality')||'friendly';
+personalityNote.textContent='الشخصية المختارة: '+personalityLabels[personalitySelect.value];
+personalitySelect.addEventListener('change',()=>{
+ localStorage.setItem('lina_personality',personalitySelect.value);
+ personalityNote.textContent='الشخصية المختارة: '+personalityLabels[personalitySelect.value];
+});
+const voiceInputBtn=document.getElementById('voiceInputBtn');
+let speechRecognition=null;
+voiceInputBtn.addEventListener('click',()=>{
+ const SpeechRecognition=window.SpeechRecognition||window.webkitSpeechRecognition;
+ if(!SpeechRecognition){addText('التحدث المباشر غير مدعوم في المتصفح ده. افتح لينا من Chrome وحدّثه وجرب تاني.','bot');return}
+ if(speechRecognition){speechRecognition.stop();speechRecognition=null;voiceInputBtn.classList.remove('listening');return}
+ speechRecognition=new SpeechRecognition();speechRecognition.lang='ar-EG';speechRecognition.interimResults=false;speechRecognition.maxAlternatives=1;
+ voiceInputBtn.classList.add('listening');voiceInputBtn.textContent='⏺️';
+ speechRecognition.onresult=(event)=>{const said=event.results[0][0].transcript;input.value=said;document.getElementById('form').requestSubmit()};
+ speechRecognition.onerror=()=>addText('مش قادر أسمعك. اتأكد إنك سمحت للمتصفح باستخدام الميكروفون.','bot');
+ speechRecognition.onend=()=>{speechRecognition=null;voiceInputBtn.classList.remove('listening');voiceInputBtn.textContent='🎙️'};
+ try{speechRecognition.start()}catch(e){speechRecognition=null;voiceInputBtn.classList.remove('listening');voiceInputBtn.textContent='🎙️';addText('تعذر تشغيل الميكروفون. جرّب مرة تانية.','bot')}
+});
 function replyTo(text){
  const answer='لينا واقفه حاليا يتم تجهيز السيرفر الخاص بيها وبعد التجهيز تقدر تتواصل معايا تاني شكرا لتفهمكم 💞';
  addText(answer,'bot');
