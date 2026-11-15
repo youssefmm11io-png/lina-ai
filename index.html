@@ -376,10 +376,10 @@ button:active{transform:scale(.97)}
  <a class="support-link" href="https://t.me/Black_Hacker_V2_Support11_bot" target="_blank" rel="noopener noreferrer">الدعم الفني</a>
 </div>
 <div class="top-area" id="topArea"><header>
-<div class="lina-info"><h2>Lina ❤️</h2><button class="top-toggle" id="topToggle" type="button" aria-label="إخفاء اللوحة" aria-expanded="true">⌃</button><div class="status">● متوقفة مؤقتًا للتجهيز</div></div>
+<div class="lina-info"><h2>Lina ❤️</h2><div class="status">● متوقفة مؤقتًا للتجهيز</div></div>
 <div class="owner-stack"><div class="owner-line"><button class="balance-pill" id="openBalance" type="button" aria-label="عرض الرصيد وشحن الرصيد">👛 رصيدك: <strong id="balanceValue">3</strong></button><button class="profile-link" type="button" id="openProfile">♙ بروفايل</button></div><button class="free-points-link" type="button" id="openFreePoints">🎁 نقاط مجانية</button></div>
 </header></div>
-<button class="compact-lina" id="compactLina" type="button" aria-label="إظهار لوحة لينا" aria-expanded="true"><span>Lina ❤️</span><span class="compact-arrow">⌄</span></button>
+
 <div id="profileLabel" hidden></div>
 <div class="lina-mode-bar" id="linaModeBar">
  <label for="linaPersonality">🎭 شخصية لينا</label>
@@ -782,10 +782,7 @@ document.getElementById('saveProfile').addEventListener('click',()=>{const p=cur
 document.getElementById('copyProfileId').addEventListener('click',async()=>{const id=document.getElementById('profileIdValue').textContent;try{await navigator.clipboard.writeText(id)}catch{const t=document.createElement('textarea');t.value=id;document.body.append(t);t.select();document.execCommand('copy');t.remove()}document.getElementById('copyProfileId').textContent='✓ اتنسخ';setTimeout(()=>document.getElementById('copyProfileId').textContent='📋 نسخ',1600)});
 loadProfile();
 if(currentProfile().vip&&currentProfile().vip.isTrial){updateVipTrialTimer();vipTrialInterval=setInterval(updateVipTrialTimer,1000)}
-const chatAppEl=document.getElementById('chatApp'),compactLina=document.getElementById('compactLina'),topToggle=document.getElementById('topToggle');
-function toggleTopPanel(){const collapsed=chatAppEl.classList.toggle('header-collapsed');compactLina.setAttribute('aria-expanded',String(!collapsed));compactLina.setAttribute('aria-label',collapsed?'إظهار لوحة لينا':'إخفاء لوحة لينا');compactLina.querySelector('.compact-arrow').textContent=collapsed?'⌄':'⌃';topToggle.setAttribute('aria-expanded',String(!collapsed));topToggle.setAttribute('aria-label',collapsed?'إظهار اللوحة':'إخفاء اللوحة');topToggle.textContent=collapsed?'⌄':'⌃'}
-compactLina.addEventListener('click',toggleTopPanel);
-topToggle.addEventListener('click',toggleTopPanel);
+const chatAppEl=document.getElementById('chatApp');
 const OWNER_SECRET_KEY='lina_owner_secret_session';
 async function adminRequest(path,body={}){
  const secret=sessionStorage.getItem(OWNER_SECRET_KEY)||'';
@@ -1293,17 +1290,38 @@ voiceInputBtn.addEventListener('click',()=>{
  speechRecognition.onend=()=>{speechRecognition=null;voiceInputBtn.classList.remove('listening');voiceInputBtn.textContent='🎙️'};
  try{speechRecognition.start()}catch(e){speechRecognition=null;voiceInputBtn.classList.remove('listening');voiceInputBtn.textContent='🎙️';addText('تعذر تشغيل الميكروفون. جرّب مرة تانية.','bot')}
 });
-function replyTo(text){
- const answer='لينا واقفه حاليا يتم تجهيز السيرفر الخاص بيها وبعد التجهيز تقدر تتواصل معايا تاني شكرا لتفهمكم 💞';
- addText(answer,'bot');speak(answer);
+async function replyTo(message){
+ const wait=addText('لينا بتكتب...','bot');
+ const sendButton=document.querySelector('#form .send');
+ if(sendButton)sendButton.disabled=true;
+ try{
+  const response=await fetch(LINA_API,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({message,history:conversation,personality:localStorage.getItem('lina_personality')||'friendly'})});
+  const data=await response.json().catch(()=>({}));
+  if(!response.ok)throw new Error(data.error||'تعذر الاتصال بخدمة لينا');
+  const answer=String(data.reply||'مش قادرة أجهز الرد دلوقتي، جرّب تاني ❤️');
+  wait.textContent=answer;
+  conversation.push({role:'user',content:message},{role:'assistant',content:answer});
+  if(conversation.length>24)conversation.splice(0,conversation.length-24);
+  speak(answer);
+ }catch(err){wait.textContent='مش قادرة أوصل للذكاء الاصطناعي دلوقتي: '+(err.message||'حصل خطأ في الاتصال')+' ❤️'}
+ finally{if(sendButton)sendButton.disabled=false;scrollDown()}
 }
-document.getElementById('form').addEventListener('submit',e=>{
- e.preventDefault();
- const value=input.value.trim();
- if(!value)return;
- addText(value,'user');
- input.value='';
- replyTo(value);
+const chatForm=document.getElementById('form');
+chatForm.addEventListener('submit',e=>{
+ e.preventDefault();e.stopPropagation();
+ const value=input.value.trim();if(!value)return;
+ addText(value,'user');input.value='';replyTo(value);
+});
+input.addEventListener('focus',()=>{
+ const home=document.getElementById('linaHomeScreen');
+ if(home&&home.style.display!=='none'){
+  chatAppEl.classList.remove('home-view','header-collapsed');chatAppEl.classList.add('chat-view');
+  home.style.setProperty('display','none','important');
+  const top=document.getElementById('topArea'),footer=document.querySelector('#chatApp footer');
+  if(top)top.style.setProperty('display','block','important');
+  if(chat)chat.style.setProperty('display','flex','important');
+  if(footer)footer.style.setProperty('display','block','important');
+ }
 });
 const plusBtn=document.getElementById('plusBtn'),plusMenu=document.getElementById('plusMenu');
 function closePlusMenu(){plusMenu.hidden=true;plusBtn.setAttribute('aria-expanded','false')}
