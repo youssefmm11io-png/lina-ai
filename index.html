@@ -1308,22 +1308,26 @@ async function replyTo(message){
  finally{if(sendButton)sendButton.disabled=false;scrollDown()}
 }
 const chatForm=document.getElementById('form');
-chatForm.addEventListener('submit',e=>{
- e.preventDefault();e.stopPropagation();
- const value=input.value.trim();if(!value)return;
- addText(value,'user');input.value='';replyTo(value);
-});
-input.addEventListener('focus',()=>{
+function keepLinaChatOpen(){
  const home=document.getElementById('linaHomeScreen');
- if(home&&home.style.display!=='none'){
-  chatAppEl.classList.remove('home-view','header-collapsed');chatAppEl.classList.add('chat-view');
-  home.style.setProperty('display','none','important');
-  const top=document.getElementById('topArea'),footer=document.querySelector('#chatApp footer');
-  if(top)top.style.setProperty('display','block','important');
-  if(chat)chat.style.setProperty('display','flex','important');
-  if(footer)footer.style.setProperty('display','block','important');
- }
+ const app=document.getElementById('chatApp');
+ const top=document.getElementById('topArea');
+ const chatPanel=document.getElementById('chat');
+ const footer=document.querySelector('#chatApp footer');
+ if(app){app.hidden=false;app.classList.remove('home-view','header-collapsed');app.classList.add('chat-view')}
+ if(home)home.style.setProperty('display','none','important');
+ if(top)top.style.setProperty('display','block','important');
+ if(chatPanel){chatPanel.style.setProperty('display','flex','important');chatPanel.style.setProperty('flex','1 1 auto');chatPanel.style.setProperty('min-height','0')}
+ if(footer)footer.style.setProperty('display','block','important');
+}
+chatForm.addEventListener('submit',e=>{
+ e.preventDefault();e.stopImmediatePropagation();
+ keepLinaChatOpen();
+ const value=input.value.trim();if(!value)return;
+ addText(value,'user');input.value='';
+ replyTo(value);
 });
+input.addEventListener('focus',keepLinaChatOpen);
 const plusBtn=document.getElementById('plusBtn'),plusMenu=document.getElementById('plusMenu');
 function closePlusMenu(){plusMenu.hidden=true;plusBtn.setAttribute('aria-expanded','false')}
 plusBtn.addEventListener('click',()=>{plusMenu.hidden=!plusMenu.hidden;plusBtn.setAttribute('aria-expanded',String(!plusMenu.hidden))});
