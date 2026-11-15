@@ -164,7 +164,7 @@ export default {
       if (!env.DB) return json({error:"قاعدة البيانات غير مربوطة"},503);
       try {
         const b=await request.json(), code=String(b.code||"").trim(), userId=clean(b.userId,100);
-        if(!/^\d{19}$/.test(code)||!userId) return json({error:"الكود أو الحساب غير صالح"},400);
+        if(!/^[A-Z0-9]{22}$/.test(code)||!userId) return json({error:"الكود أو الحساب غير صالح"},400);
         await env.DB.prepare("CREATE TABLE IF NOT EXISTS gift_codes (code TEXT PRIMARY KEY, reward INTEGER NOT NULL, redeemed_by TEXT, redeemed_at TEXT, created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP)").run();
         await env.DB.prepare("INSERT OR IGNORE INTO gift_codes (code,reward) VALUES (?,1000)").bind("L7Q4M9X2B8K5P3R6T1Z0WA").run();
         const claim=await env.DB.prepare("UPDATE gift_codes SET redeemed_by=?, redeemed_at=CURRENT_TIMESTAMP WHERE code=? AND redeemed_at IS NULL").bind(userId,code).run();
