@@ -692,11 +692,6 @@ document.addEventListener('click',function(e){
   const p=typeof currentProfile==='function'?currentProfile():null,key='lina_secret_access_'+String(p&&p.id||'guest'),unlocked=Number(localStorage.getItem(key)||0)>Date.now();
   if(modal)modal.hidden=false;if(login)login.hidden=unlocked;if(content)content.hidden=!unlocked;
   if(!unlocked){const pass=document.getElementById('hackerPassword'),uid=document.getElementById('hackerId');if(pass)pass.value='';if(uid)uid.value='';}
- }else if(b.id==='openFreePoints'){
-  e.preventDefault();e.stopImmediatePropagation();
-  if(typeof refreshDailyReward==='function')refreshDailyReward();
-  if(typeof refreshDailyQuiz==='function')refreshDailyQuiz();
-  const modal=document.getElementById('dailyRewardModal');if(modal)modal.hidden=false;
  }else{
   const closeMap={closeVipStore:'vipStoreModal',closeHacker:'hackerModal',closeDailyReward:'dailyRewardModal',closeLuckyPrize:'luckyPrizePopup',closeAgentCard:'agentCardModal',closeAgentActivate:'agentActivateModal',closeProfileTop:'profileModal',closeBalanceModal:'balanceModal',closeOwnerAdmin:'ownerAdminModal',closePaymentHistory:'paymentHistoryModal'};
   const target=closeMap[b.id];
@@ -921,7 +916,13 @@ function refreshDailyReward(){
  if(ready)dailyRewardStatus.textContent='مكافأتك اليومية جاهزة! اضغط استلام لتحصل على 10 عملات.';
  else {const hours=Math.floor(remaining/3600000),minutes=Math.ceil((remaining%3600000)/60000);dailyRewardStatus.textContent='استلمت مكافأتك بالفعل. ارجع بعد '+hours+' ساعة و'+minutes+' دقيقة.';}
 }
-document.getElementById('openFreePoints').addEventListener('click',()=>{refreshDailyReward();refreshDailyQuiz();dailyRewardModal.hidden=false});
+document.getElementById('openFreePoints').addEventListener('click',()=>{
+ const modal=document.getElementById('dailyRewardModal');
+ if(modal)modal.hidden=false;
+ try{showFreePointsPage('home')}catch(err){console.error('Free points home:',err)}
+ try{refreshDailyReward()}catch(err){console.error('Daily reward refresh:',err)}
+ try{refreshDailyQuiz()}catch(err){console.error('Daily quiz refresh:',err)}
+});
 showFreePointsPage('home');
 
 function showFreePointsPage(page){
