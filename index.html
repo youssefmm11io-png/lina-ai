@@ -391,6 +391,7 @@ button:active{transform:scale(.97)}
 <label class="wallet-label" for="receiptReceiverPhone">رقم المحفظة اللي حولت عليها</label>
 <input id="receiptReceiverPhone" type="tel" inputmode="numeric" placeholder="01xxxxxxxxx" maxlength="11" style="width:100%;padding:12px;border:1px solid #8b344d;border-radius:11px;background:#100b0e;color:#fff">
 <button type="button" id="confirmWalletPayment" disabled style="width:100%;padding:13px;border:0;border-radius:12px;background:#176b39;color:#fff;font-weight:800;opacity:.45">✓ تم الدفع</button>
+<small id="receiptValidationStatus" aria-live="polite" style="text-align:center;color:#ff9aaa">اكتب أيدي رقمي صحيح ورقم محفظة مصري، وتأكد أن رقم المستلم هو رقم التحويل الظاهر بالأعلى.</small>
 </div>
 <section id="paymentReceiptCard" hidden style="margin-top:18px;padding:18px;border:2px solid #bd8b36;border-radius:18px;background:#100b0e;color:#fff">
 <div style="text-align:center;margin-bottom:14px"><h2 style="margin:0;color:#f4d18a">إيصال دفع</h2><strong style="display:block;margin-top:6px;font-size:20px">LINA AI</strong><small style="color:#d3b6c0">PAYMENT REQUEST RECEIPT</small><p style="margin:10px 0"><span style="display:inline-block;padding:6px 12px;border-radius:20px;background:#6b4b16;color:#ffe4a5;font-size:12px">بانتظار مراجعة الدفع</span></p></div>
@@ -1692,13 +1693,26 @@ document.addEventListener('click',e=>{if(e.target&&e.target.id==='adminMessageOk
  const receiptInputs=['receiptUserId','receiptSenderPhone','receiptReceiverPhone'].map(id=>document.getElementById(id));
  const confirmReceipt=document.getElementById('confirmWalletPayment'),receiptCard=document.getElementById('paymentReceiptCard');
  let activeReceipt=null;
- function validateReceiptForm(){const ready=receiptInputs.every(el=>el.value.trim().length>0);confirmReceipt.disabled=!ready;confirmReceipt.style.opacity=ready?'1':'.45';}
+ function normalizeReceiptDigits(v){return String(v).replace(/[٠-٩]/g,d=>String('٠١٢٣٤٥٦٧٨٩'.indexOf(d))).replace(/[۰-۹]/g,d=>String('۰۱۲۳۴۵۶۷۸۹'.indexOf(d))).replace(/\\s+/g,'');}
+ function validateReceiptForm(){
+   const id=normalizeReceiptDigits(receiptInputs[0].value),sender=normalizeReceiptDigits(receiptInputs[1].value),receiver=normalizeReceiptDigits(receiptInputs[2].value);
+   const idOk=/^\\d{6,20}$/.test(id),phoneOk=/^01[0125]\\d{8}$/.test(sender),receiverOk=receiver==='01147773142';
+   const ready=idOk&&phoneOk&&receiverOk;
+   confirmReceipt.disabled=!ready;confirmReceipt.style.opacity=ready?'1':'.45';
+   const status=document.getElementById('receiptValidationStatus');
+   if(!id&&!sender&&!receiver)status.textContent='اكتب أيدي رقمي صحيح ورقم محفظة مصري، وتأكد أن رقم المستلم هو رقم التحويل الظاهر بالأعلى.';
+   else if(!idOk)status.textContent='الأيدي لازم يكون أرقام فقط، من 6 إلى 20 رقم.';
+   else if(!phoneOk)status.textContent='رقم المحفظة المرسل منه لازم يكون 11 رقم ويبدأ بـ 010 أو 011 أو 012 أو 015.';
+   else if(!receiverOk)status.textContent='رقم المستلم غير صحيح. لازم يكون رقم المحفظة المعروض بالأعلى.';
+   else status.textContent='✓ البيانات سليمة من ناحية التنسيق، تقدر تكمل.';
+   return ready;
+ }
  receiptInputs.forEach(el=>el.addEventListener('input',validateReceiptForm));
  function makeReceiptNumber(){const a=new Uint32Array(2);crypto.getRandomValues(a);return String(1000000000000n+(BigInt(a[0])<<32n|BigInt(a[1]))%9000000000000n);}
  function escReceipt(v){return String(v).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
  function receiptRow(label,value){return '<div style="display:flex;justify-content:space-between;gap:12px;align-items:flex-start"><span style="color:#d5c3c9">'+label+'</span><strong style="text-align:left;overflow-wrap:anywhere">'+escReceipt(value)+'</strong></div>';}
  confirmReceipt.addEventListener('click',()=>{
-   if(confirmReceipt.disabled)return;
+   if(confirmReceipt.disabled||!validateReceiptForm())return;
    const profile=typeof currentProfile==='function'?currentProfile():null;
    const coins=Math.max(100,Math.floor((Number(qty.value)||100)/100)*100),amount=coins/5;
    activeReceipt={number:makeReceiptNumber(),userId:receiptInputs[0].value.trim(),userName:profile&&profile.name?profile.name:'غير محدد',sender:receiptInputs[1].value.trim(),receiver:receiptInputs[2].value.trim(),method:names[selected],coins,amount,createdAt:new Date().toLocaleString('ar-EG')};
