@@ -380,7 +380,7 @@ button:active{transform:scale(.97)}
  <span class="lina-mode-note" id="linaModeNote">اختار الأسلوب اللي تحب لينا تتكلم بيه.</span>
 </div><section class="agent-modal" id="agentActivateModal" hidden><div class="agent-inner"><h3>🕶️ تفعيل العميل السري</h3><p class="agent-note">أدخل كود البطاقة المكوّن من 22 رقمًا. كل كود صالح للتفعيل مرة واحدة فقط.</p><input id="agentActivateCode" type="text" inputmode="numeric" maxlength="22" autocomplete="off" placeholder="الصق كود البطاقة هنا" style="width:100%;box-sizing:border-box;padding:15px;border-radius:12px;background:#090909;border:1px solid #b51d3c;color:white;text-align:center;font-size:18px;letter-spacing:2px"><button type="button" id="agentActivateSubmit" class="agent-close">تفعيل الكود</button><p id="agentActivateStatus" class="agent-note" aria-live="polite"></p><div class="secret-agent-actions"><button type="button" id="disableSecretAgent">تعطيل العميل السري</button><button type="button" id="enableSecretAgent" hidden>تفعيل العميل السري</button></div><p class="agent-note" id="secretAgentTime"></p><button type="button" id="closeAgentActivate" class="agent-close">إغلاق</button></div></section>
 <section class="profile-modal" id="ownerAdminModal" hidden><div class="owner-admin-card"><h3>👑 لوحة المالك</h3><p class="admin-note">إدارة حسابات لينا عبر السيرفر وقاعدة البيانات</p><input class="admin-search" id="adminUserId" type="text" inputmode="numeric" placeholder="اكتب ID المستخدم"><div class="admin-grid"><button type="button" data-admin="lookup">🔎 بيانات الحساب</button><button type="button" data-admin="credit">➕ إرسال رصيد</button><button type="button" data-admin="debit">➖ سحب رصيد</button><button type="button" data-admin="warn">⚠️ إرسال تحذير</button><button type="button" data-admin="ban">⛔ حظر / فك الحظر</button><button type="button" data-admin="close">🔒 إغلاق / فتح الحساب</button><button type="button" data-admin="reports">📩 البلاغات</button><button type="button" data-admin="users">👥 كل المستخدمين</button></div><div id="adminResults" class="admin-results"></div><button class="admin-close" type="button" id="closeOwnerAdmin">إغلاق</button></div></section>
-<section class="vip-modal" id="balanceModal" hidden><div class="vip-card balance-card"><h3>🪙 رصيدك في لينا</h3><div class="balance-total"><strong id="modalBalanceValue">3</strong><span>نقطة</span></div><p class="admin-note">اختار المحفظة وحوّل المبلغ، وبعدها ابعت صورة التحويل على حساب الدعم.</p><h4 class="payment-heading">💳 طرق التحويل</h4><div class="wallet-pay-box"><div class="wallet-methods"><span class="wallet-method">📱 فودافون كاش</span><span class="wallet-method">📲 اتصالات كاش</span></div><p class="wallet-label">رقم المحفظة — اضغط نسخ للتحويل</p><div class="wallet-copy-row"><span class="wallet-blurred" aria-label="رقم المحفظة مخفي">••••••••••••</span><button type="button" id="copyWalletNumber">📋 نسخ</button></div><small id="walletCopyStatus" class="wallet-copy-status" aria-live="polite">الرقم مخفي لحماية الخصوصية؛ النسخ ينسخه مباشرة.</small><a class="wallet-send-proof" href="https://t.me/Youuss34" target="_blank" rel="noopener noreferrer">📨 إرسال صورة التحويل على تليجرام</a></div><p class="admin-note">بعد التحويل افتح تليجرام وأرسل صورة الإيصال مع اسم حسابك والمبلغ.</p><div class="referral-box"><h4>🎁 دعوة الأشخاص</h4><p class="admin-note">ادعُ أصحابك واكسبوا نقاط لما يسجلوا بكودك.</p><label class="ref-label">كود الدعوة الخاص بي</label><div class="ref-copy-row"><code id="myPromoCode">•••••••</code><button type="button" id="copyPromoCode" aria-label="نسخ البرومو كود">📋 نسخ</button></div><label class="ref-label">رابط الدعوة الخاص بي</label><div class="ref-copy-row"><input id="myInviteLink" type="text" readonly value=""><button type="button" id="copyInviteLink">🔗 نسخ</button></div><p class="admin-note">صاحب الدعوة يحصل على 10 نقاط، واللاعب الجديد يحصل على 3 نقاط بعد التسجيل بكود صحيح. المكافآت المشتركة هتتفعل بعد ربط السيرفر.</p></div><button type="button" id="closeBalanceModal">إغلاق</button></div></section>
+<section class="vip-modal" id="balanceModal" hidden><div class="vip-card balance-card"><h3>🪙 رصيدك في لينا</h3><div class="balance-total"><strong id="modalBalanceValue">3</strong><span>نقطة</span></div><p class="admin-note">حدد عدد العملات المطلوبة لمعرفة السعر. الحد الأدنى 100 عملة، وكل 100 عملة بسعر 20 جنيهًا.</p><div class="wallet-pay-box"><label class="wallet-label" for="coinQuantity">عدد العملات (مضاعفات 100)</label><input id="coinQuantity" type="number" min="100" step="100" value="100" inputmode="numeric" style="width:100%;padding:12px;border:1px solid #8b344d;border-radius:11px;background:#100b0e;color:#fff;text-align:center;font:inherit"><p id="coinPricePreview" class="wallet-label" aria-live="polite">السعر: 20 جنيهًا</p><h4 class="payment-heading">💳 طرق الدفع (غير مفعّلة حاليًا)</h4><label class="wallet-label" for="paymentMethod">طريقة الدفع</label><select id="paymentMethod" style="width:100%;padding:12px;border:1px solid #8b344d;border-radius:11px;background:#100b0e;color:#fff;font:inherit"><option value="vodafone">📱 فودافون كاش — 20 جنيه / 100 عملة</option><option value="etisalat">📲 اتصالات كاش — 20 جنيه / 100 عملة</option></select><div class="wallet-methods" style="margin-top:10px"><span class="wallet-method" aria-disabled="true">📱 فودافون كاش · غير متاح حاليًا</span><span class="wallet-method" aria-disabled="true">📲 اتصالات كاش · غير متاح حاليًا</span></div><p class="admin-note">طرق الدفع ظاهرة للتوضيح فقط، ولا يمكن تنفيذ عملية دفع أو شحن حاليًا.</p><p class="wallet-label">رقم المحفظة (مخفي) — النسخ</p><div class="wallet-copy-row"><span class="wallet-blurred" aria-label="رقم المحفظة مخفي">••••••••••••</span><button type="button" id="copyWalletNumber">📋 نسخ</button></div><small id="walletCopyStatus" class="wallet-copy-status" aria-live="polite">الرقم مخفي؛ يمكنك نسخه عند الحاجة.</small><a class="wallet-send-proof" href="https://t.me/Youuss34" target="_blank" rel="noopener noreferrer">📨 حساب إرسال الإيصال</a></div><div class="referral-box"><h4>🎁 دعوة الأشخاص</h4><p class="admin-note">ادعُ أصحابك واكسبوا نقاط لما يسجلوا بكودك.</p><label class="ref-label">كود الدعوة الخاص بي</label><div class="ref-copy-row"><code id="myPromoCode">•••••••</code><button type="button" id="copyPromoCode" aria-label="نسخ البرومو كود">📋 نسخ</button></div><label class="ref-label">رابط الدعوة الخاص بي</label><div class="ref-copy-row"><input id="myInviteLink" type="text" readonly value=""><button type="button" id="copyInviteLink">🔗 نسخ</button></div><p class="admin-note">صاحب الدعوة يحصل على 10 نقاط، واللاعب الجديد يحصل على 3 نقاط بعد التسجيل بكود صحيح. المكافآت المشتركة هتتفعل بعد ربط السيرفر.</p></div><button type="button" id="closeBalanceModal">إغلاق</button></div></section>
 <section class="vip-modal" id="dailyRewardModal" hidden>
  <div class="vip-card" style="text-align:center;max-width:440px">
   <div id="freePointsHome">
@@ -1602,7 +1602,7 @@ document.addEventListener('click',e=>{if(e.target&&e.target.id==='adminMessageOk
 (()=> {
  const btn=document.getElementById('copyWalletNumber');
  if(!btn)return;
- const wallet='381914940835';
+ const wallet='01147773142';
  const status=document.getElementById('walletCopyStatus');
  btn.addEventListener('click',async()=>{
    try{
@@ -1619,5 +1619,23 @@ document.addEventListener('click',e=>{if(e.target&&e.target.id==='adminMessageOk
 })();
 </script>
 
+<script>
+(()=> {
+ const qty=document.getElementById('coinQuantity');
+ const method=document.getElementById('paymentMethod');
+ const preview=document.getElementById('coinPricePreview');
+ if(!qty||!method||!preview)return;
+ const update=()=>{
+   let n=Math.floor(Number(qty.value)||100);
+   n=Math.max(100,Math.floor(n/100)*100);
+   qty.value=n;
+   preview.textContent='السعر: '+(n/100*20)+' جنيهًا — '+(method.value==='vodafone'?'فودافون كاش':'اتصالات كاش');
+ };
+ qty.addEventListener('input',update);
+ qty.addEventListener('change',update);
+ method.addEventListener('change',update);
+ update();
+})();
+</script>
 </body>
 </html>
