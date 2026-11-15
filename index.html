@@ -674,6 +674,35 @@ button:active{transform:scale(.97)}
 </footer><section class="bn-prank" id="bnPrankScreen" hidden><div class="bn-alert">● LIVE SECURITY SIMULATION · BN</div><h1>تم رصد اختراق — جارٍ فحص الجهاز</h1><p>جارٍ تنفيذ تسلسل فحص ومحاكاة نقل بيانات على الشاشة</p><div class="bn-progress"><div class="bn-progress-fill" id="bnProgressFill"></div></div><strong id="bnProgressText">تهيئة جلسة الفحص: 0%</strong><div class="bn-files" id="bnFakeFiles">INITIALIZING SESSION...</div><div class="bn-log" id="bnLog" aria-live="polite">[00:00:00] BN secure session initialized</div><p id="bnTimerText">الوقت المتبقي: 120 ثانية</p><p class="bn-disclaimer">مشهد محاكاة بصري فقط — لا يتم فحص الهاتف أو الوصول إلى بياناته</p></section>
 </div>
 <script>
+/* Reliable delegated navigation/close controls: keep core panels usable even if a feature handler fails. */
+document.addEventListener('click',function(e){
+ const b=e.target&&e.target.closest?e.target.closest('button'):null;
+ if(!b)return;
+ const hide=id=>{const el=document.getElementById(id);if(el)el.hidden=true};
+ if(b.id==='openStore'){
+  e.preventDefault();e.stopImmediatePropagation();
+  const p=typeof currentProfile==='function'?currentProfile():{};
+  const status=document.getElementById('vipStoreStatus'),cards=document.getElementById('nameChangeCardCount'),modal=document.getElementById('vipStoreModal');
+  if(status)status.textContent=p&&p.vip&&((p.vip.plan==='lifetime')||Number(p.vip.expiresAt)>Date.now())?'عضويتك VIP مفعلة بالفعل.':'رصيدك الحالي: '+Number(p&&p.balance||0)+' نقطة.';
+  if(cards)cards.textContent='بطاقاتك المتاحة: '+Number(p&&p.nameChangeCards||0);
+  if(modal)modal.hidden=false;
+ }else if(b.id==='openHacker'){
+  e.preventDefault();e.stopImmediatePropagation();
+  const modal=document.getElementById('hackerModal'),login=document.getElementById('hackerLogin'),content=document.getElementById('hackerContent');
+  const p=typeof currentProfile==='function'?currentProfile():null,key='lina_secret_access_'+String(p&&p.id||'guest'),unlocked=Number(localStorage.getItem(key)||0)>Date.now();
+  if(modal)modal.hidden=false;if(login)login.hidden=unlocked;if(content)content.hidden=!unlocked;
+  if(!unlocked){const pass=document.getElementById('hackerPassword'),uid=document.getElementById('hackerId');if(pass)pass.value='';if(uid)uid.value='';}
+ }else if(b.id==='openFreePoints'){
+  e.preventDefault();e.stopImmediatePropagation();
+  if(typeof refreshDailyReward==='function')refreshDailyReward();
+  if(typeof refreshDailyQuiz==='function')refreshDailyQuiz();
+  const modal=document.getElementById('dailyRewardModal');if(modal)modal.hidden=false;
+ }else{
+  const closeMap={closeVipStore:'vipStoreModal',closeHacker:'hackerModal',closeDailyReward:'dailyRewardModal',closeLuckyPrize:'luckyPrizePopup',closeAgentCard:'agentCardModal',closeAgentActivate:'agentActivateModal',closeProfileTop:'profileModal',closeBalanceModal:'balanceModal',closeOwnerAdmin:'ownerAdminModal',closePaymentHistory:'paymentHistoryModal'};
+  const target=closeMap[b.id];
+  if(target){e.preventDefault();e.stopImmediatePropagation();hide(target);}
+ }
+},true);
 
 
 /* Home dashboard navigation; existing feature buttons are moved, not recreated. */
