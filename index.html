@@ -404,6 +404,7 @@ button:active{transform:scale(.97)}
 <button type="button" id="markReceiptSent" style="width:100%;padding:12px;border:1px solid #bd8b36;border-radius:12px;background:#21151b;color:#ffe4a5;font-weight:800;margin-top:9px">✓ تم إرسال الإيصال</button>
 <p id="receiptActionStatus" class="admin-note" style="text-align:center"></p>
 </section>
+<p id="paymentHistorySavedNotice" hidden class="admin-note" style="text-align:center;padding:10px;border:1px solid #287a49;border-radius:10px;background:#102017;color:#b8ffd0">✓ تم حفظ العملية في سجلات الدفع، والنموذج جاهز لعملية جديدة.</p>
 </div></div></section>
 <section class="vip-modal" id="paymentHistoryModal" hidden style="z-index:80">
  <div class="vip-card" style="max-width:480px;text-align:right">
@@ -1752,8 +1753,7 @@ document.addEventListener('click',e=>{if(e.target&&e.target.id==='adminMessageOk
    const rows=getPaymentHistory();
    if(!rows.some(x=>x.number===r.number)){rows.unshift(r);try{localStorage.setItem(HISTORY_KEY,JSON.stringify(rows.slice(0,100)));}catch(e){document.getElementById('receiptActionStatus').textContent='تعذر حفظ العملية على هذا الجهاز؛ مساحة التخزين قد تكون ممتلئة.';return;}}
    receiptInputs.forEach(el=>el.value='');validateReceiptForm();qty.value=100;update();receiptCard.hidden=true;activeReceipt=null;
-   document.getElementById('receiptActionStatus').textContent='اتحفظت العملية في سجلات الدفع، والنموذج رجع جاهز لعملية جديدة.';
-   document.getElementById('receiptActionStatus').scrollIntoView({behavior:'smooth',block:'center'});
+   const savedNotice=document.getElementById('paymentHistorySavedNotice');savedNotice.hidden=false;savedNotice.scrollIntoView({behavior:'smooth',block:'center'});
  });
  document.getElementById('sendPaymentReceipt').addEventListener('click',()=>{
    if(!activeReceipt)return;
