@@ -63,10 +63,81 @@ async function adminApi(request, env, url) {
   }
   return json({error:"Unknown admin endpoint"},404);
 }
+
+async function paymentApi(request, env, url) {
+  if (!env.DB || !env.TELEGRAM_BOT_TOKEN || !env.TELEGRAM_OWNER_CHAT_ID) return json({error:"إعدادات الدفع غير مكتملة"},503);
+  if (url.pathname === "/payments/submit") {
+    if (request.method !== "POST") return json({error:"Method not allowed"},405);
+    try {
+      const form = await request.formData();
+      const userId = clean(form.get("userId"),100);
+      const userName = clean(form.get("userName"),80);
+      const method = clean(form.get("method"),20);
+      const senderPhone = clean(form.get("senderPhone"),30);
+      const transactionId = clean(form.get("transactionId"),100);
+      const coins = Math.floor(Number(form.get("coins")));
+      const amount = Number(form.get("amount"));
+      const photo = form.get("receipt");
+      if (!userId || !["vodafone","etisalat"].includes(method) || !/^01[0-25][0-9]{8}$/.test(senderPhone) ||
+          !Number.isSafeInteger(coins) || coins < 100 || coins % 100 || amount !== coins/5 ||
+          !(photo instanceof File) || !photo.type.startsWith("image/") || photo.size > 5*1024*1024) {
+        return json({error:"راجع البيانات والصورة (الحد الأقصى 5 ميجابايت)"},400);
+      }
+      const user = await env.DB.prepare("SELECT id,name FROM users WHERE id=?").bind(userId).first();
+      if (!user) return json({error:"الحساب غير مسجل على السيرفر"},404);
+      const id = crypto.randomUUID();
+      const token = crypto.randomUUID()+crypto.randomUUID();
+      await env.DB.prepare("CREATE TABLE IF NOT EXISTS payment_orders (id TEXT PRIMARY KEY, token TEXT UNIQUE NOT NULL, user_id TEXT NOT NULL, user_name TEXT, method TEXT NOT NULL, sender_phone TEXT NOT NULL, transaction_id TEXT, coins INTEGER NOT NULL, amount REAL NOT NULL, status TEXT NOT NULL DEFAULT 'pending', created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP)").run();
+      await env.DB.prepare("INSERT INTO payment_orders (id,token,user_id,user_name,method,sender_phone,transaction_id,coins,amount) VALUES (?,?,?,?,?,?,?,?,?)")
+        .bind(id,token,userId,userName||user.name,method,senderPhone,transactionId,coins,amount).run();
+      const caption = "طلب شحن جديد 🧾\nرقم الطلب: "+id+"\nالاسم: "+(userName||user.name)+"\nUser ID: "+userId+"\nالطريقة: "+(method==="vodafone"?"فودافون كاش":"اتصالات كاش")+"\nرقم المرسل: "+senderPhone+"\nالمبلغ: "+amount+" جنيه\nالعملات: "+coins+"\nرقم العملية: "+(transactionId||"غير مضاف");
+      const kb = {inline_keyboard:[[
+        {text:"✅ موافقة وإضافة الرصيد",url:url.origin+"/payments/review?token="+token+"&action=approve"},
+        {text:"❌ رفض الطلب",url:url.origin+"/payments/review?token="+token+"&action=reject"}
+      ]]};
+      const fd = new FormData();
+      fd.set("chat_id",env.TELEGRAM_OWNER_CHAT_ID);
+      fd.set("photo",photo,photo.name||"receipt.jpg");
+      fd.set("caption",caption);
+      fd.set("reply_markup",JSON.stringify(kb));
+      const tg = await fetch("https://api.telegram.org/bot"+env.TELEGRAM_BOT_TOKEN+"/sendPhoto",{method:"POST",body:fd});
+      const tgData = await tg.json();
+      if (!tg.ok || !tgData.ok) {
+        await env.DB.prepare("DELETE FROM payment_orders WHERE id=?").bind(id).run();
+        return json({error:"تعذر إرسال الطلب للبوت. تأكد أنك ضغطت Start في البوت وأن الإعدادات صحيحة."},502);
+      }
+      return json({ok:true,message:"تم إرسال طلبك للمالك للمراجعة."},201);
+    } catch(e) { return json({error:"تعذر إرسال طلب الدفع"},500); }
+  }
+  if (url.pathname === "/payments/review") {
+    if (request.method !== "GET") return json({error:"Method not allowed"},405);
+    const token=clean(url.searchParams.get("token"),100), action=clean(url.searchParams.get("action"),10);
+    if (!token || !["approve","reject"].includes(action)) return new Response("طلب غير صالح",{status:400});
+    const order=await env.DB.prepare("SELECT * FROM payment_orders WHERE token=?").bind(token).first();
+    if (!order) return new Response("الطلب غير موجود",{status:404});
+    if (order.status !== "pending") return new Response("تم التعامل مع الطلب بالفعل: "+order.status,{headers:{"Content-Type":"text/plain; charset=utf-8"}});
+    if (action==="approve") {
+      const changed=await env.DB.prepare("UPDATE payment_orders SET status='approved' WHERE id=? AND status='pending'").bind(order.id).run();
+      if (!changed.meta || changed.meta.changes!==1) return new Response("تم التعامل مع الطلب بالفعل");
+      const credit=await env.DB.prepare("UPDATE users SET balance=balance+? WHERE id=?").bind(order.coins,order.user_id).run();
+      if (!credit.meta || credit.meta.changes!==1) {
+        await env.DB.prepare("UPDATE payment_orders SET status='pending' WHERE id=? AND status='approved'").bind(order.id).run();
+        return new Response("تعذر إضافة الرصيد؛ لم يتم اعتماد الطلب");
+      }
+    } else {
+      await env.DB.prepare("UPDATE payment_orders SET status='rejected' WHERE id=? AND status='pending'").bind(order.id).run();
+    }
+    const label=action==="approve"?"تمت الموافقة وإضافة "+order.coins+" عملة للحساب.":"تم رفض طلب الدفع.";
+    return new Response("<!doctype html><meta charset='utf-8'><meta name='viewport' content='width=device-width'><title>مراجعة الدفع</title><body style='font-family:Arial;background:#111;color:#fff;text-align:center;padding:40px'><h2>"+label+"</h2><p>يمكنك إغلاق الصفحة والعودة إلى تيليجرام.</p></body>",{headers:{"Content-Type":"text/html; charset=utf-8"}});
+  }
+  return json({error:"Not found"},404);
+}
+
 export default {
   async fetch(request, env) {
     if (request.method === "OPTIONS") return new Response(null, { headers: cors });
     const url = new URL(request.url);
+    if (url.pathname.startsWith("/payments/")) { try { return await paymentApi(request, env, url); } catch (error) { return json({error:"تعذر تنفيذ طلب الدفع"},500); } }
     if (url.pathname.startsWith("/admin/")) {
       try { return await adminApi(request, env, url); } catch (error) { return json({error:"تعذر تنفيذ عملية الإدارة"},500); }
     }
