@@ -679,6 +679,31 @@ document.addEventListener('click',function(e){
  const b=e.target&&e.target.closest?e.target.closest('button'):null;
  if(!b)return;
  const hide=id=>{const el=document.getElementById(id);if(el)el.hidden=true};
+ // Core launchers are handled in capture phase so other feature listeners cannot swallow the tap.
+ if(b.id==='openHacker'){
+  e.preventDefault();e.stopImmediatePropagation();
+  const modal=document.getElementById('hackerModal');
+  if(modal)modal.hidden=false;
+  const p=typeof currentProfile==='function'?currentProfile():null;
+  const key='lina_secret_access_'+String(p&&p.id||'guest');
+  const unlocked=Number(localStorage.getItem(key)||0)>Date.now();
+  const login=document.getElementById('hackerLogin'),content=document.getElementById('hackerContent');
+  if(login)login.hidden=unlocked;
+  if(content)content.hidden=!unlocked;
+  if(!unlocked){const pw=document.getElementById('hackerPassword'),uid=document.getElementById('hackerId');if(pw)pw.value='';if(uid)uid.value='';}
+  return;
+ }
+ if(b.id==='openFreePoints'){
+  e.preventDefault();e.stopImmediatePropagation();
+  const modal=document.getElementById('dailyRewardModal');
+  if(modal)modal.hidden=false;
+  const pages=['dailyRewardPage','vipRiddlePage','dailyQuizPage','luckyWheelPage','lotteryPage','luckCardsPage','cipherGamePage','numberGamePage','slotGamePage','bombGamePage','visitorGamePage'];
+  pages.forEach(id=>{const el=document.getElementById(id);if(el)el.hidden=true;});
+  const home=document.getElementById('freePointsHome');if(home)home.hidden=false;
+  try{if(typeof refreshDailyReward==='function')refreshDailyReward();}catch(err){console.error('Daily reward refresh:',err);}
+  try{if(typeof refreshDailyQuiz==='function')refreshDailyQuiz();}catch(err){console.error('Daily quiz refresh:',err);}
+  return;
+ }
  if(b.id==='openStore'){
   e.preventDefault();e.stopImmediatePropagation();
   const p=typeof currentProfile==='function'?currentProfile():{};
