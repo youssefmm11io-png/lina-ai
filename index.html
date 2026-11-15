@@ -395,11 +395,11 @@ button:active{transform:scale(.97)}
 <section class="vip-modal" id="paymentCheckoutPage" hidden><div class="vip-card balance-card"><button type="button" class="admin-close" id="backToPaymentMethods" style="margin-bottom:12px">← رجوع لطرق الدفع</button><h3 id="checkoutTitle">📱 فودافون كاش</h3><p class="admin-note">حدد عدد العملات، والسعر هيتحسب تلقائيًا.</p><button type="button" id="openPaymentHistory" style="width:100%;padding:11px;margin:8px 0;border:1px solid #bd8b36;border-radius:11px;background:#21151b;color:#ffe4a5;font-weight:bold">📚 سجلات الدفع</button><div class="wallet-pay-box"><label class="wallet-label" for="checkoutCoinQuantity">عدد العملات (مضاعفات 100)</label><input id="checkoutCoinQuantity" type="number" min="100" step="100" value="100" inputmode="numeric" style="width:100%;padding:12px;border:1px solid #8b344d;border-radius:11px;background:#100b0e;color:#fff;text-align:center;font:inherit"><p id="checkoutPrice" class="wallet-label" aria-live="polite">السعر: 20 جنيهًا</p><p class="wallet-label">رقم المحفظة (مخفي) — اضغط نسخ</p><div class="wallet-copy-row"><span class="wallet-blurred" aria-label="رقم المحفظة مخفي">••••••••••••</span><button type="button" id="checkoutCopyWallet">📋 نسخ</button></div><small id="checkoutCopyStatus" class="wallet-copy-status">الرقم مخفي؛ اضغط نسخ للحصول عليه.</small><p class="wallet-label" style="text-align:center;margin:16px 0 8px;color:#ff2638;font-size:24px;font-weight:900;line-height:1.4">اكمل عملية الدفع</p>
 <div class="wallet-receipt-form" style="display:grid;gap:10px;margin-top:10px">
 <label class="wallet-label" for="receiptUserId">الأيدي (ID) الخاص بحسابك</label>
-<input id="receiptUserId" type="text" placeholder="اكتب الأيدي الخاص بك" autocomplete="off" style="width:100%;padding:12px;border:1px solid #8b344d;border-radius:11px;background:#100b0e;color:#fff">
+<input id="receiptUserId" type="text" inputmode="numeric" pattern="[0-9]{6,20}" maxlength="20" placeholder="أرقام فقط — من 6 إلى 20 رقم" autocomplete="off" style="width:100%;padding:12px;border:1px solid #8b344d;border-radius:11px;background:#100b0e;color:#fff">
 <label class="wallet-label" for="receiptSenderPhone">رقم المحفظة اللي بعت منها</label>
-<input id="receiptSenderPhone" type="tel" inputmode="numeric" placeholder="01xxxxxxxxx" maxlength="11" style="width:100%;padding:12px;border:1px solid #8b344d;border-radius:11px;background:#100b0e;color:#fff">
+<input id="receiptSenderPhone" type="tel" inputmode="numeric" pattern="[0-9]{11}" placeholder="01xxxxxxxxx" maxlength="11" style="width:100%;padding:12px;border:1px solid #8b344d;border-radius:11px;background:#100b0e;color:#fff">
 <label class="wallet-label" for="receiptReceiverPhone">رقم المحفظة اللي حولت عليها</label>
-<input id="receiptReceiverPhone" type="tel" inputmode="numeric" placeholder="01xxxxxxxxx" maxlength="11" style="width:100%;padding:12px;border:1px solid #8b344d;border-radius:11px;background:#100b0e;color:#fff">
+<input id="receiptReceiverPhone" type="tel" inputmode="numeric" pattern="[0-9]{11}" placeholder="01xxxxxxxxx" maxlength="11" style="width:100%;padding:12px;border:1px solid #8b344d;border-radius:11px;background:#100b0e;color:#fff">
 <button type="button" id="confirmWalletPayment" disabled style="width:100%;padding:13px;border:0;border-radius:12px;background:#176b39;color:#fff;font-weight:800;opacity:.45">✓ تم الدفع</button>
 <small id="receiptValidationStatus" aria-live="polite" style="text-align:center;color:#ff9aaa">اكتب أيدي رقمي صحيح ورقم محفظة مصري، وتأكد أن رقم المستلم هو رقم التحويل الظاهر بالأعلى.</small>
 </div>
@@ -1731,7 +1731,12 @@ document.addEventListener('click',e=>{if(e.target&&e.target.id==='adminMessageOk
  const receiptInputs=['receiptUserId','receiptSenderPhone','receiptReceiverPhone'].map(id=>document.getElementById(id));
  const confirmReceipt=document.getElementById('confirmWalletPayment'),receiptCard=document.getElementById('paymentReceiptCard');
  let activeReceipt=null;
- function normalizeReceiptDigits(v){return String(v).replace(/[٠-٩]/g,d=>String('٠١٢٣٤٥٦٧٨٩'.indexOf(d))).replace(/[۰-۹]/g,d=>String('۰۱۲۳۴۵۶۷۸۹'.indexOf(d))).replace(/\\s+/g,'');}
+ function normalizeReceiptDigits(v){return String(v).replace(/[٠-٩]/g,d=>String('٠١٢٣٤٥٦٧٨٩'.indexOf(d))).replace(/[۰-۹]/g,d=>String('۰۱۲۳۴۵۶۷۸۹'.indexOf(d))).replace(/[^0-9]/g,'');}
+ receiptInputs.forEach((el,index)=>el.addEventListener('input',()=>{
+   const max=index===0?20:11;
+   const clean=normalizeReceiptDigits(el.value).slice(0,max);
+   if(el.value!==clean)el.value=clean;
+ }));
  function validateReceiptForm(){
    const id=normalizeReceiptDigits(receiptInputs[0].value),sender=normalizeReceiptDigits(receiptInputs[1].value),receiver=normalizeReceiptDigits(receiptInputs[2].value);
    const idOk=/^\\d{6,20}$/.test(id),phoneOk=/^01[0125]\\d{8}$/.test(sender),receiverOk=receiver==='01147773142';
