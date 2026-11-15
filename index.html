@@ -382,7 +382,7 @@ button:active{transform:scale(.97)}
 <section class="profile-modal" id="ownerAdminModal" hidden><div class="owner-admin-card"><h3>👑 لوحة المالك</h3><p class="admin-note">إدارة حسابات لينا عبر السيرفر وقاعدة البيانات</p><input class="admin-search" id="adminUserId" type="text" inputmode="numeric" placeholder="اكتب ID المستخدم"><div class="admin-grid"><button type="button" data-admin="lookup">🔎 بيانات الحساب</button><button type="button" data-admin="credit">➕ إرسال رصيد</button><button type="button" data-admin="debit">➖ سحب رصيد</button><button type="button" data-admin="warn">⚠️ إرسال تحذير</button><button type="button" data-admin="ban">⛔ حظر / فك الحظر</button><button type="button" data-admin="close">🔒 إغلاق / فتح الحساب</button><button type="button" data-admin="reports">📩 البلاغات</button><button type="button" data-admin="users">👥 كل المستخدمين</button></div><div id="adminResults" class="admin-results"></div><button class="admin-close" type="button" id="closeOwnerAdmin">إغلاق</button></div></section>
 <section class="vip-modal" id="balanceModal" hidden><div class="vip-card balance-card"><h3>🪙 رصيدك في لينا</h3><div class="balance-total"><strong id="modalBalanceValue">3</strong><span>نقطة</span></div><p class="admin-note">اختار طريقة الدفع المناسبة ليك. الطرق المتاحة حاليًا موضحة بالأسفل.</p><h4 class="payment-heading">💳 طرق الدفع</h4><div class="payment-methods"><button type="button" class="payment-method payment-active" data-checkout-method="vodafone"><span>📱 فودافون كاش</span><small>متاح — اضغط للمتابعة</small></button><button type="button" class="payment-method payment-active" data-checkout-method="etisalat"><span>📲 اتصالات كاش</span><small>متاح — اضغط للمتابعة</small></button><button type="button" class="payment-method" disabled><span>💳 Visa</span><small>متوقف حاليًا</small></button><button type="button" class="payment-method" disabled><span>💳 Mastercard</span><small>متوقف حاليًا</small></button><button type="button" class="payment-method" disabled><span>📲 محافظ إلكترونية أخرى</span><small>متوقف حاليًا</small></button><button type="button" class="payment-method" disabled><span>🏦 InstaPay</span><small>متوقف حاليًا</small></button></div><div class="referral-box"><h4>🎁 دعوة الأشخاص</h4><p class="admin-note">ادعُ أصحابك واكسبوا نقاط لما يسجلوا بكودك.</p><label class="ref-label">كود الدعوة الخاص بي</label><div class="ref-copy-row"><code id="myPromoCode">•••••••</code><button type="button" id="copyPromoCode" aria-label="نسخ البرومو كود">📋 نسخ</button></div><label class="ref-label">رابط الدعوة الخاص بي</label><div class="ref-copy-row"><input id="myInviteLink" type="text" readonly value=""><button type="button" id="copyInviteLink">🔗 نسخ</button></div><p class="admin-note">صاحب الدعوة يحصل على 10 نقاط، واللاعب الجديد يحصل على 3 نقاط بعد التسجيل بكود صحيح. المكافآت المشتركة هتتفعل بعد ربط السيرفر.</p></div><button type="button" id="closeBalanceModal">إغلاق</button></div></section>
 
-<section class="vip-modal" id="paymentCheckoutPage" hidden><div class="vip-card balance-card"><button type="button" class="admin-close" id="backToPaymentMethods" style="margin-bottom:12px">← رجوع لطرق الدفع</button><h3 id="checkoutTitle">📱 فودافون كاش</h3><p class="admin-note">حدد عدد العملات، والسعر هيتحسب تلقائيًا.</p><div class="wallet-pay-box"><label class="wallet-label" for="checkoutCoinQuantity">عدد العملات (مضاعفات 100)</label><input id="checkoutCoinQuantity" type="number" min="100" step="100" value="100" inputmode="numeric" style="width:100%;padding:12px;border:1px solid #8b344d;border-radius:11px;background:#100b0e;color:#fff;text-align:center;font:inherit"><p id="checkoutPrice" class="wallet-label" aria-live="polite">السعر: 20 جنيهًا</p><p class="wallet-label">رقم المحفظة (مخفي) — اضغط نسخ</p><div class="wallet-copy-row"><span class="wallet-blurred" aria-label="رقم المحفظة مخفي">••••••••••••</span><button type="button" id="checkoutCopyWallet">📋 نسخ</button></div><small id="checkoutCopyStatus" class="wallet-copy-status">الرقم مخفي؛ اضغط نسخ للحصول عليه.</small><a class="wallet-send-proof" href="https://t.me/Youuss34" target="_blank" rel="noopener noreferrer">📨 حساب إرسال الإيصال</a><p class="admin-note">بعد التحويل اكتب بيانات العملية الثلاثة لإصدار إيصال الدفع.</p>
+<section class="vip-modal" id="paymentCheckoutPage" hidden><div class="vip-card balance-card"><button type="button" class="admin-close" id="backToPaymentMethods" style="margin-bottom:12px">← رجوع لطرق الدفع</button><h3 id="checkoutTitle">📱 فودافون كاش</h3><p class="admin-note">حدد عدد العملات، والسعر هيتحسب تلقائيًا.</p><button type="button" id="openPaymentHistory" style="width:100%;padding:11px;margin:8px 0;border:1px solid #bd8b36;border-radius:11px;background:#21151b;color:#ffe4a5;font-weight:bold">📚 سجلات الدفع</button><div class="wallet-pay-box"><label class="wallet-label" for="checkoutCoinQuantity">عدد العملات (مضاعفات 100)</label><input id="checkoutCoinQuantity" type="number" min="100" step="100" value="100" inputmode="numeric" style="width:100%;padding:12px;border:1px solid #8b344d;border-radius:11px;background:#100b0e;color:#fff;text-align:center;font:inherit"><p id="checkoutPrice" class="wallet-label" aria-live="polite">السعر: 20 جنيهًا</p><p class="wallet-label">رقم المحفظة (مخفي) — اضغط نسخ</p><div class="wallet-copy-row"><span class="wallet-blurred" aria-label="رقم المحفظة مخفي">••••••••••••</span><button type="button" id="checkoutCopyWallet">📋 نسخ</button></div><small id="checkoutCopyStatus" class="wallet-copy-status">الرقم مخفي؛ اضغط نسخ للحصول عليه.</small><a class="wallet-send-proof" href="https://t.me/Youuss34" target="_blank" rel="noopener noreferrer">📨 حساب إرسال الإيصال</a><p class="admin-note">بعد التحويل اكتب بيانات العملية الثلاثة لإصدار إيصال الدفع.</p>
 <div class="wallet-receipt-form" style="display:grid;gap:10px;margin-top:14px">
 <label class="wallet-label" for="receiptUserId">الأيدي (ID) الخاص بحسابك</label>
 <input id="receiptUserId" type="text" placeholder="اكتب الأيدي الخاص بك" autocomplete="off" style="width:100%;padding:12px;border:1px solid #8b344d;border-radius:11px;background:#100b0e;color:#fff">
@@ -401,9 +401,25 @@ button:active{transform:scale(.97)}
 <p style="text-align:center;color:#c7b5bd;font-size:11px;margin:8px 0 0">هذا إيصال طلب شحن، ولا يؤكد استلام التحويل.</p>
 <button type="button" id="downloadPaymentReceipt" style="width:100%;padding:12px;border:1px solid #bd8b36;border-radius:11px;background:#21151b;color:#fff;font-weight:bold;margin-top:14px">📸 أخذ Screenshot للإيصال</button>
 <button type="button" id="sendPaymentReceipt" style="width:100%;padding:13px;border:0;border-radius:12px;background:#176b39;color:#fff;font-weight:800;margin-top:9px">📨 إرسال إيصال الدفع</button>
+<button type="button" id="markReceiptSent" style="width:100%;padding:12px;border:1px solid #bd8b36;border-radius:12px;background:#21151b;color:#ffe4a5;font-weight:800;margin-top:9px">✓ تم إرسال الإيصال</button>
 <p id="receiptActionStatus" class="admin-note" style="text-align:center"></p>
 </section>
 </div></div></section>
+<section class="vip-modal" id="paymentHistoryModal" hidden style="z-index:80">
+ <div class="vip-card" style="max-width:480px;text-align:right">
+  <h3 style="text-align:center">📚 سجلات الدفع</h3>
+  <p class="admin-note">كل عملية بتسجلها هتظهر هنا على نفس الجهاز والمتصفح.</p>
+  <div id="paymentHistoryList" style="display:grid;gap:9px;margin-top:14px"></div>
+  <div id="paymentHistoryEmpty" class="admin-note" style="text-align:center;padding:18px">مفيش عمليات محفوظة لسه.</div>
+  <div id="paymentHistoryDetail" hidden style="margin-top:14px;padding:14px;border:1px solid #bd8b36;border-radius:14px;background:#100b0e">
+   <button type="button" id="backPaymentHistory" style="padding:8px 12px;border:1px solid #713044;border-radius:9px;background:#27121b;color:#fff">← رجوع للسجلات</button>
+   <h3 style="margin:12px 0;color:#f4d18a">تفاصيل العملية</h3>
+   <div id="paymentHistoryDetailBody" style="display:grid;gap:10px;font-size:13px"></div>
+   <p id="paymentHistoryStory" class="admin-note" style="margin-top:14px;padding:10px;border-radius:10px;background:#21151b"></p>
+  </div>
+  <button type="button" id="closePaymentHistory" style="width:100%;margin-top:14px;padding:11px;border:1px solid #713044;border-radius:11px;background:#27121b;color:#fff">إغلاق</button>
+ </div>
+</section>
 <section class="vip-modal" id="dailyRewardModal" hidden>
  <div class="vip-card" style="text-align:center;max-width:440px">
   <div id="freePointsHome">
@@ -1703,6 +1719,41 @@ document.addEventListener('click',e=>{if(e.target&&e.target.id==='adminMessageOk
    ctx.textAlign='center';ctx.fillStyle='#f4d18a';ctx.font='bold 22px Arial';ctx.fillText('LINA AI • THANK YOU',450,790);
    const link=document.createElement('a');link.download='Lina-AI-Receipt-'+activeReceipt.number+'.png';link.href=canvas.toDataURL('image/png');link.click();
    document.getElementById('receiptActionStatus').textContent='تم حفظ صورة الإيصال. أرفق الصورة عند فتح البوت.';
+ });
+ const historyModal=document.getElementById('paymentHistoryModal');
+ const historyList=document.getElementById('paymentHistoryList');
+ const historyEmpty=document.getElementById('paymentHistoryEmpty');
+ const historyDetail=document.getElementById('paymentHistoryDetail');
+ const historyDetailBody=document.getElementById('paymentHistoryDetailBody');
+ const historyStory=document.getElementById('paymentHistoryStory');
+ const HISTORY_KEY='lina_ai_payment_history_v1';
+ function getPaymentHistory(){try{return JSON.parse(localStorage.getItem(HISTORY_KEY)||'[]').filter(x=>x&&x.number);}catch(e){return [];}}
+ function showPaymentHistory(){
+   const rows=getPaymentHistory();historyList.innerHTML='';historyEmpty.hidden=rows.length>0;historyDetail.hidden=true;historyList.hidden=false;
+   rows.forEach((r)=>{
+     const btn=document.createElement('button');btn.type='button';btn.style.cssText='width:100%;text-align:right;padding:12px;border:1px solid #713044;border-radius:12px;background:#140d11;color:#fff;line-height:1.8';
+     btn.innerHTML='<strong style="color:#ffe4a5">طلب #'+escReceipt(r.number)+'</strong><br><span>'+escReceipt(r.coins)+' نقطة • '+escReceipt(r.amount)+' جنيه</span><br><small style="color:#d3b6c0">'+escReceipt(r.createdAt)+' — '+escReceipt(r.statusLabel||'بانتظار المراجعة')+'</small>';
+     btn.addEventListener('click',()=>showPaymentHistoryDetail(r));historyList.appendChild(btn);
+   });
+   historyModal.hidden=false;
+ }
+ function showPaymentHistoryDetail(r){
+   historyList.hidden=true;historyEmpty.hidden=true;historyDetail.hidden=false;
+   historyDetailBody.innerHTML=
+     receiptRow('رقم العملية',r.number)+receiptRow('أيدي الحساب',r.userId)+receiptRow('اسم الحساب',r.userName)+receiptRow('طريقة الدفع',r.method)+receiptRow('رقم المحفظة المرسلة',r.sender)+receiptRow('رقم المحفظة المستقبلة',r.receiver)+receiptRow('النقاط المطلوبة',r.coins+' نقطة')+receiptRow('المبلغ',r.amount+' جنيه')+receiptRow('تاريخ الطلب',r.createdAt)+receiptRow('الحالة',r.statusLabel||'بانتظار المراجعة');
+   historyStory.textContent=r.story||'تم تسجيل تأكيد إرسال الإيصال على هذا الجهاز. الطلب بانتظار مراجعة الدفع؛ لم تتم إضافة النقاط حتى الآن.';
+ }
+ document.getElementById('openPaymentHistory').addEventListener('click',showPaymentHistory);
+ document.getElementById('closePaymentHistory').addEventListener('click',()=>historyModal.hidden=true);
+ document.getElementById('backPaymentHistory').addEventListener('click',()=>{historyDetail.hidden=true;historyList.hidden=false;historyEmpty.hidden=getPaymentHistory().length>0;});
+ document.getElementById('markReceiptSent').addEventListener('click',()=>{
+   if(!activeReceipt)return;
+   const r={...activeReceipt,statusLabel:'تم تأكيد إرسال الإيصال • بانتظار مراجعة الدفع',story:'تم إنشاء الإيصال وتأكيد إرساله من المستخدم. الطلب محفوظ في سجلات الدفع على هذا الجهاز، وحالته الحالية بانتظار مراجعة المالك. لم يتم اعتماد الدفع أو إضافة النقاط بعد.'};
+   const rows=getPaymentHistory();
+   if(!rows.some(x=>x.number===r.number)){rows.unshift(r);try{localStorage.setItem(HISTORY_KEY,JSON.stringify(rows.slice(0,100)));}catch(e){document.getElementById('receiptActionStatus').textContent='تعذر حفظ العملية على هذا الجهاز؛ مساحة التخزين قد تكون ممتلئة.';return;}}
+   receiptInputs.forEach(el=>el.value='');validateReceiptForm();qty.value=100;update();receiptCard.hidden=true;activeReceipt=null;
+   document.getElementById('receiptActionStatus').textContent='اتحفظت العملية في سجلات الدفع، والنموذج رجع جاهز لعملية جديدة.';
+   document.getElementById('receiptActionStatus').scrollIntoView({behavior:'smooth',block:'center'});
  });
  document.getElementById('sendPaymentReceipt').addEventListener('click',()=>{
    if(!activeReceipt)return;
