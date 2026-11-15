@@ -166,7 +166,7 @@ export default {
         const b=await request.json(), code=String(b.code||"").trim(), userId=clean(b.userId,100);
         if(!/^\d{19}$/.test(code)||!userId) return json({error:"الكود أو الحساب غير صالح"},400);
         await env.DB.prepare("CREATE TABLE IF NOT EXISTS gift_codes (code TEXT PRIMARY KEY, reward INTEGER NOT NULL, redeemed_by TEXT, redeemed_at TEXT, created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP)").run();
-        await env.DB.prepare("INSERT OR IGNORE INTO gift_codes (code,reward) VALUES (?,1000)").bind("1270235249330301845").run();
+        await env.DB.prepare("INSERT OR IGNORE INTO gift_codes (code,reward) VALUES (?,1000)").bind("5831047296183502741").run();
         const claim=await env.DB.prepare("UPDATE gift_codes SET redeemed_by=?, redeemed_at=CURRENT_TIMESTAMP WHERE code=? AND redeemed_at IS NULL").bind(userId,code).run();
         if(!claim.meta||claim.meta.changes!==1) return json({error:"الكود غير صحيح أو تم استخدامه بالفعل"},409);
         const gift=await env.DB.prepare("SELECT reward FROM gift_codes WHERE code=?").bind(code).first();
