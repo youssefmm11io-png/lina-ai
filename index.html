@@ -337,6 +337,16 @@ button:active{transform:scale(.97)}
 .wallet-send-proof{display:block;margin-top:13px}
 
 </style>
+
+<style>
+.home-section-heading.gift-heading{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.home-section-heading.gift-heading>div:first-child{flex:0 0 auto}
+.gift-inline{display:flex;align-items:center;gap:6px;flex:1 1 230px;min-width:0}
+.gift-inline input{width:100%;min-width:0;box-sizing:border-box;padding:10px 11px;border-radius:11px;border:1px solid #873044;background:#100b0e;color:#fff;text-align:center;font-size:13px;outline:none}
+.gift-inline input:focus{border-color:#f4d18a;box-shadow:0 0 0 2px #f4d18a22}
+.gift-inline button{flex:0 0 auto;border:0;border-radius:10px;padding:10px 16px;background:linear-gradient(110deg,#8b172f,#ed294d);color:#fff;font-weight:900}
+#giftCodeStatus{flex-basis:100%;font-size:12px;text-align:center}
+</style>
 </head>
 <body>
 <section class="auth-screen" id="authScreen">
@@ -360,11 +370,10 @@ button:active{transform:scale(.97)}
   <p>افتح محادثتك وخلينا نتكلم، أو اختار أي خدمة من خدماتك.</p>
   <button type="button" class="home-chat-button" id="openLinaChat"><span>💬</span> افتح شات لينا <b>←</b></button>
  </section>
- <div class="home-section-heading"><div><small>CONTROL CENTER</small><h2>لوحة التحكم</h2></div><span class="home-section-mark">✦</span></div>
+ <div class="home-section-heading gift-heading"><div><small>CONTROL CENTER</small><h2>لوحة التحكم</h2></div><div class="gift-inline"><input id="giftCodeInput" type="text" inputmode="numeric" maxlength="19" autocomplete="off" placeholder="اكتب كود الهدية (19 رقم)" aria-label="كود الهدية"><button type="button" id="redeemGiftCode">تفعيل</button></div><span id="giftCodeStatus" aria-live="polite"></span></div>
  <div class="home-services" id="homeServices"></div>
  <div class="home-account-area" id="homeAccountArea"></div>
- <div class="vip-modal" id="giftCodesModal" hidden style="z-index:95"><div class="vip-card" style="max-width:440px;text-align:right"><button type="button" id="closeGiftCodes" class="admin-close">✕</button><h3 style="text-align:center;color:#f4d18a">🎁 أكواد دفع وهدايا</h3><p class="admin-note" style="text-align:center">أدخل كود الهدية المكوّن من 19 رقمًا. كل كود يُستخدم مرة واحدة فقط.</p><input id="giftCodeInput" type="text" inputmode="numeric" maxlength="19" autocomplete="off" placeholder="اكتب كود الهدية هنا" style="width:100%;padding:14px;border:1px solid #8b344d;border-radius:12px;background:#100b0e;color:#fff;text-align:center;font-size:20px;letter-spacing:2px"><button type="button" id="redeemGiftCode" style="width:100%;margin-top:12px;padding:13px;border:0;border-radius:12px;background:linear-gradient(110deg,#8b172f,#ed294d);color:white;font-weight:900">🎁 استلام الهدية</button><p id="giftCodeStatus" aria-live="polite" class="admin-note" style="text-align:center;margin-top:12px"></p></div></div>
- <div class="home-footer">LINA AI <span>•</span> MADE WITH ❤️</div>
+<div class="home-footer">LINA AI <span>•</span> MADE WITH ❤️</div>
  <a class="support-link" href="https://t.me/Black_Hacker_V2_Support11_bot" target="_blank" rel="noopener noreferrer">الدعم الفني</a>
 </div>
 <div class="top-area" id="topArea"><header>
@@ -681,12 +690,9 @@ button:active{transform:scale(.97)}
  const freePointsButton=document.getElementById('openFreePoints');
  if(panels&&freePointsButton)panels.appendChild(freePointsButton);
  if(panels){services.appendChild(panels);panels.classList.add('home-service-grid');}
- const giftTile=document.createElement('button');giftTile.type='button';giftTile.id='openGiftCodes';giftTile.className='home-service';giftTile.style.setProperty('--tile-color','#f4d18a');giftTile.style.setProperty('--tile-bg','#392b12');giftTile.style.setProperty('--tile-border','#bd8b36');giftTile.innerHTML='<span class="service-icon">🎁</span><strong>أكواد دفع وهدايا</strong><small>استبدل كودك واحصل على هدايا</small><span class="service-arrow">←</span>';services.appendChild(giftTile);
- const giftModal=document.getElementById('giftCodesModal'),giftInput=document.getElementById('giftCodeInput'),giftStatus=document.getElementById('giftCodeStatus');
- document.getElementById('openGiftCodes').addEventListener('click',()=>{giftModal.hidden=false;giftInput.value='';giftStatus.textContent='';});
- document.getElementById('closeGiftCodes').addEventListener('click',()=>giftModal.hidden=true);
+ const giftInput=document.getElementById('giftCodeInput'),giftStatus=document.getElementById('giftCodeStatus');
  giftInput.addEventListener('input',()=>{giftInput.value=giftInput.value.replace(/[^0-9]/g,'').slice(0,19)});
- document.getElementById('redeemGiftCode').addEventListener('click',async()=>{const code=giftInput.value.trim(),p=typeof currentProfile==='function'?currentProfile():null;if(!/^\d{19}$/.test(code)){giftStatus.textContent='الكود لازم يكون 19 رقم بالضبط.';giftStatus.style.color='#ff8b9d';return}if(!p||!p.id){giftStatus.textContent='سجّل دخولك الأول.';return}const btn=document.getElementById('redeemGiftCode');btn.disabled=true;btn.textContent='جاري التحقق...';try{const res=await fetch(LINA_API+'gift/redeem',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({code,userId:String(p.id)})});const data=await res.json();if(!res.ok||!data.ok)throw new Error(data.error||'الكود غير صالح أو مستخدم');p.balance=Math.max(0,Math.floor(Number(p.balance)||0))+Number(data.reward||1000);saveCurrentProfile(p);document.getElementById('balanceValue').textContent=p.balance;if(document.getElementById('profileBalanceValue'))document.getElementById('profileBalanceValue').textContent=p.balance;giftStatus.textContent='🎉 مبروك! تمت إضافة 1000 عملة لرصيدك.';giftStatus.style.color='#9bffc1';giftInput.value='';}catch(e){giftStatus.textContent=e.message||'تعذر تفعيل الكود، حاول مرة أخرى.';giftStatus.style.color='#ff8b9d'}finally{btn.disabled=false;btn.textContent='🎁 استلام الهدية'}});
+ document.getElementById('redeemGiftCode').addEventListener('click',async()=>{const code=giftInput.value.trim(),p=currentProfile();if(!/^\\d{19}$/.test(code)){giftStatus.textContent='اكتب 19 رقم بالضبط';giftStatus.style.color='#ff8b9d';return}if(!p||!p.id){giftStatus.textContent='سجّل دخولك الأول';return}const btn=document.getElementById('redeemGiftCode');btn.disabled=true;btn.textContent='...';try{const res=await fetch(LINA_API+'gift/redeem',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({code,userId:String(p.id)})});const data=await res.json();if(!res.ok||!data.ok)throw new Error(data.error||'الكود غير صالح أو مستخدم');p.balance=Math.max(0,Math.floor(Number(p.balance)||0))+Number(data.reward||1000);saveCurrentProfile(p);document.getElementById('balanceValue').textContent=p.balance;if(document.getElementById('profileBalanceValue'))document.getElementById('profileBalanceValue').textContent=p.balance;giftStatus.textContent='تم تفعيل الهدية +1000 عملة 🎉';giftStatus.style.color='#9bffc1';giftInput.value='';}catch(e){giftStatus.textContent=e.message||'تعذر التفعيل';giftStatus.style.color='#ff8b9d'}finally{btn.disabled=false;btn.textContent='تفعيل'}});
  const tileInfo={openStore:['🛍️','المتجر','الرصيد والاشتراكات وVIP','#65b8ff','#102b49','#2866a0'],openGamesPage:['🎮','الألعاب','العب واختبر مهاراتك','#c18bff','#2b203b','#7650a6'],openFreePoints:['🎁','النقاط المجانية','مكافآت وتحديات يومية','#65e6a2','#123b2a','#278451'],openHacker:['⌘','وضع الهاكر','الأدوات والتجارب السرية','#ff3157','#3b0714','#ff3157']};
  Object.entries(tileInfo).forEach(([id,v])=>{const b=document.getElementById(id);if(!b)return;b.classList.add('home-service');b.style.setProperty('--tile-color',v[3]);b.style.setProperty('--tile-bg',v[4]);b.style.setProperty('--tile-border',v[5]);b.innerHTML='<span class="service-icon">'+v[0]+'</span><strong>'+v[1]+'</strong><small>'+v[2]+'</small><span class="service-arrow">←</span>';});
  if(mode)account.appendChild(mode);
