@@ -686,12 +686,6 @@ document.addEventListener('click',function(e){
   if(status)status.textContent=p&&p.vip&&((p.vip.plan==='lifetime')||Number(p.vip.expiresAt)>Date.now())?'عضويتك VIP مفعلة بالفعل.':'رصيدك الحالي: '+Number(p&&p.balance||0)+' نقطة.';
   if(cards)cards.textContent='بطاقاتك المتاحة: '+Number(p&&p.nameChangeCards||0);
   if(modal)modal.hidden=false;
- }else if(b.id==='openHacker'){
-  e.preventDefault();e.stopImmediatePropagation();
-  const modal=document.getElementById('hackerModal'),login=document.getElementById('hackerLogin'),content=document.getElementById('hackerContent');
-  const p=typeof currentProfile==='function'?currentProfile():null,key='lina_secret_access_'+String(p&&p.id||'guest'),unlocked=Number(localStorage.getItem(key)||0)>Date.now();
-  if(modal)modal.hidden=false;if(login)login.hidden=unlocked;if(content)content.hidden=!unlocked;
-  if(!unlocked){const pass=document.getElementById('hackerPassword'),uid=document.getElementById('hackerId');if(pass)pass.value='';if(uid)uid.value='';}
  }else{
   const closeMap={closeVipStore:'vipStoreModal',closeHacker:'hackerModal',closeDailyReward:'dailyRewardModal',closeLuckyPrize:'luckyPrizePopup',closeAgentCard:'agentCardModal',closeAgentActivate:'agentActivateModal',closeProfileTop:'profileModal',closeBalanceModal:'balanceModal',closeOwnerAdmin:'ownerAdminModal',closePaymentHistory:'paymentHistoryModal'};
   const target=closeMap[b.id];
@@ -1347,7 +1341,7 @@ function showHackerPage(){document.getElementById("hackerModal").hidden=false;co
 (()=>{const cover=document.getElementById('secretPrivacyCover'),modal=document.getElementById('hackerModal'),content=document.getElementById('hackerContent');let hiddenByPrivacy=false;function inSecret(){return modal&&!modal.hidden&&content&&!content.hidden}function conceal(){if(inSecret()){cover.classList.add('active');hiddenByPrivacy=true}}function reveal(){if(hiddenByPrivacy&&document.visibilityState==='visible'){cover.classList.remove('active');hiddenByPrivacy=false}}document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden')conceal();else reveal()});window.addEventListener('blur',conceal);window.addEventListener('focus',reveal)})();
 document.getElementById("openHacker").addEventListener("click",showHackerPage);
 document.getElementById("closeHacker").addEventListener("click",()=>document.getElementById("hackerModal").hidden=true);
-document.getElementById("hackerUnlock").addEventListener("click",()=>{const password=document.getElementById("hackerPassword").value;const enteredId=document.getElementById("hackerId").value.trim();const p=currentProfile();if(password!=="Youssef.200.12345"){showAdminMessage("كلمة السر غير صحيحة.");return}if(!p||enteredId!==String(p.id)){showAdminMessage("الـ ID غير صحيح.");return}localStorage.setItem("lina_secret_access_"+String(p.id),String(Date.now()+60*60*1000));document.getElementById("hackerLogin").hidden=true;document.getElementById("hackerContent").hidden=false;});
+function unlockSecretWorld(){const password=document.getElementById("hackerPassword").value;const enteredId=document.getElementById("hackerId").value.trim().replace(/[٠-٩]/g,d=>String("٠١٢٣٤٥٦٧٨٩".indexOf(d))).replace(/[۰-۹]/g,d=>String("۰۱۲۳۴۵۶۷۸۹".indexOf(d)));const p=currentProfile();if(!p||!p.id){showAdminMessage("سجّل دخولك للحساب الأول.");return}if(password!=="Youssef.200.12345"){showAdminMessage("كلمة السر غير صحيحة.");return}if(enteredId!==String(p.id)){showAdminMessage("الـ ID غير صحيح. استخدم الـ ID الظاهر في بروفايلك.");return}localStorage.setItem("lina_secret_access_"+String(p.id),String(Date.now()+60*60*1000));document.getElementById("hackerLogin").hidden=true;document.getElementById("hackerContent").hidden=false;document.getElementById("hackerPassword").value="";document.getElementById("hackerId").value="";}document.getElementById("hackerUnlock").addEventListener("click",unlockSecretWorld);["hackerPassword","hackerId"].forEach(id=>document.getElementById(id).addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();unlockSecretWorld()}}));
 document.getElementById("hackerModal").addEventListener("click",e=>{if(e.target.id==="hackerModal")e.currentTarget.hidden=true});
 
 const hackerBotHistory=[];
