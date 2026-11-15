@@ -159,6 +159,20 @@ export default {
       if (!env.DB) return json({error:"قاعدة البيانات غير مربوطة"},503);
       try { const b=await request.json(), id=clean(b.fromId,100), name=clean(b.fromName,40), message=clean(b.message,2000); if(!id||!message)return json({error:"بيانات البلاغ ناقصة"},400); const r=await env.DB.prepare("INSERT INTO reports (from_id,from_name,message) VALUES (?,?,?)").bind(id,name||"مستخدم",message).run(); return json({ok:true,id:r.meta?.last_row_id||null},201); } catch(error){return json({error:"تعذر حفظ البلاغ"},500)}
     }
+    if (url.pathname === "/gift/redeem") {
+      if (request.method !== "POST") return json({error:"Method not allowed"},405);
+      if (!env.DB) return json({error:"قاعدة البيانات غير مربوطة"},503);
+      try {
+        const b=await request.json(), code=String(b.code||"").trim(), userId=clean(b.userId,100);
+        if(!/^\d{19}$/.test(code)||!userId) return json({error:"الكود أو الحساب غير صالح"},400);
+        await env.DB.prepare("CREATE TABLE IF NOT EXISTS gift_codes (code TEXT PRIMARY KEY, reward INTEGER NOT NULL, redeemed_by TEXT, redeemed_at TEXT, created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP)").run();
+        await env.DB.prepare("INSERT OR IGNORE INTO gift_codes (code,reward) VALUES (?,1000)").bind("1270235249330301845").run();
+        const claim=await env.DB.prepare("UPDATE gift_codes SET redeemed_by=?, redeemed_at=CURRENT_TIMESTAMP WHERE code=? AND redeemed_at IS NULL").bind(userId,code).run();
+        if(!claim.meta||claim.meta.changes!==1) return json({error:"الكود غير صحيح أو تم استخدامه بالفعل"},409);
+        const gift=await env.DB.prepare("SELECT reward FROM gift_codes WHERE code=?").bind(code).first();
+        return json({ok:true,reward:gift.reward});
+      } catch(e) { return json({error:"تعذر تفعيل كود الهدية"},500); }
+    }
     if (url.pathname.startsWith("/agent/")) {
       if (request.method !== "POST") return json({ error: "Method not allowed" }, 405);
       if (!env.DB) return json({ error: "قاعدة الأكواد المشتركة غير مربوطة بالسيرفر" }, 503);
