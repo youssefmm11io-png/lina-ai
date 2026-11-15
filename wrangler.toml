@@ -1,0 +1,8 @@
+name = "lina-ai-server"
+main = "worker.js"
+compatibility_date = "2026-11-15"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "lina-db"
+database_id = "ebb92cbf-c410-4f7d-a7da-96970be49999"
