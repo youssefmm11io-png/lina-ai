@@ -1739,7 +1739,7 @@ document.addEventListener('click',e=>{if(e.target&&e.target.id==='adminMessageOk
  }));
  function validateReceiptForm(){
    const id=normalizeReceiptDigits(receiptInputs[0].value),sender=normalizeReceiptDigits(receiptInputs[1].value),receiver=normalizeReceiptDigits(receiptInputs[2].value);
-   const idOk=/^\\d{6,20}$/.test(id),phoneOk=/^01[0125]\\d{8}$/.test(sender),receiverOk=receiver==='01147773142';
+   const idOk=/^[0-9]{6,20}$/.test(id),phoneOk=/^01[0125][0-9]{8}$/.test(sender),receiverOk=receiver==='01147773142';
    const ready=idOk&&phoneOk&&receiverOk;
    confirmReceipt.disabled=!ready;confirmReceipt.style.opacity=ready?'1':'.45';
    const status=document.getElementById('receiptValidationStatus');
